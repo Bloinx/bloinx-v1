@@ -7,6 +7,7 @@ import { Button, Drawer, Typography, Spin, Result } from "antd";
 
 import config, { walletConnect } from "../../api/config.main.web3";
 import { getCurrentWallet, getCurrentProvider } from "../../redux/actions/main";
+import { iOS } from "../../utils/browser";
 
 import styles from "./styles.module.scss";
 
@@ -141,6 +142,11 @@ function Wallets({ currentAddressWallet, currentProvider }) {
   const loadWalletConnectProvider = async () => {
     setLoading(true);
     try {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden" && iOS()) {
+          localStorage.removeItem("WALLETCONNECT_DEEPLINK_CHOICE");
+        }
+      });
       const { provider } = await walletConnect();
       currentProvider("WalletConnect");
       await provider.on("accountsChanged", (newAccount) => {
