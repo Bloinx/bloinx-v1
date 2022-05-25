@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
-
-import { getAuth } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import supabase from "../supabase";
 
 import config, {
   walletConnect,
@@ -12,7 +10,6 @@ import { CUSD_TOKEN_CELO_MAINNET } from "./config.erc";
 const adminFee = 2;
 
 const setCreateRound = async ({
-  name,
   warranty,
   saving,
   groupSize,
@@ -30,9 +27,6 @@ const setCreateRound = async ({
           resolve(walletConnect());
         }
       });
-
-      const db = getFirestore();
-      const { uid } = getAuth().currentUser;
 
       await new Promise((resolve, reject) => {
         factory.contract.methods
@@ -54,20 +48,27 @@ const setCreateRound = async ({
             const admin = receipt.from;
             const folio = receipt.transactionHash;
 
-            const params = {
-              createByUser: uid,
-              createByWallet: admin,
-              contract,
-              folio,
-              isPublic,
-              positions: [],
-              invitations: [],
-            };
-            addDoc(collection(db, "round"), params)
-              .then((docRef) => {
-                resolve(docRef);
+            const session = supabase.auth.session();
+            await supabase
+              .from("rounds")
+              .insert([
+                {
+                  createByUser: session.user.id,
+                  createByWallet: admin,
+                  contract,
+                  folio,
+                  isPublic,
+                  createTime: new Date().getTime(),
+                  // positions: [],
+                  // invitations: [],
+                },
+              ])
+              .then((data) => {
+                console.log("Supabase Data ", data);
+                resolve(data);
               })
               .catch((error) => {
+                console.log("Supabase Insert Error ", error);
                 reject(error);
               });
           })

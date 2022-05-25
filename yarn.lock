@@ -2489,6 +2489,53 @@
   "resolved" "https://registry.npmjs.org/@stablelib/wipe/-/wipe-0.5.0.tgz"
   "version" "0.5.0"
 
+"@supabase/functions-js@^1.3.3":
+  "integrity" "sha512-35vO9niHRtzGe1QSvXKdOfvGPiX2KC44dGpWU6y0/gZCfTIgog/soU9HqABzQC/maVowO3hGLWfez5aN0MKfow=="
+  "resolved" "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-1.3.3.tgz"
+  "version" "1.3.3"
+  dependencies:
+    "cross-fetch" "^3.1.5"
+
+"@supabase/gotrue-js@^1.22.14":
+  "integrity" "sha512-7/mwnd1hR/bpkCmbDvjnwPfWyRcE2B1ZnfxthqgVaZ5oJHS/CQibyuLBL8DA75fxmgY9nIfednDZSydSm6zK0w=="
+  "resolved" "https://registry.npmjs.org/@supabase/gotrue-js/-/gotrue-js-1.22.15.tgz"
+  "version" "1.22.15"
+  dependencies:
+    "cross-fetch" "^3.0.6"
+
+"@supabase/postgrest-js@^0.37.2":
+  "integrity" "sha512-3Dgx5k3RvtKqc8DvR2BEyh2fVyjZe5P4e0zD1r8dyuVmpaYDaASZ2YeNVgyWXMCWH7xzrj4vepTYlKwfj78QLg=="
+  "resolved" "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-0.37.2.tgz"
+  "version" "0.37.2"
+  dependencies:
+    "cross-fetch" "^3.0.6"
+
+"@supabase/realtime-js@^1.7.2":
+  "integrity" "sha512-DMUaFIKj7KszGtWTTQbhMmUzZf7UnwYqySsmY+G8HgYxvY3ZaVa+DZD0I6ofgr4OLNr0po/ODM2a4lf5m5GNBg=="
+  "resolved" "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-1.7.2.tgz"
+  "version" "1.7.2"
+  dependencies:
+    "@types/phoenix" "^1.5.4"
+    "websocket" "^1.0.34"
+
+"@supabase/storage-js@^1.7.0":
+  "integrity" "sha512-f5EBw0wM96hKmnrXhgiqq2Reh9O0NgjKE+jkaKY4jQmfutefqaCAWn+cBzlmHs9h135H2ldaGmhWRFHUSkLt2g=="
+  "resolved" "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-1.7.0.tgz"
+  "version" "1.7.0"
+  dependencies:
+    "cross-fetch" "^3.1.0"
+
+"@supabase/supabase-js@^1.35.3":
+  "integrity" "sha512-uwO8OVdMFsGZNZ1xQhFz22+PSW0EWYZ5xVq+jQeGz8nhabEu+Q9Uyep/bcNzOpyPJRzbGfxSPRzgAdAxfJgFhw=="
+  "resolved" "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-1.35.3.tgz"
+  "version" "1.35.3"
+  dependencies:
+    "@supabase/functions-js" "^1.3.3"
+    "@supabase/gotrue-js" "^1.22.14"
+    "@supabase/postgrest-js" "^0.37.2"
+    "@supabase/realtime-js" "^1.7.2"
+    "@supabase/storage-js" "^1.7.0"
+
 "@surma/rollup-plugin-off-main-thread@^1.1.1":
   "integrity" "sha512-yBMPqmd1yEJo/280PAMkychuaALyQ9Lkb5q1ck3mjJrFuEobIfhnQ4J3mbvBoISmR3SWMWV+cGB/I0lCQee79A=="
   "resolved" "https://registry.npmjs.org/@surma/rollup-plugin-off-main-thread/-/rollup-plugin-off-main-thread-1.4.2.tgz"
@@ -2926,6 +2973,11 @@
   "version" "3.1.0"
   dependencies:
     "@types/node" "*"
+
+"@types/phoenix@^1.5.4":
+  "integrity" "sha512-L5eZmzw89eXBKkiqVBcJfU1QGx9y+wurRIEgt0cuLH0hwNtVUxtx+6cu0R2STwWj468sjXyBYPYDtGclUd1kjQ=="
+  "resolved" "https://registry.npmjs.org/@types/phoenix/-/phoenix-1.5.4.tgz"
+  "version" "1.5.4"
 
 "@types/prettier@^2.0.0":
   "integrity" "sha512-ReVR2rLTV1kvtlWFyuot+d1pkpG2Fw/XKE3PDAdj57rbM97ttSp9JZ2UsP+2EHTylra9cUf6JA7tGwW1INzUrA=="
@@ -4411,6 +4463,7 @@
     "wif" "^2.0.6"
 
 "bip39@https://github.com/bitcoinjs/bip39#d8ea080a18b40f301d4e2219a2991cd2417e83c2":
+  "integrity" "sha512-I2ADywus8maO/BPS8eEULUXS20kQYJQ+/W0MxSEkEUGP+nj58ZYUL0i7BWSRdKwjQxLU8fEchj5p2JqhCVBltg=="
   "resolved" "git+ssh://git@github.com/bitcoinjs/bip39.git#d8ea080a18b40f301d4e2219a2991cd2417e83c2"
   "version" "3.0.3"
   dependencies:
@@ -4425,6 +4478,7 @@
   "version" "1.2.1"
 
 "bls12377js@https://github.com/celo-org/bls12377js#cb38a4cfb643c778619d79b20ca3e5283a2122a6":
+  "integrity" "sha512-genS+AxHQKkrKA2xa1C1HCzSlZM8S/ZQEnjqET9u78/fpbHrNbXWvFYypYA3h7ukTD+WpF0hh+S9yxH6mhx4iA=="
   "resolved" "git+ssh://git@github.com/celo-org/bls12377js.git#cb38a4cfb643c778619d79b20ca3e5283a2122a6"
   "version" "0.1.0"
   dependencies:
@@ -5824,7 +5878,7 @@
     "node-fetch" "2.6.1"
     "whatwg-fetch" "2.0.4"
 
-"cross-fetch@^3.0.6":
+"cross-fetch@^3.0.6", "cross-fetch@^3.1.0", "cross-fetch@^3.1.5":
   "integrity" "sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw=="
   "resolved" "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.5.tgz"
   "version" "3.1.5"
@@ -7393,6 +7447,7 @@
     "setimmediate" "^1.0.5"
 
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
+  "integrity" "sha512-qs8G5KwnIO/thOQjv1RvR/4oiTsy6IaCsN+ory5dbiqFXz8sd239aWJH0wmsVNPimL5X1KzQheUpi6xAo6FU4w=="
   "resolved" "git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
   "version" "0.6.8"
   dependencies:
@@ -17443,7 +17498,7 @@
   "resolved" "https://registry.npmjs.org/websocket-extensions/-/websocket-extensions-0.1.4.tgz"
   "version" "0.1.4"
 
-"websocket@^1.0.32":
+"websocket@^1.0.32", "websocket@^1.0.34":
   "integrity" "sha512-PRDso2sGwF6kM75QykIesBijKSVceR6jL2G8NGYyq2XrItNC2P5/qL5XeR056GhA+Ly7JMFvJb9I312mJfmqnQ=="
   "resolved" "https://registry.npmjs.org/websocket/-/websocket-1.0.34.tgz"
   "version" "1.0.34"
