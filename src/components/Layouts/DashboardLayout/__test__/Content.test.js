@@ -1,14 +1,18 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
+import React from "react";
+import renderer from "react-test-renderer";
 
-import Content from '../Content';
+import Content from "../Content";
 
-describe('Content', () => {
-  it('renders correctly', () => {
+describe("Content", () => {
+  it("renders correctly", () => {
     const Foo = () => <div />;
-    const tree = renderer.create(
-      <Content><Foo /></Content>,
-    ).toJSON();
+    const tree = renderer
+      .create(
+        <Content>
+          <Foo />
+        </Content>
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

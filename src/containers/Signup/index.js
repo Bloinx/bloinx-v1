@@ -5,7 +5,8 @@ import { Button } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import apiSignUp from "../../api/setSignUp";
+import apiSignUp from "../../api/setSignUpSupabase";
+import apiUserData from "../../api/setUserData";
 
 import logo from "../../assets/bloinxLogo.png";
 import { validateEmail } from "../../utils/format";
@@ -25,9 +26,11 @@ function SignUp({ saveUser }) {
   const handleSignUp = () => {
     setLoading(true);
     apiSignUp({
-      user: form.email,
+      userEmail: form.email,
       password: form.password,
       onSuccess: (data) => {
+        console.log(data);
+        apiUserData(data);
         saveUser(data);
         setLoading(false);
         history.push("/dashboard");

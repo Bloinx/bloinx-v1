@@ -1,14 +1,18 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
+import React from "react";
+import renderer from "react-test-renderer";
 
-import Aside from '../Aside';
+import Aside from "../Aside";
 
-describe('Aside', () => {
-  it('renders correctly', () => {
+describe("Aside", () => {
+  it("renders correctly", () => {
     const Foo = () => <div />;
-    const tree = renderer.create(
-      <Aside><Foo /></Aside>,
-    ).toJSON();
+    const tree = renderer
+      .create(
+        <Aside>
+          <Foo />
+        </Aside>
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

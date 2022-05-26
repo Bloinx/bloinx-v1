@@ -1,4 +1,3 @@
-import supabase from "../supabase";
 import {
   CUSD_TOKEN_CELO_MAINNET,
   configCUSD,
@@ -6,7 +5,7 @@ import {
 } from "./config.erc";
 
 const setRegisterUser = async (props) => {
-  const { walletAddress, roundId, provider } = props;
+  const { walletAddress, provider } = props;
   // const docRef = doc(db, "round", roundId);
   // const docSnap = await getDoc(docRef);
   // const data = docSnap.data();
@@ -22,7 +21,7 @@ const setRegisterUser = async (props) => {
       reject(error);
     }
   });
-
+  const data = { contract: "" };
   return new Promise((resolve, reject) => {
     cUSD.methods
       .approve(data.contract, "300000000000000000000")
