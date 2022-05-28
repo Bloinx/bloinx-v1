@@ -1,10 +1,10 @@
 import supabase from "../supabase";
 
-const signUp = async ({ userEmail, password, onSuccess, onFailure }) => {
+const signUp = async ({ values, onSuccess, onFailure }) => {
   try {
     const { user, session, error } = await supabase.auth.signUp({
-      email: userEmail,
-      password,
+      email: values.email,
+      password: values.password,
     });
     if (error) throw error;
     if (session) {

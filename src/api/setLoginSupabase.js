@@ -1,16 +1,19 @@
 import supabase from "../supabase";
 
 const login = async ({ userLogin, password, onSuccess, onFailure }) => {
-  const { user, session, error } = await supabase.auth.signIn({
-    email: userLogin,
-    password,
-  });
-  if (user) {
-    onSuccess(session);
-    console.log(session);
-  }
-  if (error) {
-    onFailure(error);
+  try {
+    const { user, session, error } = await supabase.auth.signIn({
+      email: userLogin,
+      password,
+    });
+    if (error) throw error;
+    if (session) {
+      onSuccess(user);
+      console.log(session);
+      console.log(user);
+    }
+  } catch (e) {
+    onFailure(e.message);
   }
 };
 

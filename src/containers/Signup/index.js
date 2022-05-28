@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Form, Input, Select, Row, Col } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -9,28 +9,20 @@ import apiSignUp from "../../api/setSignUpSupabase";
 import apiUserData from "../../api/setUserData";
 
 import logo from "../../assets/bloinxLogo.png";
-import { validateEmail } from "../../utils/format";
 import styles from "./index.module.scss";
 import saveUserAction from "./actions";
 
 function SignUp({ saveUser }) {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [form, setForm] = useState({
-    email: null,
-    password: null,
-    repeatPassword: null,
-  });
 
-  const handleSignUp = () => {
+  const registerUser = (values) => {
     setLoading(true);
     apiSignUp({
-      userEmail: form.email,
-      password: form.password,
+      values,
       onSuccess: (data) => {
         console.log(data);
-        apiUserData(data);
+        apiUserData(data, values);
         saveUser(data);
         setLoading(false);
         history.push("/dashboard");
@@ -38,56 +30,6 @@ function SignUp({ saveUser }) {
       onFailure: (err) => {
         setLoading(false);
       },
-    });
-  };
-
-  const handleOnChange = ({ target }) => {
-    switch (target.name) {
-      case "email":
-        if (!validateEmail(target.value)) {
-          setError({
-            ...error,
-            email: "Por favor ingresa un email valido",
-          });
-        } else {
-          setError({
-            ...error,
-            email: null,
-          });
-        }
-        break;
-      case "password":
-        if (target.value.length < 6) {
-          setError({
-            ...error,
-            password: "Ingrese contraseña",
-          });
-        } else {
-          setError({
-            ...error,
-            password: null,
-          });
-        }
-        break;
-      case "repeatPassword":
-        if (form.password !== target.value) {
-          setError({
-            ...error,
-            repeatPassword: "Las contraseñas no coinciden",
-          });
-        } else {
-          setError({
-            ...error,
-            repeatPassword: null,
-          });
-        }
-        break;
-      default:
-        break;
-    }
-    setForm({
-      ...form,
-      [target.name]: target.value,
     });
   };
 
@@ -99,56 +41,168 @@ function SignUp({ saveUser }) {
             <img src={logo} alt="logo" className={styles.SignUp_Icon} />
             <span className={styles.SignUp_Title}>Registro</span>
           </div>
-          <div className={styles.SignUp_Card_Content_Form}>
-            <span>Usuario</span>
-            <input
-              className={styles.SignUp_Input}
-              name="email"
-              type="email"
-              onChange={handleOnChange}
-              disabled={loading}
-            />
-            <span className={styles.error}>{error?.email}</span>
-
-            <span>Contraseña</span>
-            <input
-              className={styles.SignUp_Input}
-              name="password"
-              type="password"
-              onChange={handleOnChange}
-              disabled={loading}
-            />
-            <span className={styles.error}>{error?.password}</span>
-
-            <span>Repetir contraseña</span>
-            <input
-              className={styles.SignUp_Input}
-              name="repeatPassword"
-              type="password"
-              onChange={handleOnChange}
-              disabled={loading}
-            />
-            <span className={styles.error}>{error?.repeatPassword}</span>
-          </div>
-          <div className={styles.SignUp_Card_Content_Actions}>
-            <span className={styles.error}>{error?.session}</span>
-            <Button
-              type="primary"
-              loading={loading}
-              disabled={
-                loading ||
-                !form.email ||
-                !form.password ||
-                !form.repeatPassword ||
-                error.email ||
-                error.password ||
-                error.repeatPassword
-              }
-              onClick={handleSignUp}
-            >
-              Registrarme
-            </Button>
-          </div>
+          <Form
+            layout="vertical"
+            onFinish={(values) => {
+              console.log(values);
+              registerUser(values);
+            }}
+          >
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please, type your email",
+                    },
+                    {
+                      type: "email",
+                      message: "Please, enter a valid email",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input placeholder="Your email" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="username"
+                  label="Username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please, type your username",
+                    },
+                    {
+                      whitespace: true,
+                      message: "Your username cannot be empty",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input placeholder="Your username" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item
+                  name="password"
+                  label="Password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Password is required",
+                    },
+                    {
+                      min: 6,
+                      message: "Minimun 6 characters",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password placeholder="Your password" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="ConfirmPassword"
+                  label="Confirm Password"
+                  dependencies={["password"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Confirm password is required",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error(
+                            "Confirm password is not matching with your password"
+                          )
+                        );
+                      },
+                    }),
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password placeholder="Confirm your password" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item
+                  name="firstName"
+                  label="Name"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please, type your name",
+                    },
+                    {
+                      whitespace: true,
+                      message: "Your name cannot be empty",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input placeholder="Your name" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="lastName"
+                  label="lastName"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please, type your Lastname",
+                    },
+                    {
+                      whitespace: true,
+                      message: "Your lastname cannot be empty",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input placeholder="Your lastname" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item
+                  name="phoneNumber"
+                  label="Phone"
+                  requiredMark="optional"
+                >
+                  <Input placeholder="Your phone number" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="gender" label="Gender" requiredMark="optional">
+                  <Select>
+                    <Select.Option value="Male">Male</Select.Option>
+                    <Select.Option value="Female">Female</Select.Option>
+                    <Select.Option value="Other">Other</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item>
+              <Button block type="primary" htmlType="submit">
+                Register
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
         <div className={styles.SignUp_Card_Options}>
           <div>Tambien puedes</div>
