@@ -13,7 +13,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 
-import LogOut from "../../api/setLogout";
+import LogOut from "../../api/setLogoutSupabase";
 
 import styles from "./styles.module.scss";
 import logo from "../../assets/bloinxLogo.png";
@@ -74,7 +74,7 @@ function NavAside({ user, width, toggleDrawer, visible }) {
         )}
         key={2}
         icon={<LogoutOutlined />}
-        onClick={LogOut}
+        onClick={() => LogOut}
       >
         <span>
           <FormattedMessage id="navAside.logout" />

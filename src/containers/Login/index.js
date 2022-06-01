@@ -5,7 +5,7 @@ import { Button } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import apiLogin from "../../api/setLogin";
+import apiLogin from "../../api/setLoginSupabase";
 
 import logo from "../../assets/bloinxLogo.png";
 import { validateEmail, validatePassword } from "./vlidators";
@@ -37,7 +37,7 @@ function Login({ saveUser }) {
   const handleLogin = () => {
     setLoading(true);
     apiLogin({
-      user: email,
+      userLogin: email,
       password,
       onSuccess: (data) => {
         saveUser(data);

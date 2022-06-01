@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import supabase from "../supabase";
 
 function WithAuthProvider(WrappedComponent) {
   const Auth = ({ saveUser, user, ...other }) => {
@@ -13,14 +13,13 @@ function WithAuthProvider(WrappedComponent) {
     useEffect(() => {
       if (!user.uid) {
         try {
-          const auth = getAuth();
-          onAuthStateChanged(auth, (userUpdated) => {
-            if (userUpdated) {
-              saveUser(userUpdated);
-            } else {
-              history.push("/logout");
-            }
-          });
+          const userSession = supabase.auth.user();
+
+          if (userSession) {
+            saveUser(userSession);
+          } else {
+            history.push("/logout");
+          }
         } catch (e) {
           history.push("/logout");
         }
