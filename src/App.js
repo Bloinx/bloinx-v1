@@ -8,7 +8,7 @@ import Login from "./containers/Login";
 import Logout from "./containers/Logout";
 import SignUp from "./containers/Signup";
 import Markup from "./containers/Markup";
-// import Dashboard from "./containers/Dashboard";
+import Dashboard from "./containers/Dashboard";
 // import CreateBatch from "./containers/CreateBatch";
 // import RegisterPay from "./containers/RegisterPay";
 // import RegisterUser from "./containers/RegisterUser";
@@ -25,8 +25,8 @@ function App({ initialContractInstance }) {
       <Route exact path="/logout" component={Logout} />
       <Route exact path="/signup" component={SignUp} />
       <Markup initialContractInstance={initialContractInstance}>
-        {/* <Route exact path="/dashboard" component={Dashboard} />
-        <Route path="/create-round" component={CreateBatch} />
+        <Route exact path="/dashboard" component={Dashboard} />
+        {/* <Route path="/create-round" component={CreateBatch} />
         <Route path="/register-user" component={RegisterUser} />
         <Route path="/invitations" component={Invitations} />
         <Route exact path="/registerpay" component={RegisterPay} />

@@ -6,6 +6,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { getAuth } from "firebase/auth";
+import supabase from "../../supabase";
 
 import RoundCard from "./RoundCard";
 import RoundCardNew from "./RoundCardNew";
@@ -13,7 +14,7 @@ import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
 
-import APIGetRounds from "../../api/getRounds";
+import APIGetRounds from "../../api/getRoundsSupabase";
 import APIGetOtherRounds from "../../api/getRoundsOthers";
 import APIGetRoundsByInvitation from "../../api/getRoundsByInvitation";
 import APISetStartRound from "../../api/setStartRound";
@@ -25,7 +26,10 @@ import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 
 function Dashboard({ currentAddress, currentProvider }) {
   const history = useHistory();
-  const user = getAuth().currentUser;
+  // const user = getAuth().currentUser;
+  const user = supabase.auth.user();
+  console.log(user);
+  console.log("holaaa");
   const [roundList, setRoundList] = useState([]);
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
@@ -209,7 +213,8 @@ function Dashboard({ currentAddress, currentProvider }) {
     return {};
   };
 
-  useEffect(() => handleGetRounds(), [user, currentAddress]);
+  // useEffect(() => handleGetRounds(), [user, currentAddress]);
+  useEffect(() => console.log("Holaaaaa"), [user, currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;
