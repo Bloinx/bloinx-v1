@@ -53,12 +53,12 @@ const setCreateRound = async ({
               .from("rounds")
               .insert([
                 {
-                  createByUser: session.user.id,
-                  createByWallet: admin,
+                  userAdmin: session.user.id,
+                  wallet: admin,
                   contract,
                   folio,
                   isPublic,
-                  createTime: new Date().getTime(),
+                  created_at: new Date().getTime(),
                   // positions: [],
                   // invitations: [],
                 },

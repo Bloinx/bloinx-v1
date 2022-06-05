@@ -15,12 +15,12 @@ import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
 
 import APIGetRounds from "../../api/getRoundsSupabase";
-import APIGetOtherRounds from "../../api/getRoundsOthers";
-import APIGetRoundsByInvitation from "../../api/getRoundsByInvitation";
-import APISetStartRound from "../../api/setStartRound";
-import APISetAddPayment from "../../api/setAddPayment";
-import APISetWithdrawTurn from "../../api/setWithdrawTurn";
-import APIGetFuturePayments from "../../api/getFuturePayments";
+import APIGetOtherRounds from "../../api/getRoundsOthersSupabase";
+import APIGetRoundsByInvitation from "../../api/getRoundsByInvitationSupabase";
+import APISetStartRound from "../../api/setStartRoundSupabase";
+import APISetAddPayment from "../../api/setAddPaymentSupabase";
+import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
+import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 
@@ -29,7 +29,6 @@ function Dashboard({ currentAddress, currentProvider }) {
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
   console.log(user);
-  console.log("holaaa");
   const [roundList, setRoundList] = useState([]);
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
@@ -213,8 +212,8 @@ function Dashboard({ currentAddress, currentProvider }) {
     return {};
   };
 
-  // useEffect(() => handleGetRounds(), [user, currentAddress]);
-  useEffect(() => console.log("Holaaaaa"), [user, currentAddress]);
+  useEffect(() => handleGetRounds(), [user, currentAddress]);
+  // useEffect(() => console.log("Holaaaaa"), [user, currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;

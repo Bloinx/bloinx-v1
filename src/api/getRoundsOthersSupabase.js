@@ -1,6 +1,5 @@
-import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
-
+import supabase from "../supabase";
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodGetStage from "./methods/getStage";
@@ -16,17 +15,22 @@ import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
 
 const getRounds = async ({ userId, walletAddress, provider }) => {
-  const configByPosition = async (round) => {
-    console.log(round);
+  const configByPosition = async (positionByRound) => {
+    const { data, error } = await supabase
+      .from("rounds")
+      .select()
+      .eq("id", positionByRound.idRound)
+      .neq("userAdmin", userId);
+
+    if (error || data === undefined) {
+      console.log("Round - is Admin");
+      return [];
+    }
+
     const sg =
       (await provider) !== "WalletConnect"
-        ? await config(round?.contract)
-        : await walletConnect(round?.contract);
-
-    const { data } = await supabase
-      .from("positionByRound")
-      .select("idUser, idRound")
-      .match({ idUser: userId, idRound: round?.id });
+        ? await config(data.contract)
+        : await walletConnect(data.contract);
 
     const admin = await MethodGetAdmin(sg.methods);
     const orderList = await MethodGetAddressOrderList(sg.methods);
@@ -37,12 +41,13 @@ const getRounds = async ({ userId, walletAddress, provider }) => {
     const saveAmount = await MethodGetSaveAmount(sg.methods);
     const savings = await MethodGetUserAvailableSavings(
       sg.methods,
-      data.position || 1
+      positionByRound.position || 1
     );
 
     const available = orderList.filter(
       (item) => item.address === "0x0000000000000000000000000000000000000000"
     );
+
     const exist =
       walletAddress &&
       orderList.find(
@@ -55,12 +60,12 @@ const getRounds = async ({ userId, walletAddress, provider }) => {
     }
 
     let paymentStatus;
-    // let amount;
-    if (data.position) {
-      // Todos los pagos que ya se han asignado, por un pago real o por la toma del cash in.
+    let amount;
+
+    if (positionByRound.position) {
       const amountPaid = await MethodGetUserAmountPaid(
         sg.methods,
-        data.position
+        positionByRound.position
       );
       const obligationAtTime = await MethodGetObligationAtTime(
         sg.methods,
@@ -68,40 +73,41 @@ const getRounds = async ({ userId, walletAddress, provider }) => {
       );
       const unassignedPayments = await MethodGetUserUnassignedPayments(
         sg.methods,
-        data.position
+        positionByRound.position
       );
       const availableCashIn = await MethodGetUserAvailableCashIn(
         sg.methods,
-        data.position
+        positionByRound.position
       );
-      const turnosPagadas =
+
+      const pagos =
         (Number(amountPaid) +
           Number(unassignedPayments) -
           (Number(cashIn) - Number(availableCashIn))) /
         Number(saveAmount);
 
       const ads = () => {
-        if (turnosPagadas === Number(obligationAtTime) / Number(saveAmount)) {
+        if (pagos === Number(obligationAtTime) / Number(saveAmount)) {
           return "payments_on_time";
         }
-        if (turnosPagadas > Number(obligationAtTime) / Number(saveAmount)) {
+        if (pagos > Number(obligationAtTime) / Number(saveAmount)) {
           return "payments_advanced";
         }
-        if (turnosPagadas < Number(obligationAtTime) / Number(saveAmount)) {
+        if (pagos < Number(obligationAtTime) / Number(saveAmount)) {
           return "payments_late";
         }
         return null;
       };
 
-      // amount = turnosPagadas - Number(obligationAtTime);
+      amount = pagos - Number(obligationAtTime);
       paymentStatus = ads();
     }
 
     const roundData = {
       paymentStatus,
-      // amount,
-      name: data.alias,
-      roundKey: round?.id,
+      amount,
+      name: positionByRound.alias,
+      roundKey: positionByRound.idRound,
       toRegister: Boolean(!exist),
       groupSize,
       missingPositions: available.length,
@@ -109,24 +115,28 @@ const getRounds = async ({ userId, walletAddress, provider }) => {
       turn,
       isAdmin:
         walletAddress === data.wallet && walletAddress === admin.toLowerCase(),
-      positionToWithdrawPay: data.position,
+      positionToWithdrawPay: positionByRound.position,
       realTurn,
-      withdraw: Number(realTurn) > data.position && Number(savings) > 0,
+      withdraw:
+        Number(realTurn) > positionByRound.position && Number(savings) > 0,
       fromInvitation: false,
-      saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
     };
+
     return roundData;
   };
+
   const { data } = await supabase
-    .from("rounds")
+    .from("positionByRound")
     .select()
-    .eq("userAdmin", userId);
+    .eq("idUser", userId);
+
   return new Promise((resolve) => {
     const rounds = [];
-
-    data.map(async (round) => {
-      const roundData = await configByPosition(round);
-      rounds.push(roundData);
+    data.map(async (positionByRound) => {
+      const roundData = await configByPosition(positionByRound);
+      if (roundData !== []) {
+        rounds.push(roundData);
+      }
     });
     resolve(rounds.sort());
   });
