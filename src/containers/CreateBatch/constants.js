@@ -9,7 +9,7 @@ const BIWEEKLY = "biweekly";
 export const INITIAL_FORM_VALUES = {
   name: null,
   participants: 3,
-  amount: 1,
+  amount: 5,
   periodicity: "biweekly",
   isComplete: false,
 };

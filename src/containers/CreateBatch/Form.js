@@ -66,8 +66,8 @@ const Form = ({ form, setForm }) => {
                 name="amount"
                 value={values.amount}
                 onChange={handleChange}
-                min={1}
-                max={20}
+                min={5}
+                max={30}
                 step={1}
                 error={errors.amount}
               />
