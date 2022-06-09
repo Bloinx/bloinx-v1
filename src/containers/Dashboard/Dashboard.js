@@ -6,6 +6,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { getAuth } from "firebase/auth";
+import supabase from "../../supabase";
 
 import RoundCard from "./RoundCard";
 import RoundCardNew from "./RoundCardNew";
@@ -13,19 +14,21 @@ import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
 
-import APIGetRounds from "../../api/getRounds";
-import APIGetOtherRounds from "../../api/getRoundsOthers";
-import APIGetRoundsByInvitation from "../../api/getRoundsByInvitation";
-import APISetStartRound from "../../api/setStartRound";
-import APISetAddPayment from "../../api/setAddPayment";
-import APISetWithdrawTurn from "../../api/setWithdrawTurn";
-import APIGetFuturePayments from "../../api/getFuturePayments";
+import APIGetRounds from "../../api/getRoundsSupabase";
+import APIGetOtherRounds from "../../api/getRoundsOthersSupabase";
+import APIGetRoundsByInvitation from "../../api/getRoundsByInvitationSupabase";
+import APISetStartRound from "../../api/setStartRoundSupabase";
+import APISetAddPayment from "../../api/setAddPaymentSupabase";
+import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
+import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 
 function Dashboard({ currentAddress, currentProvider }) {
   const history = useHistory();
-  const user = getAuth().currentUser;
+  // const user = getAuth().currentUser;
+  const user = supabase.auth.user();
+  console.log(user);
   const [roundList, setRoundList] = useState([]);
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
@@ -210,6 +213,7 @@ function Dashboard({ currentAddress, currentProvider }) {
   };
 
   useEffect(() => handleGetRounds(), [user, currentAddress]);
+  // useEffect(() => console.log("Holaaaaa"), [user, currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;

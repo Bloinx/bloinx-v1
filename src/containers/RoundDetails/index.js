@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import APIGetRoundDetail from "../../api/getRoundDetail";
+import APIGetRoundDetail from "../../api/getRoundDetailSupabase";
 import { getUrlParams } from "../../utils/browser";
 
 import Details from "./Details";

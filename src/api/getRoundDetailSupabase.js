@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { doc, getDoc, getFirestore } from "firebase/firestore";
 import moment from "moment";
-
+import supabase from "../supabase";
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetAdmin from "./methods/getAdmin";
 import MethodGetStage from "./methods/getStage";
@@ -9,16 +8,37 @@ import MethodGetPayTime from "./methods/getPayTime";
 import MethodGetStartTime from "./methods/getStartTime";
 import config, { walletConnect } from "./config.sg.web3";
 
+const getPositionUser = async (idRound, userId) => {
+  const { data, error } = await supabase
+    .from("positionByRound")
+    .select()
+    .eq("idRound", idRound)
+    .neq("idUser", userId);
+
+  return data;
+};
+
+const getPositionUserByAddress = async (user) => {
+  const { data, error } = await supabase.from("positionByRound").select();
+
+  const roundData =
+    data.find((position) => position.wallet === user.address.toLowerCase()) ||
+    [];
+
+  return roundData;
+};
+
 const getRoundDetail = async (roundId, currentProvider) => {
   try {
-    const db = getFirestore();
-    const docRef = doc(db, "round", roundId);
-    const docSnap = await getDoc(docRef);
-    const data = docSnap.data();
-    const { contract, positions, userAdmin, ...other } = data;
 
-    const positionData =
-      positions.find((position) => position.userId === userAdmin) || {};
+    const { data } = await supabase
+      .from("rounds")
+      .select("id")
+      .match({ id: roundId });
+
+    const { contract, userAdmin, ...other } = data;
+
+    const positionData = await getPositionUser(roundId, userAdmin);
 
     const sg = await new Promise((resolve, reject) => {
       try {
@@ -40,10 +60,8 @@ const getRoundDetail = async (roundId, currentProvider) => {
     const payTime = await MethodGetPayTime(sg.methods);
 
     const participantsData = orderList.map((user) => {
-      const roundData =
-        positions.find(
-          (position) => position.walletAddress === user.address.toLowerCase()
-        ) || [];
+
+      const roundData = getPositionUserByAddress(user);
 
       return {
         ...user,
@@ -51,8 +69,8 @@ const getRoundDetail = async (roundId, currentProvider) => {
           user.address === "0x0000000000000000000000000000000000000000"
             ? null
             : user.address,
-        userId: roundData.userId,
-        walletAddress: roundData.walletAddress,
+        userId: roundData.userAdmin,
+        walletAddress: roundData.wallet,
         admin: admin === user.address,
         dateToWithdraw:
           startTime === "0"

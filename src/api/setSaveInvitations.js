@@ -21,8 +21,7 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
   const invitations = [...dataArr];
   await updateDoc(docRef, { invitations });
   const positionData =
-    data.positions.find((position) => position.userId === data.createByUser) ||
-    {};
+    data.positions.find((position) => position.userId === data.userAdmin) || {};
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {

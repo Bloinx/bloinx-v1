@@ -1,13 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+// import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import config, { walletConnect } from "./config.sg.web3";
-
-const db = getFirestore();
+import supabase from "../supabase";
+// const db = getFirestore();
 
 const api = async (roundId, provider) => {
-  const docRef = doc(db, "round", roundId);
-  const docSnap = await getDoc(docRef);
-  const data = await docSnap.data();
+  //   const docRef = doc(db, "round", roundId);
+  const { data } = await supabase
+    .from("rounds")
+    .select("id")
+    .match({ id: roundId });
+
+  //   const docSnap = await getDoc(docRef);
+  //   const data = await docSnap.data();
 
   const sg = await new Promise((resolve, reject) => {
     try {
@@ -30,9 +35,9 @@ const api = async (roundId, provider) => {
         to: data.contract,
       })
       .once("receipt", async (receipt) => {
-        await updateDoc(docRef, {
-          invitations: [],
-        });
+        // await updateDoc(docRef, {
+        //   invitations: [],
+        // });
         resolve(receipt);
       })
       .on("error", async (error) => {
