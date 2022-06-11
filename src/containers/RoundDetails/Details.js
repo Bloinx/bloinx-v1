@@ -14,7 +14,7 @@ import InputLabel from "../../components/InputLabel";
 
 import { formatAddress } from "../../utils/format";
 import styles from "./Details.module.scss";
-import getFuturePayments from "../../api/getFuturePayments";
+import getFuturePayments from "../../api/getFuturePaymentsSupabase";
 
 function Details({ roundData, roundId, currentAdress, currentProvider }) {
   const [futurePayment, setFuturePayment] = useState("");

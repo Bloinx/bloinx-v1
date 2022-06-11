@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { getAuth } from "firebase/auth";
 import { Modal } from "antd";
 
 import PageHeader from "../../components/PageHeader";
@@ -18,7 +17,8 @@ import InputTurnSelect from "../../components/InputTurnSelect";
 import ButtonOnlyOneStep from "../../components/ButtonOnlyOneStep";
 import Loader from "../../components/Loader";
 
-import APISetRegisterUser from "../../api/setRegisterUser";
+import APISetRegisterUser from "../../api/setRegisterUserSupabase";
+import supabase from "../../supabase";
 
 import styles from "./Confirm.module.scss";
 import { confirmValidation } from "./validations";
@@ -26,7 +26,7 @@ import { motivationOptions } from "./constants";
 import { getOptions } from "./utils";
 
 function Form({ form, setForm, roundData, walletAddress, provider }) {
-  const user = getAuth().currentUser;
+  const user = supabase.auth.user();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,7 @@ function Form({ form, setForm, roundData, walletAddress, provider }) {
           Modal.error({
             title: "Error al registrar",
             content:
-              "No se pudimos registrarte en la tanda. Por favor intenta nuevamente.",
+              "No se pudo hacer registro en la tanda. Por favor intenta nuevamente.",
           });
         });
     }

@@ -9,8 +9,6 @@ const login = async ({ userLogin, password, onSuccess, onFailure }) => {
     if (error) throw error;
     if (session) {
       onSuccess(user);
-      console.log(session);
-      console.log(user);
     }
   } catch (e) {
     onFailure(e.message);

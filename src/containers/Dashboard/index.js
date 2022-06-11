@@ -4,7 +4,6 @@ import withAuthProvider from "../../providers/withAuthProvider";
 import Dashboard from "./Dashboard";
 
 const mapStateToProps = (state) => {
-  console.log(`${state}jeje esto?`);
   const currentAddress = state?.main?.currentAddress;
   const currentProvider = state?.main?.currentProvider;
   return { currentAddress, currentProvider };

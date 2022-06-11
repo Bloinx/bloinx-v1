@@ -1,19 +1,11 @@
 /* eslint-disable no-unused-vars */
-
-// import { doc, getDoc, getFirestore } from "firebase/firestore";
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 import MethodGetRealTurn from "./methods/getRealTurn";
 import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodSetEndRound from "./methods/setEndRound";
 
-// const db = getFirestore();
-
 const setWithdrawTurn = async (roundId, walletAddress, provider) => {
-  //   const docRef = doc(db, "round", roundId);
-  //   const docSnap = await getDoc(docRef);
-  //   const data = docSnap.data();
-
   const { data } = await supabase
     .from("rounds")
     .select("id")

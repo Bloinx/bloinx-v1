@@ -13,7 +13,7 @@ import PageHeader from "../../components/PageHeader";
 import ButtonOnlyOneStep from "../../components/ButtonOnlyOneStep";
 import Loader from "../../components/Loader";
 
-import APISetCreateRound from "../../api/setCreateRound";
+import APISetCreateRound from "../../api/setCreateRoundSupabase";
 
 import styles from "./Receipt.module.scss";
 import {
@@ -47,7 +47,6 @@ const Receipt = ({ form, setForm, walletAddress, provider }) => {
     if (form.isComplete && walletAddress) {
       setLoading(true);
       APISetCreateRound({
-        name: form.name,
         warranty: form.amount,
         saving: form.amount,
         groupSize: form.participants,

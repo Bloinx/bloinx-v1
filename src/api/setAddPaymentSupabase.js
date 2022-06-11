@@ -1,18 +1,10 @@
 /* eslint-disable no-unused-vars */
-
-// import { doc, getDoc, getFirestore } from "firebase/firestore";
-
 import config, { walletConnect } from "./config.sg.web3";
 import MethodGetSaveAmount from "./methods/saveAmount";
 import supabase from "../supabase";
 
-// const db = getFirestore();
-
 const setAddPayment = async (props) => {
   const { walletAddress, roundId, provider } = props;
-  //   const docRef = doc(db, "round", roundId);
-  //   const docSnap = await getDoc(docRef);
-  //   const data = docSnap.data();
 
   const { data } = await supabase
     .from("rounds")
