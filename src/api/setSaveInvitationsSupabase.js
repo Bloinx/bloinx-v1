@@ -2,7 +2,7 @@
 import axios from "axios";
 import Web3 from "web3";
 
-import { doc, updateDoc, getDoc, getFirestore } from "firebase/firestore";
+import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 
 import MethodGetGroupSize from "./methods/getGroupSize";
@@ -10,18 +10,39 @@ import MethodGetPayTime from "./methods/getPayTime";
 import MethodSaveAmount from "./methods/saveAmount";
 
 const dayInSeconds = 86400;
-const db = getFirestore();
+
+const getPositionUserAdmin = async (idRound, userAdminId) => {
+  const { data, error } = await supabase
+    .from("positionByRound")
+    .select()
+    .eq("idRound", idRound)
+    .eq("idUser", userAdminId);
+  if (error) console.log(error);
+  return data;
+};
+
+const setEmailInvite = (mailList, roundId) => {
+  mailList.forEach(async (mail) => {
+    const { data, error } = await supabase
+      .from("invitationsByRound")
+      .insert([{ idRound: roundId, userEmail: mail, isRegister: false }]);
+    if (error) console.log(error);
+    if (data) console.log(data);
+  });
+};
 
 const setSaveInvitations = async (mailList, roundId, provider) => {
-  const docRef = doc(db, "round", roundId);
-  const docSnap = await getDoc(docRef);
-  const data = docSnap.data();
+  const { data, error } = await supabase
+    .from("rounds")
+    .select()
+    .eq("idRound", roundId);
+  if (error) console.log(error);
 
-  const dataArr = new Set([...data.invitations, ...mailList]);
-  const invitations = [...dataArr];
-  await updateDoc(docRef, { invitations });
-  const positionData =
-    data.positions.find((position) => position.userId === data.userAdmin) || {};
+  setEmailInvite(mailList, roundId);
+
+  const positionData = await getPositionUserAdmin(data.userAdmin);
+  // data.positions.find((position) => position.userId === data.userAdmin) || {};
+
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
@@ -29,8 +50,8 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
       } else {
         resolve(walletConnect(data.contract));
       }
-    } catch (error) {
-      reject(error);
+    } catch (e) {
+      reject(e);
     }
   });
 
@@ -59,7 +80,7 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
                   title: "Inviación a la Ronda",
                   link: "https://bloinx.app/login",
                   name: "Bloinx Team",
-                  name_tanda: positionData.name,
+                  name_tanda: positionData.alias,
                   // type: "Public/Private",
                   longevity: `${longevity} días`,
                   participant: `${groupSize - 1}`,
@@ -77,7 +98,7 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
           return false;
         });
     });
-  } catch (error) {
+  } catch (err) {
     return false;
   }
   return null;

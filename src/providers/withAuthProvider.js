@@ -43,7 +43,6 @@ function WithAuthProvider(WrappedComponent) {
     saveUser: PropTypes.func.isRequired,
     user: PropTypes.instanceOf(Object).isRequired,
   };
-  console.log(Auth);
   return connect(mapStateToProps, mapDispatchToProps)(Auth);
 }
 

@@ -30,7 +30,6 @@ const getPositionUserByAddress = async (user) => {
 
 const getRoundDetail = async (roundId, currentProvider) => {
   try {
-
     const { data } = await supabase
       .from("rounds")
       .select("id")
@@ -60,7 +59,6 @@ const getRoundDetail = async (roundId, currentProvider) => {
     const payTime = await MethodGetPayTime(sg.methods);
 
     const participantsData = orderList.map((user) => {
-
       const roundData = getPositionUserByAddress(user);
 
       return {

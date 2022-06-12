@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 import { Typography, Button, Modal } from "antd";
 import { FormattedMessage } from "react-intl";
 
-import APISetSaveInvitations from "../../api/setSaveInvitations";
+import APISetSaveInvitations from "../../api/setSaveInvitationsSupabase";
 import PageHeader from "../../components/PageHeader";
 import InputEmailTags from "../../components/InputEmailTags";
 

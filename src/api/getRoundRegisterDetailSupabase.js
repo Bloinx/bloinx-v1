@@ -1,16 +1,15 @@
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-
 import MethodGetAvailablePlaces from "./methods/getAvailablePlaces";
 import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetFeeCost from "./methods/getFeeCost";
 import config, { walletConnect } from "./config.sg.web3";
+import supabase from "../supabase";
 
 const getRoundRegisterDetail = async (roundId, provider) => {
   try {
-    const db = getFirestore();
-    const docRef = doc(db, "round", roundId);
-    const docSnap = await getDoc(docRef);
-    const data = docSnap.data();
+    const { data } = await supabase
+      .from("rounds")
+      .select("id")
+      .match({ id: roundId });
 
     const sg = await new Promise((resolve, reject) => {
       try {

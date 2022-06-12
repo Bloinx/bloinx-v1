@@ -8,7 +8,7 @@ import Terms from "./Terms";
 import Form from "./Form";
 import Receipt from "./Receipt";
 import { getUrlParams } from "../../utils/browser";
-import APIgetRoundRegisterDetail from "../../api/getRoundRegisterDetail";
+import APIgetRoundRegisterDetail from "../../api/getRoundRegisterDetailSupabase";
 
 import { INITIAL_FORM_VALUES } from "./constants";
 

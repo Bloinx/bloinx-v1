@@ -5,7 +5,6 @@ import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { getAuth } from "firebase/auth";
 import supabase from "../../supabase";
 
 import RoundCard from "./RoundCard";
@@ -28,7 +27,6 @@ function Dashboard({ currentAddress, currentProvider }) {
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
-  console.log(user);
   const [roundList, setRoundList] = useState([]);
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
@@ -213,7 +211,6 @@ function Dashboard({ currentAddress, currentProvider }) {
   };
 
   useEffect(() => handleGetRounds(), [user, currentAddress]);
-  // useEffect(() => console.log("Holaaaaa"), [user, currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;

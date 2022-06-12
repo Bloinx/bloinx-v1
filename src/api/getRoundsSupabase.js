@@ -17,7 +17,6 @@ import MethodGetAdmin from "./methods/getAdmin";
 
 const getRounds = async ({ userId, walletAddress, provider }) => {
   const configByPosition = async (round) => {
-    console.log(round);
     const sg =
       (await provider) !== "WalletConnect"
         ? await config(round?.contract)
