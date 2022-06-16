@@ -42,13 +42,14 @@ function Dashboard({ currentAddress, currentProvider }) {
 
   const handleGetRounds = () => {
     console.log("ACTUALIZANDO");
-    if (user && user.uid) {
+    if (user && currentAddress) {
+      console.log(user);
       APIGetRounds({
-        userId: user.uid,
+        userId: user.id,
         walletAddress: currentAddress,
         provider: currentProvider,
       }).then((rounds) => {
-        console.log("ACTUALIZADO MIS RONDAS");
+        console.log(rounds);
         setRoundList(rounds);
       });
       APIGetRoundsByInvitation({
@@ -60,7 +61,7 @@ function Dashboard({ currentAddress, currentProvider }) {
         setInvitationsList(invitations);
       });
       APIGetOtherRounds({
-        userId: user.uid,
+        userId: user.id,
         walletAddress: currentAddress,
         provider: currentProvider,
       }).then((other) => {

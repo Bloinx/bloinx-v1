@@ -11,7 +11,7 @@ function WithAuthProvider(WrappedComponent) {
     const history = useHistory();
 
     useEffect(() => {
-      if (!user.uid) {
+      if (!user.id) {
         try {
           const userSession = supabase.auth.user();
 
