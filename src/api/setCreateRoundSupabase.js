@@ -47,14 +47,14 @@ const setCreateRound = async ({
               receipt?.events?.RoundCreated?.returnValues?.childRound;
             const admin = receipt.from;
             const folio = receipt.transactionHash;
-
             const session = supabase.auth.session();
-            const dateCreated = new Date().getTime();
+            const idUser = session.user.id;
+            const dateCreated = new Date().getTime.toString();
             await supabase
               .from("rounds")
               .insert([
                 {
-                  userAdmin: session.user.id,
+                  userAdmin: idUser,
                   wallet: admin,
                   contract,
                   folio,

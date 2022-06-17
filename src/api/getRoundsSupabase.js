@@ -16,7 +16,9 @@ import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
 
 const getRounds = async ({ userId, walletAddress, provider }) => {
+  console.log(userId);
   const configByPosition = async (round) => {
+    console.log(round);
     const sg =
       (await provider) !== "WalletConnect"
         ? await config(round?.contract)
@@ -26,7 +28,7 @@ const getRounds = async ({ userId, walletAddress, provider }) => {
       .from("positionByRound")
       .select("idUser, idRound")
       .match({ idUser: userId, idRound: round?.id });
-
+    console.log(data);
     const admin = await MethodGetAdmin(sg.methods);
     const orderList = await MethodGetAddressOrderList(sg.methods);
     const groupSize = await MethodGetGroupSize(sg.methods);
@@ -114,17 +116,18 @@ const getRounds = async ({ userId, walletAddress, provider }) => {
       fromInvitation: false,
       saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
     };
+
     return roundData;
   };
+  const rounds = [];
   const { data } = await supabase
     .from("rounds")
     .select()
     .eq("userAdmin", userId);
   return new Promise((resolve) => {
-    const rounds = [];
-
     data.map(async (round) => {
       const roundData = await configByPosition(round);
+      console.log(roundData);
       rounds.push(roundData);
     });
     resolve(rounds.sort());

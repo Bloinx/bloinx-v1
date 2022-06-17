@@ -39,7 +39,7 @@ function Form({ form, setForm, roundData, walletAddress, provider }) {
     } else {
       setLoading(true);
       APISetRegisterUser({
-        userId: user.uid,
+        userId: user.id,
         walletAddress,
         roundId: roundData.roundId,
         name: values.name,
