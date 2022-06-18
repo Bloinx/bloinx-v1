@@ -13,7 +13,10 @@ import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
 
-import APIGetRounds from "../../api/getRoundsSupabase";
+import APIGetRounds, {
+  getAll,
+  configByPosition,
+} from "../../api/getRoundsSupabase";
 import APIGetOtherRounds from "../../api/getRoundsOthersSupabase";
 import APIGetRoundsByInvitation from "../../api/getRoundsByInvitationSupabase";
 import APISetStartRound from "../../api/setStartRoundSupabase";
@@ -40,18 +43,34 @@ function Dashboard({ currentAddress, currentProvider }) {
     history.push(`/register-user?roundId=${roundKey}`);
   };
 
-  const handleGetRounds = () => {
+  const getRoundsData = (rounds, userId, walletAddress, provider) => {
+    rounds.forEach((round, index) => {
+      getAll(userId, round).then((res) => {
+        const resData = configByPosition(round, res, walletAddress, provider);
+        setRoundList((oldArray) => [...oldArray, resData]);
+      });
+    });
+  };
+
+  // const getRoundsAdmin = async() => {
+  //   const datapos = await getRoundsAdminSupa();
+  //   setRoundsList(datapos)
+  //   // getDataContract(datapos);
+  //   getRoundsData(datapos);
+  // };
+
+  const handleGetRounds = async () => {
     console.log("ACTUALIZANDO");
     if (user && currentAddress) {
       console.log(user);
-      APIGetRounds({
+      const rounds = await APIGetRounds({
         userId: user.id,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((rounds) => {
-        console.log(rounds);
-        setRoundList(rounds);
       });
+
+      getRoundsData(rounds, user.id, currentAddress, currentProvider);
+      // console.log(rounds);
+      // setRoundList(rounds);
+
       APIGetRoundsByInvitation({
         email: user.email,
         walletAddress: currentAddress,
