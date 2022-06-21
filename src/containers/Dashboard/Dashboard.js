@@ -13,8 +13,14 @@ import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
 
-import APIGetRounds from "../../api/getRoundsSupabase";
-import APIGetOtherRounds from "../../api/getRoundsOthersSupabase";
+import APIGetRounds, {
+  getAll,
+  configByPosition,
+} from "../../api/getRoundsSupabase";
+import APIGetOtherRounds, {
+  getAllOtherRounds,
+  configByPositionOther,
+} from "../../api/getRoundsOthersSupabase";
 import APIGetRoundsByInvitation from "../../api/getRoundsByInvitationSupabase";
 import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
@@ -40,18 +46,62 @@ function Dashboard({ currentAddress, currentProvider }) {
     history.push(`/register-user?roundId=${roundKey}`);
   };
 
-  const handleGetRounds = () => {
+  const getRoundsData = (rounds, userId, walletAddress, provider) => {
+    rounds.forEach((round, index) => {
+      getAll(userId, round).then((res) => {
+        configByPosition(round, res, walletAddress, provider).then(
+          (resData) => {
+            console.log(resData);
+            setRoundList((oldArray) => [...oldArray, resData]);
+          }
+        );
+      });
+    });
+  };
+
+  const getRoundsOtherData = (
+    roundsPosition,
+    userId,
+    walletAddress,
+    provider
+  ) => {
+    console.log(roundsPosition);
+    roundsPosition.forEach((positionRound, index) => {
+      getAllOtherRounds(userId, positionRound).then((res) => {
+        if (res === undefined) return;
+        configByPositionOther(res, positionRound, walletAddress, provider).then(
+          (resData) => {
+            setOtherList((oldArray) => [...oldArray, resData]);
+          }
+        );
+      });
+    });
+  };
+
+  // const getRoundsAdmin = async() => {
+  //   const datapos = await getRoundsAdminSupa();
+  //   setRoundsList(datapos)
+  //   // getDataContract(datapos);
+  //   getRoundsData(datapos);
+  // };
+
+  const handleGetRounds = async () => {
     console.log("ACTUALIZANDO");
+
     if (user && currentAddress) {
       console.log(user);
-      APIGetRounds({
+      const rounds = await APIGetRounds({
         userId: user.id,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((rounds) => {
-        console.log(rounds);
-        setRoundList(rounds);
       });
+
+      getRoundsData(rounds, user.id, currentAddress, currentProvider);
+      // const { data } = await supabase
+      //   .from("rounds")
+      //   .select()
+      //   .eq("id", rounds[0].id);
+      // console.log(data);
+      // setRoundList(rounds);
+
       APIGetRoundsByInvitation({
         email: user.email,
         walletAddress: currentAddress,
@@ -60,14 +110,16 @@ function Dashboard({ currentAddress, currentProvider }) {
         console.log("ACTUALIZADO MIS INVITES");
         setInvitationsList(invitations);
       });
-      APIGetOtherRounds({
+      const otherRoundsPosition = await APIGetOtherRounds({
         userId: user.id,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((other) => {
-        console.log("ACTUALIZADO OTRAS RONDAS");
-        setOtherList(other);
       });
+
+      getRoundsOtherData(
+        otherRoundsPosition,
+        user.id,
+        currentAddress,
+        currentProvider
+      );
     }
   };
 
@@ -217,7 +269,7 @@ function Dashboard({ currentAddress, currentProvider }) {
     return <Placeholder />;
   }
 
-  const completeRoundList = roundList.concat(invitationsList);
+  const completeRoundList = roundList?.concat(invitationsList);
   return (
     <>
       <PageHeader
@@ -230,11 +282,11 @@ function Dashboard({ currentAddress, currentProvider }) {
         }
       />
       <div className={styles.RoundCards}>
-        {currentAddress && completeRoundList.length === 0 && (
+        {currentAddress && completeRoundList?.length === 0 && (
           <NotFoundPlaceholder />
         )}
         {currentAddress &&
-          completeRoundList.map((round) => {
+          completeRoundList?.map((round) => {
             if (round.stage === "ON_REGISTER_STAGE" && round.toRegister) {
               return (
                 <RoundCardNew
@@ -249,6 +301,7 @@ function Dashboard({ currentAddress, currentProvider }) {
               handleButton(round);
             return (
               <RoundCard
+                key={round.roundKey}
                 name={round.name}
                 groupSize={round.groupSize}
                 missingPositions={round.missingPositions}
@@ -270,18 +323,19 @@ function Dashboard({ currentAddress, currentProvider }) {
             );
           })}
       </div>
-      {otherList.length && (
+      {otherList?.length && (
         <PageSubHeader
           title={<FormattedMessage id="dashboardPage.subtitle" />}
         />
       )}
       {currentAddress &&
         otherList &&
-        otherList.map((round) => {
+        otherList?.map((round) => {
           const { disable, text, action, withdrawText, withdrawAction } =
             handleButton(round);
           return (
             <RoundCard
+              key={round.roundKey}
               name={round.name}
               groupSize={round.groupSize}
               missingPositions={round.missingPositions}

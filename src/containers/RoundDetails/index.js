@@ -17,6 +17,7 @@ function RoundDetails({ walletAddress, currentProvider }) {
 
   useEffect(() => {
     APIGetRoundDetail(roundId, currentProvider).then((dataRound) => {
+      console.log(dataRound);
       setRoundData(dataRound);
     });
   }, []);

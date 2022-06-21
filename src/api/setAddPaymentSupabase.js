@@ -6,17 +6,14 @@ import supabase from "../supabase";
 const setAddPayment = async (props) => {
   const { walletAddress, roundId, provider } = props;
 
-  const { data } = await supabase
-    .from("rounds")
-    .select("id")
-    .match({ id: roundId });
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
-        resolve(config(data.contract));
+        resolve(config(data[0].contract));
       } else {
-        resolve(walletConnect(data.contract));
+        resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
       reject(error);
@@ -30,7 +27,7 @@ const setAddPayment = async (props) => {
       .addPayment(saveAmount)
       .send({
         from: walletAddress,
-        to: data.contract,
+        to: data[0].contract,
       })
       .once("receipt", async (receipt) => {
         resolve(receipt);

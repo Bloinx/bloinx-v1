@@ -30,10 +30,12 @@ export function RoundCard({
   byInvitation,
 }) {
   const handleGetSteps = () => {
+    const numGroup = Number(groupSize);
     const indents = [];
-    for (let i = 1; i <= groupSize; i += 1) {
+    for (let i = 1; i <= numGroup; i += 1) {
       indents.push({ label: i });
     }
+    console.log(indents);
     return indents;
   };
 
@@ -149,8 +151,8 @@ RoundCard.defaultProps = {
 RoundCard.propTypes = {
   name: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   contractKey: PropTypes.string.isRequired,
-  groupSize: PropTypes.number.isRequired,
-  turn: PropTypes.number.isRequired,
+  groupSize: PropTypes.string.isRequired,
+  turn: PropTypes.string.isRequired,
   linkTo: PropTypes.string,
   onClick: PropTypes.func,
   buttonText: PropTypes.string,
