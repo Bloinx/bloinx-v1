@@ -7,7 +7,7 @@ const updateInvite = async (email, idRound) => {
     .update({ isRegister: true })
     .match({ userEmail: email, idRound });
   if (error) console.log(error);
-  if (data) console.log(error);
+  if (data) console.log(data);
 };
 const setRegisterPosition = async (
   email,
@@ -44,17 +44,14 @@ const setRegisterUser = async (props) => {
 
   const user = supabase.auth.user();
 
-  const { data } = await supabase
-    .from("rounds")
-    .select("id")
-    .match({ id: roundId });
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
-        resolve(config(data.contract));
+        resolve(config(data[0].contract));
       } else {
-        resolve(walletConnect(data.contract));
+        resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
       reject(error);
@@ -67,7 +64,7 @@ const setRegisterUser = async (props) => {
       .registerUser(position)
       .send({
         from: walletAddress,
-        to: data.contract,
+        to: data[0].contract,
       })
       .once("receipt", async (recpt) => {
         const res = await setRegisterPosition(

@@ -8,16 +8,16 @@ const getRounds = async ({ email, provider }) => {
   const getUserAdminEmail = async (idUserAdmin) => {
     const { data } = await supabase
       .from("profiles")
-      .select("id")
-      .match({ id: idUserAdmin });
+      .select()
+      .eq("id", idUserAdmin);
 
     return data[0].email;
   };
   const configByInvitation = async (invite) => {
     const { data } = await supabase
       .from("rounds")
-      .select("id")
-      .match({ id: invite.idRound });
+      .select()
+      .eq("id", invite.idRound);
 
     const sg =
       (await provider) !== "WalletConnect"
@@ -40,7 +40,7 @@ const getRounds = async ({ email, provider }) => {
 
   const { data } = await supabase
     .from("invitationsByRound")
-    .select("userEmail, isRegister")
+    .select()
     .match({ userEmail: email, isRegister: false });
 
   return new Promise((resolve) => {
