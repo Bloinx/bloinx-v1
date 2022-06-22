@@ -28,4 +28,11 @@ jobs:
         cache: 'npm'
     - run: npm install --legacy-peer-deps
     - run: npm run build
+    - name: badge-it
+      uses: rocktimsaikia/badge-it@2.0.0
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    
+    
 
