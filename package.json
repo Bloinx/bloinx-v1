@@ -7,7 +7,7 @@
   "scripts": {
     "flow": "flow",
     "start": "craco start",
-    "build": "rm -r build && craco build",
+    "build": "craco build",
     "test": "craco test --watchAll=false",
     "test:watch": "craco test -u",
     "test:coverage": "craco test --coverage --watchAll=false",
