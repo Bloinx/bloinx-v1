@@ -37,6 +37,7 @@ function Form({ roundId, provider }) {
   };
 
   const handlerOnChangeEmailList = (mails) => {
+    console.log(mails.target.value);
     setMailList(mails.target.value);
   };
 

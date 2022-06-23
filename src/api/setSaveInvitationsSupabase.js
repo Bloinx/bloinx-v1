@@ -12,13 +12,29 @@ import MethodSaveAmount from "./methods/saveAmount";
 const dayInSeconds = 86400;
 
 const getPositionUserAdmin = async (idRound, userAdminId) => {
-  const { data, error } = await supabase
-    .from("positionByRound")
-    .select()
-    .eq("idRound", idRound)
-    .eq("idUser", userAdminId);
-  if (error) console.log(error);
-  return data;
+  // const { data, error } = await supabase
+  //   .from("positionByRound")
+  //   .select()
+  //   .eq("idRound", idRound)
+  //   .eq("idUser", userAdminId);
+  // if (error) console.log(error);
+  // return data;
+
+  const filterByUserId = userAdminId;
+  const filterbyRound = idRound;
+
+  let query = supabase.from("positionByRound").select();
+
+  if (filterbyRound) {
+    query = query.eq("idRound", filterbyRound);
+  }
+  if (filterByUserId) {
+    query = query.eq("idUser", filterByUserId);
+  }
+
+  const { data } = await query;
+  console.log(data);
+  return data[0];
 };
 
 const setEmailInvite = (mailList, roundId) => {
@@ -31,29 +47,11 @@ const setEmailInvite = (mailList, roundId) => {
   });
 };
 
-const setSaveInvitations = async (mailList, roundId, provider) => {
-  const { data, error } = await supabase
-    .from("rounds")
-    .select()
-    .eq("idRound", roundId);
-  if (error) console.log(error);
-
-  setEmailInvite(mailList, roundId);
-
-  const positionData = await getPositionUserAdmin(data.userAdmin);
-  // data.positions.find((position) => position.userId === data.userAdmin) || {};
-
-  const sg = await new Promise((resolve, reject) => {
-    try {
-      if (provider !== "WalletConnect") {
-        resolve(config(data.contract));
-      } else {
-        resolve(walletConnect(data.contract));
-      }
-    } catch (e) {
-      reject(e);
-    }
-  });
+const setSaveInvitations = async (mailList, round, provider, positionData) => {
+  const sg =
+    (await provider) !== "WalletConnect"
+      ? await config(round?.contract)
+      : await walletConnect(round?.contract);
 
   const groupSize = await MethodGetGroupSize(sg.methods);
   const payTime = await MethodGetPayTime(sg.methods);
@@ -61,7 +59,6 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
   const longevity = (payTime / dayInSeconds) * groupSize;
   const totalAmount =
     Number(Web3.utils.fromWei(saveAmount)) * Number(groupSize);
-
   try {
     await mailList.forEach((mail) => {
       axios
@@ -80,7 +77,7 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
                   title: "Inviación a la Ronda",
                   link: "https://bloinx.app/login",
                   name: "Bloinx Team",
-                  name_tanda: positionData.alias,
+                  name_tanda: positionData?.alias,
                   // type: "Public/Private",
                   longevity: `${longevity} días`,
                   participant: `${groupSize - 1}`,
@@ -92,16 +89,53 @@ const setSaveInvitations = async (mailList, roundId, provider) => {
           }
         )
         .then(() => {
+          console.log("hola");
           return true;
         })
         .catch((e) => {
+          console.log(e);
           return false;
         });
     });
-  } catch (err) {
+  } catch (error) {
     return false;
   }
-  return null;
+  return true;
 };
 
-export default setSaveInvitations;
+export const getRoundData = async (roundId) => {
+  const { data, error } = await supabase
+    .from("rounds")
+    .select()
+    .eq("id", roundId);
+  if (error) console.log(error);
+  if (data) console.log(data);
+  return data[0];
+};
+
+export const setAllInvites = (mailList, roundId, provider) => {
+  debugger;
+  return new Promise((resolve, reject) => {
+    getRoundData(roundId).then((round) => {
+      console.log(round);
+      // setEmailInvite(mailList, round?.id);
+      getPositionUserAdmin(round?.id, round?.userAdmin).then(
+        (positionAdminData) => {
+          console.log(positionAdminData);
+          setSaveInvitations(mailList, round, provider, positionAdminData)
+            .then((status) => {
+              console.log(status);
+              resolve(status);
+              // return status;
+            })
+            .catch((err) => {
+              console.log(err);
+              reject(err);
+            });
+        }
+      );
+    });
+  });
+};
+
+export default setAllInvites;
