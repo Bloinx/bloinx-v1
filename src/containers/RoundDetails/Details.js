@@ -35,7 +35,7 @@ function Details({ roundData, roundId, currentAdress, currentProvider }) {
 
   return (
     <>
-      <PageHeader title={roundData.positionData?.name} />
+      <PageHeader title={roundData?.positionAdminData?.alias} />
       <InputLabel
         label="ContratoID"
         value={formatAddress(roundData.contract)}
@@ -78,9 +78,9 @@ function Details({ roundData, roundId, currentAdress, currentProvider }) {
             value={
               <div className={styles.DetailParticipantsItem}>
                 {roundData.invitations &&
-                  roundData.invitations.map((email) => (
-                    <ul key={email}>
-                      <li>{email}</li>
+                  roundData.invitations?.map((email) => (
+                    <ul key={email.id}>
+                      <li>{email.userEmail}</li>
                     </ul>
                   ))}
               </div>

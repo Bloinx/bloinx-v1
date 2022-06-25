@@ -263,7 +263,7 @@ function Dashboard({ currentAddress, currentProvider }) {
     return {};
   };
 
-  useEffect(() => handleGetRounds(), [user, currentAddress]);
+  useEffect(() => handleGetRounds(), [currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;
