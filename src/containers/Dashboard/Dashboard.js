@@ -21,7 +21,11 @@ import APIGetOtherRounds, {
   getAllOtherRounds,
   configByPositionOther,
 } from "../../api/getRoundsOthersSupabase";
-import APIGetRoundsByInvitation from "../../api/getRoundsByInvitationSupabase";
+import APIGetRoundsByInvitation, {
+  getRoundInvite,
+  getUserAdminEmail,
+  configByInvitation,
+} from "../../api/getRoundsByInvitationSupabase";
 import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
 import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
@@ -30,6 +34,7 @@ import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 
 function Dashboard({ currentAddress, currentProvider }) {
+  console.log(currentAddress);
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
@@ -51,7 +56,6 @@ function Dashboard({ currentAddress, currentProvider }) {
       getAll(userId, round).then((res) => {
         configByPosition(round, res, walletAddress, provider).then(
           (resData) => {
-            console.log(resData);
             setRoundList((oldArray) => [...oldArray, resData]);
           }
         );
@@ -65,7 +69,6 @@ function Dashboard({ currentAddress, currentProvider }) {
     walletAddress,
     provider
   ) => {
-    console.log(roundsPosition);
     roundsPosition.forEach((positionRound, index) => {
       getAllOtherRounds(userId, positionRound).then((res) => {
         if (res === undefined) return;
@@ -78,38 +81,30 @@ function Dashboard({ currentAddress, currentProvider }) {
     });
   };
 
-  // const getRoundsAdmin = async() => {
-  //   const datapos = await getRoundsAdminSupa();
-  //   setRoundsList(datapos)
-  //   // getDataContract(datapos);
-  //   getRoundsData(datapos);
-  // };
+  const getRoundsByInvitationData = (invitesData, provider) => {
+    invitesData.forEach((invite, index) => {
+      getRoundInvite(invite).then((round) => {
+        getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
+          configByInvitation(round, provider, roundAdmin).then((roundData) => {
+            setInvitationsList((oldArray) => [...oldArray, roundData]);
+          });
+        });
+      });
+    });
+  };
 
   const handleGetRounds = async () => {
     console.log("ACTUALIZANDO");
 
     if (user && currentAddress) {
-      console.log(user);
       const rounds = await APIGetRounds({
         userId: user.id,
       });
 
       getRoundsData(rounds, user.id, currentAddress, currentProvider);
-      // const { data } = await supabase
-      //   .from("rounds")
-      //   .select()
-      //   .eq("id", rounds[0].id);
-      // console.log(data);
-      // setRoundList(rounds);
 
-      APIGetRoundsByInvitation({
-        email: user.email,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((invitations) => {
-        console.log("ACTUALIZADO MIS INVITES");
-        setInvitationsList(invitations);
-      });
+      const invitations = await APIGetRoundsByInvitation({ email: user.email });
+      getRoundsByInvitationData(invitations, currentProvider);
       const otherRoundsPosition = await APIGetOtherRounds({
         userId: user.id,
       });
@@ -263,7 +258,7 @@ function Dashboard({ currentAddress, currentProvider }) {
     return {};
   };
 
-  useEffect(() => handleGetRounds(), [user, currentAddress]);
+  useEffect(() => handleGetRounds(), [currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;

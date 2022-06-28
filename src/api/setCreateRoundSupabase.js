@@ -49,7 +49,6 @@ const setCreateRound = async ({
             const folio = receipt.transactionHash;
             const session = supabase.auth.session();
             const idUser = session.user.id;
-            const dateCreated = new Date().getTime.toString();
             await supabase
               .from("rounds")
               .insert([
@@ -59,7 +58,6 @@ const setCreateRound = async ({
                   contract,
                   folio,
                   isPublic,
-                  created_at: dateCreated,
                   // positions: [],
                   // invitations: [],
                 },

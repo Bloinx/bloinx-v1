@@ -8,80 +8,148 @@ import MethodGetPayTime from "./methods/getPayTime";
 import MethodGetStartTime from "./methods/getStartTime";
 import config, { walletConnect } from "./config.sg.web3";
 
-const getPositionUser = async (idRound, userId) => {
-  const { data, error } = await supabase
-    .from("positionByRound")
-    .select()
-    .match("idRound", idRound, "idUser", userId);
-  console.log(data);
+const getPositionAdmin = async (idRound, userId) => {
+  const filterByUserId = userId;
+  const filterbyRound = idRound;
+
+  let query = supabase.from("positionByRound").select();
+
+  if (filterbyRound) {
+    query = query.eq("idRound", filterbyRound);
+  }
+  if (filterByUserId) {
+    query = query.eq("idUser", filterByUserId);
+  }
+
+  const { data } = await query;
+  return data[0];
+};
+
+const getPositionUserByAddress = async (roundId) => {
+  const filterbyRound = roundId;
+
+  let query = supabase.from("positionByRound").select();
+
+  if (filterbyRound) {
+    query = query.eq("idRound", filterbyRound);
+  }
+  // if (filterByAddress) {
+  //   query = query.eq("wallet", filterByAddress);
+  // }
+
+  const { data } = await query;
   return data;
 };
 
-const getPositionUserByAddress = async (user, roundId) => {
-  const { data, error } = await supabase
-    .from("positionByRound")
-    .select()
-    .eq("idRound", roundId);
-
-  const roundData =
-    data.find((position) => position.wallet === user.address.toLowerCase()) ||
-    [];
-
-  return roundData;
-};
-
-const getRoundDetail = async (roundId, currentProvider) => {
-  const { data } = await supabase.from("rounds").select().eq("id", roundId);
-  const { contract, userAdmin, ...other } = data[0];
-  console.log(contract);
-
-  const positionData = await getPositionUser(roundId, data[0].userAdmin);
-  console.log(positionData);
-  const sg =
-    (await currentProvider) !== "WalletConnect"
-      ? await config(data[0].contract)
-      : await walletConnect(data[0].contract);
-
-  // const sg = await config(contract);
-  const admin = await MethodGetAdmin(sg.methods);
-  const orderList = await MethodGetAddressOrderList(sg.methods);
-  const stage = await MethodGetStage(sg.methods);
-  const startTime = await MethodGetStartTime(sg.methods);
-  const payTime = await MethodGetPayTime(sg.methods);
-  console.log(orderList);
+const getParticipantsData = (
+  orderList,
+  round,
+  payTime,
+  startTime,
+  admin,
+  positionByRoundData
+) => {
   const participantsData = orderList.map((user) => {
-    const roundData = getPositionUserByAddress(user, roundId);
-
+    const res = positionByRoundData.find((dat) => {
+      return dat?.wallet.toLowerCase() === user?.address.toLowerCase();
+    });
     return {
       ...user,
       address:
-        user.address === "0x0000000000000000000000000000000000000000"
-          ? null
-          : user.address,
-      userId: roundData.userAdmin,
-      walletAddress: roundData.wallet,
-      admin: admin === user.address,
+        user?.address === "0x0000000000000000000000000000000000000000"
+          ? ""
+          : user?.address,
+      userId: res?.idUser,
+      walletAddress: res?.wallet,
+      admin: admin === user?.address,
       dateToWithdraw:
         startTime === "0"
           ? "---"
           : moment(
               new Date(
-                (Number(startTime) + user.position * payTime + 10) * 1000
+                (Number(startTime) + user?.position * payTime + 10) * 1000
               )
             ).format("DD - MMM - YYYY HH:mm"),
     };
   });
-  console.log(participantsData);
+  return participantsData;
+};
 
+const getRoundDetailData = async (
+  round,
+  positionAdminData,
+  currentProvider,
+  invitations
+) => {
+  const sg =
+    (await currentProvider) !== "WalletConnect"
+      ? await config(round?.contract)
+      : await walletConnect(round?.contract);
+
+  // const sg = await config(contract);
+  const admin = await MethodGetAdmin(sg.methods);
+
+  const stage = await MethodGetStage(sg.methods);
+  const startTime = await MethodGetStartTime(sg.methods);
+  const payTime = await MethodGetPayTime(sg.methods);
+
+  const orderList = await MethodGetAddressOrderList(sg.methods);
+  const positionByRoundData = await getPositionUserByAddress(round?.id);
+  const participantsData = await getParticipantsData(
+    orderList,
+    round,
+    payTime,
+    startTime,
+    admin,
+    positionByRoundData
+  );
+
+  const { contract, userAdmin } = round;
   const a = {
-    ...other,
+    round,
     stage,
     contract,
     userAdmin,
-    positionData,
+    positionAdminData,
     participantsData,
+    invitations,
   };
   return a;
 };
 
-export default getRoundDetail;
+const getRoundData = async (roundId) => {
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
+
+  return data[0];
+};
+
+const getRoundInvitations = async (roundId) => {
+  const { data } = await supabase
+    .from("invitationsByRound")
+    .select()
+    .eq("idRound", roundId);
+
+  return data;
+};
+
+const getRoundDetailSupabase = async (roundId, currentProvider) => {
+  return new Promise((resolve, reject) => {
+    getRoundData(roundId).then((round) => {
+      getPositionAdmin(roundId, round.userAdmin).then((positionAdminData) => {
+        getRoundInvitations(roundId).then((invitations) => {
+          getRoundDetailData(
+            round,
+            positionAdminData,
+            currentProvider,
+            invitations
+          ).then((rs) => {
+            resolve(rs);
+          });
+        });
+      });
+    });
+  });
+};
+
+export default getRoundDetailSupabase;
+// export default getRoundDetail;

@@ -16,13 +16,12 @@ import { formatAddress } from "../../utils/format";
 import styles from "./Details.module.scss";
 import getFuturePayments from "../../api/getFuturePaymentsSupabase";
 
-function Details({ roundData, roundId, currentAdress, currentProvider }) {
+function Details({ roundData, roundId, currentAddress, currentProvider }) {
   const [futurePayment, setFuturePayment] = useState("");
-
   const totalRemain = async () => {
     const response = await getFuturePayments(
       roundId,
-      currentAdress,
+      currentAddress,
       currentProvider
     );
     if (response) {
@@ -35,7 +34,7 @@ function Details({ roundData, roundId, currentAdress, currentProvider }) {
 
   return (
     <>
-      <PageHeader title={roundData.positionData?.name} />
+      <PageHeader title={roundData?.positionAdminData?.alias} />
       <InputLabel
         label="ContratoID"
         value={formatAddress(roundData.contract)}
@@ -64,30 +63,37 @@ function Details({ roundData, roundId, currentAdress, currentProvider }) {
           </table>
         }
       />
-      {roundData.stage === "ON_REGISTER_STAGE" && (
-        <>
-          <PageSubHeader title="Invitaciones" />
-          <Link
-            to={`/invitations?roundId=${roundId}`}
-            className={styles.RoundCardTitle}
-          >
-            <MailOutlined style={{ color: "white", fontSize: "20px" }} />
-          </Link>
-          <InputLabel
-            label="Invitaciones enviadas"
-            value={
-              <div className={styles.DetailParticipantsItem}>
-                {roundData.invitations &&
-                  roundData.invitations.map((email) => (
-                    <ul key={email}>
-                      <li>{email}</li>
-                    </ul>
-                  ))}
-              </div>
-            }
-          />
-        </>
-      )}
+      {roundData.stage === "ON_REGISTER_STAGE" &&
+        roundData?.positionAdminData?.wallet === currentAddress &&
+        currentAddress !== null && (
+          <>
+            <PageSubHeader title="Invitaciones" />
+            <Link
+              to={`/invitations?roundId=${roundId}`}
+              className={styles.RoundCardTitle}
+            >
+              <MailOutlined style={{ color: "white", fontSize: "20px" }} />
+            </Link>
+            <InputLabel
+              label="Invitaciones enviadas"
+              value={
+                <div className={styles.DetailParticipantsItem}>
+                  {roundData.invitations &&
+                    roundData.invitations?.map((email) => {
+                      if (email.isRegister === false) {
+                        return (
+                          <ul key={email.id}>
+                            <li>{email.userEmail}</li>
+                          </ul>
+                        );
+                      }
+                      return "";
+                    })}
+                </div>
+              }
+            />
+          </>
+        )}
     </>
   );
 }
