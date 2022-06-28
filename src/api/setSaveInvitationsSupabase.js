@@ -12,14 +12,6 @@ import MethodSaveAmount from "./methods/saveAmount";
 const dayInSeconds = 86400;
 
 const getPositionUserAdmin = async (idRound, userAdminId) => {
-  // const { data, error } = await supabase
-  //   .from("positionByRound")
-  //   .select()
-  //   .eq("idRound", idRound)
-  //   .eq("idUser", userAdminId);
-  // if (error) console.log(error);
-  // return data;
-
   const filterByUserId = userAdminId;
   const filterbyRound = idRound;
 
@@ -89,7 +81,6 @@ const setSaveInvitations = async (mailList, round, provider, positionData) => {
           }
         )
         .then(() => {
-          console.log("hola");
           return true;
         })
         .catch((e) => {
@@ -114,11 +105,10 @@ export const getRoundData = async (roundId) => {
 };
 
 export const setAllInvites = (mailList, roundId, provider) => {
-  debugger;
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
       console.log(round);
-      // setEmailInvite(mailList, round?.id);
+      setEmailInvite(mailList, round?.id);
       getPositionUserAdmin(round?.id, round?.userAdmin).then(
         (positionAdminData) => {
           console.log(positionAdminData);
