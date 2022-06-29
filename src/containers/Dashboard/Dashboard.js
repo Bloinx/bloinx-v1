@@ -94,6 +94,9 @@ function Dashboard({ currentAddress, currentProvider }) {
   };
 
   const handleGetRounds = async () => {
+    setRoundList([]);
+    setOtherList([]);
+    setInvitationsList([]);
     console.log("ACTUALIZANDO");
 
     if (user && currentAddress) {
@@ -122,6 +125,8 @@ function Dashboard({ currentAddress, currentProvider }) {
     setLoading(true);
     APISetStartRound(roundId, currentProvider)
       .then((receip) => {
+        console.log(receip);
+        debugger;
         Modal.success({
           title: "Ronda iniciada correctamente",
           content: "Por favor verifica.",
@@ -130,6 +135,8 @@ function Dashboard({ currentAddress, currentProvider }) {
         handleGetRounds();
       })
       .catch((err) => {
+        console.log(err);
+        debugger;
         Modal.warning({
           title: "Error al activar iniciar la ronda",
           content: "Por favor verifica que tu wallet este activa y reintenta.",
@@ -154,6 +161,8 @@ function Dashboard({ currentAddress, currentProvider }) {
             provider: currentProvider,
           })
             .then((success) => {
+              console.log(success);
+              debugger;
               Modal.success({
                 title: "Pago correcto",
                 content: "...",
@@ -162,6 +171,8 @@ function Dashboard({ currentAddress, currentProvider }) {
               handleGetRounds();
             })
             .catch((err) => {
+              console.log(err);
+              debugger;
               Modal.error({
                 title: "Error al realizar el pago",
                 content: "...",
@@ -214,6 +225,7 @@ function Dashboard({ currentAddress, currentProvider }) {
   };
 
   const handleButton = (roundData) => {
+    console.log(roundData);
     const { stage, isAdmin, missingPositions, withdraw, turn } = roundData;
     if (stage === "ON_REGISTER_STAGE" && isAdmin) {
       return {

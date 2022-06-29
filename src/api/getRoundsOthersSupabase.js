@@ -146,7 +146,7 @@ export const configByPositionOther = async (
   const roundData = {
     contract: round?.contract,
     paymentStatus,
-    amount,
+    saveAmount: amount,
     name: positionByRound.alias,
     roundKey: positionByRound.idRound,
     toRegister: Boolean(!exist),
