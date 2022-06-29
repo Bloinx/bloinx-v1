@@ -100,7 +100,7 @@ export const configByPositionOther = async (
   }
 
   let paymentStatus;
-  let amount;
+  //  let amount;
 
   if (positionByRound.position) {
     const amountPaid = await MethodGetUserAmountPaid(
@@ -139,14 +139,14 @@ export const configByPositionOther = async (
       return null;
     };
 
-    amount = pagos - Number(obligationAtTime);
+    // amount = pagos - Number(obligationAtTime);
     paymentStatus = ads();
   }
 
   const roundData = {
     contract: round?.contract,
     paymentStatus,
-    saveAmount: amount,
+    saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
     name: positionByRound.alias,
     roundKey: positionByRound.idRound,
     toRegister: Boolean(!exist),
