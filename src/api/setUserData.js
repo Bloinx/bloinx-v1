@@ -7,11 +7,9 @@ const setUserData = async (user, values) => {
       {
         id: user?.id,
         username: values.username,
-        name: values.firstName,
-        lastname: values.lastName,
         email: values.email,
+        age: values.yearsOld,
         gender: values.gender,
-        telephone: values.phoneNumber,
       },
     ]);
     console.log(data);
