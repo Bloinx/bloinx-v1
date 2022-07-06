@@ -76,9 +76,11 @@ function NavAside({ user, width, toggleDrawer, visible }) {
         icon={<LogoutOutlined />}
         onClick={() => LogOut}
       >
-        <span>
-          <FormattedMessage id="navAside.logout" />
-        </span>
+        <Link to="/logout">
+          <span>
+            <FormattedMessage id="navAside.logout" />
+          </span>
+        </Link>
       </Menu.Item>
       <Menu.Item
         className={classnames(
