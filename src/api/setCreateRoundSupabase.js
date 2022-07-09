@@ -8,6 +8,7 @@ import config, {
 import { CUSD_TOKEN_CELO_MAINNET } from "./config.erc";
 
 const adminFee = 2;
+const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX
 
 const setCreateRound = async ({
   warranty,
@@ -36,7 +37,8 @@ const setCreateRound = async ({
             groupSize,
             adminFee,
             payTime,
-            CUSD_TOKEN_CELO_MAINNET
+            CUSD_TOKEN_CELO_MAINNET,
+            BLX_TOKEN_CELO_MAINNET
           )
           .send({
             from: walletAddress,

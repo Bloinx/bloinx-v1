@@ -5,6 +5,7 @@ import { Modal, Button } from "antd";
 import { Link } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
 import { CubeSpinner } from "react-spinners-kit";
+import { FormattedMessage } from "react-intl";
 
 import styles from "./RoundCard.module.scss";
 import Stepper from "../../components/Stepper";
@@ -55,7 +56,8 @@ export function RoundCard({
             </div>
           </Link>
           <div className={styles.RoundCardSubject}>
-            Creado por {formatAddress(contractKey)}
+            <FormattedMessage id="roundCardInfo.roundAddr" />
+            {formatAddress(contractKey)}
           </div>
           {arePending && (
             <div className={styles.RoundCardSubject}>

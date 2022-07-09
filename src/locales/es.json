@@ -89,6 +89,10 @@
       }
     }
   },
+  "roundCardInfo": {
+    "roundAddr": "Ronda ",
+    "turn": "Turno "
+  },
   "commons": {
     "buttons": {
       "next": "Siguiente",
