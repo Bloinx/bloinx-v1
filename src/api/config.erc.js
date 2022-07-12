@@ -28,7 +28,6 @@ export async function configCUSD() {
 
     return contract;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }

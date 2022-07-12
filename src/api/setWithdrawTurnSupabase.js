@@ -41,7 +41,6 @@ const setWithdrawTurn = async (roundId, walletAddress, provider) => {
               resolve([receipt, endReceipt]);
             })
             .catch((endErr) => {
-              console.log("ERR END", endErr);
               const er = [receipt, endErr];
               reject(er);
             });

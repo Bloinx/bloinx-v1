@@ -60,16 +60,12 @@ const setCreateRound = async ({
                   contract,
                   folio,
                   isPublic,
-                  // positions: [],
-                  // invitations: [],
                 },
               ])
               .then((data) => {
-                console.log("Supabase Data ", data);
                 resolve(data);
               })
               .catch((error) => {
-                console.log("Supabase Insert Error ", error);
                 reject(error);
               });
           })
@@ -78,7 +74,7 @@ const setCreateRound = async ({
           });
       });
     } catch (error) {
-      console.log("catch Error ", error);
+      console.log(error);
     }
   })();
 

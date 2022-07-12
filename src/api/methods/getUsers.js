@@ -5,7 +5,6 @@ const getUsers = (methods, contract) =>
       .getUserAvailableSavings()
       .call()
       .then((users) => {
-        console.log(users);
         resolve(users);
       });
   });

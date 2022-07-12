@@ -160,7 +160,6 @@ function Wallets({ currentAddressWallet, currentProvider }) {
       setLoading(false);
       handleToggleDrawer();
     } catch (err) {
-      console.log("Error ", err);
       setLoading(false);
       setError(500);
       window.location.reload();

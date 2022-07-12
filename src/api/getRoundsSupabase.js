@@ -33,11 +33,7 @@ export const configByPosition = async (
     (await provider) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
-  // const { data } = await supabase
-  //   .from("positionByRound")
-  //   .select("idUser, idRound")
-  //   .match({ idUser: userId, idRound: round?.id });
-  console.log(data);
+
   const admin = await MethodGetAdmin(sg.methods);
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);

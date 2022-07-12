@@ -36,7 +36,6 @@ export function RoundCard({
     for (let i = 1; i <= numGroup; i += 1) {
       indents.push({ label: i });
     }
-    console.log(indents);
     return indents;
   };
 

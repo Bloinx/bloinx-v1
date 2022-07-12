@@ -1,9 +1,8 @@
 import supabase from "../supabase";
 
 const setUserData = async (user, values) => {
-  console.log(values);
   try {
-    const { data, error } = await supabase.from("profiles").insert([
+    const { error } = await supabase.from("profiles").insert([
       {
         id: user?.id,
         username: values.username,
@@ -12,7 +11,6 @@ const setUserData = async (user, values) => {
         gender: values.gender,
       },
     ]);
-    console.log(data);
 
     if (error) throw error;
   } catch (e) {

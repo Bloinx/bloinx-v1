@@ -25,7 +25,7 @@ const getPositionUserAdmin = async (idRound, userAdminId) => {
   }
 
   const { data } = await query;
-  console.log(data);
+
   return data[0];
 };
 
@@ -34,8 +34,6 @@ const setEmailInvite = (mailList, roundId) => {
     const { data, error } = await supabase
       .from("invitationsByRound")
       .insert([{ idRound: roundId, userEmail: mail, isRegister: false }]);
-    if (error) console.log(error);
-    if (data) console.log(data);
   });
 };
 
@@ -84,7 +82,6 @@ const setSaveInvitations = async (mailList, round, provider, positionData) => {
           return true;
         })
         .catch((e) => {
-          console.log(e);
           return false;
         });
     });
@@ -99,27 +96,22 @@ export const getRoundData = async (roundId) => {
     .from("rounds")
     .select()
     .eq("id", roundId);
-  if (error) console.log(error);
-  if (data) console.log(data);
+
   return data[0];
 };
 
 export const setAllInvites = (mailList, roundId, provider) => {
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
-      console.log(round);
       setEmailInvite(mailList, round?.id);
       getPositionUserAdmin(round?.id, round?.userAdmin).then(
         (positionAdminData) => {
-          console.log(positionAdminData);
           setSaveInvitations(mailList, round, provider, positionAdminData)
             .then((status) => {
-              console.log(status);
               resolve(status);
               // return status;
             })
             .catch((err) => {
-              console.log(err);
               reject(err);
             });
         }

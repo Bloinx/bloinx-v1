@@ -21,7 +21,6 @@ function SignUp({ saveUser }) {
     apiSignUp({
       values,
       onSuccess: (data) => {
-        console.log(data);
         apiUserData(data, values);
         saveUser(data);
         setLoading(false);
@@ -44,7 +43,6 @@ function SignUp({ saveUser }) {
           <Form
             layout="vertical"
             onFinish={(values) => {
-              console.log(values);
               registerUser(values);
             }}
           >

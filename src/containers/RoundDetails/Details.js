@@ -26,8 +26,6 @@ function Details({ roundData, roundId, currentAddress, currentProvider }) {
     );
     if (response) {
       setFuturePayment(response);
-    } else {
-      console.log("Something went wrong");
     }
   };
   totalRemain();
