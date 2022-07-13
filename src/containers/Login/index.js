@@ -45,7 +45,6 @@ function Login({ saveUser }) {
         history.push("/dashboard");
       },
       onFailure: (er) => {
-        console.log(er);
         setLoading(false);
         setError(true);
         setErrorMessage("El usuario o contraseña es incorrecto");

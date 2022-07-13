@@ -34,7 +34,6 @@ import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 
 function Dashboard({ currentAddress, currentProvider }) {
-  console.log(currentAddress);
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
@@ -94,7 +93,9 @@ function Dashboard({ currentAddress, currentProvider }) {
   };
 
   const handleGetRounds = async () => {
-    console.log("ACTUALIZANDO");
+    setRoundList([]);
+    setOtherList([]);
+    setInvitationsList([]);
 
     if (user && currentAddress) {
       const rounds = await APIGetRounds({

@@ -23,16 +23,6 @@ const getRounds = async ({ userId }) => {
 };
 
 export const getAllOtherRounds = async (userId, positionByRound) => {
-  // const { data, error } = await supabase
-  //   .from("rounds")
-  //   .select()
-  //   .eq("id", positionByRound.idRound)
-  //   .neq("userAdmin", userId);
-
-  // console.log(positionByRound);
-  // console.log(error);
-  // console.log(data);
-
   const filterByUserId = userId;
   const filterbyRound = positionByRound.idRound;
 
@@ -46,7 +36,6 @@ export const getAllOtherRounds = async (userId, positionByRound) => {
   }
 
   const { data } = await query;
-  console.log(data);
   return data[0];
 };
 
@@ -56,17 +45,6 @@ export const configByPositionOther = async (
   walletAddress,
   provider
 ) => {
-  // const { data, error } = await supabase
-  //   .from("rounds")
-  //   .select()
-  //   .eq("id", positionByRound.idRound)
-  //   .eq("userAdmin", userId);
-
-  // if (error || data === undefined) {
-  //   console.log("Round - is Admin");
-  //   return [];
-  // }
-  // console.log(data);
   const sg =
     (await provider) !== "WalletConnect"
       ? await config(round?.contract)
@@ -100,7 +78,7 @@ export const configByPositionOther = async (
   }
 
   let paymentStatus;
-  let amount;
+  //  let amount;
 
   if (positionByRound.position) {
     const amountPaid = await MethodGetUserAmountPaid(
@@ -139,14 +117,14 @@ export const configByPositionOther = async (
       return null;
     };
 
-    amount = pagos - Number(obligationAtTime);
+    // amount = pagos - Number(obligationAtTime);
     paymentStatus = ads();
   }
 
   const roundData = {
     contract: round?.contract,
     paymentStatus,
-    amount,
+    saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
     name: positionByRound.alias,
     roundKey: positionByRound.idRound,
     toRegister: Boolean(!exist),
@@ -162,7 +140,7 @@ export const configByPositionOther = async (
       Number(realTurn) > positionByRound.position && Number(savings) > 0,
     fromInvitation: false,
   };
-  console.log(roundData);
+
   return roundData;
 };
 

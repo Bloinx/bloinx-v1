@@ -70,7 +70,6 @@ RegisterUser.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  console.log("RGUser ", state);
   const walletAddress = state?.main?.currentAddress;
   const provider = state?.main?.currentProvider;
   return { walletAddress, provider };

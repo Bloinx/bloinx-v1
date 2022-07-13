@@ -9,7 +9,6 @@ const signUp = async ({ values, onSuccess, onFailure }) => {
     if (error) throw error;
     if (session) {
       onSuccess(user);
-      console.log(user);
     }
   } catch (e) {
     alert(e.message);

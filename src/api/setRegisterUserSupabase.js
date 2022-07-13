@@ -2,12 +2,10 @@ import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 
 const updateInvite = async (email, idRound) => {
-  const { data, error } = await supabase
+  await supabase
     .from("invitationsByRound")
     .update({ isRegister: true })
     .match({ userEmail: email, idRound });
-  if (error) console.log(error);
-  if (data) console.log(data);
 };
 const setRegisterPosition = async (
   email,
@@ -18,7 +16,7 @@ const setRegisterPosition = async (
   motivation,
   walletAddress
 ) => {
-  const { data, error } = await supabase.from("positionByRound").insert({
+  const { data } = await supabase.from("positionByRound").insert({
     idUser: userId,
     position,
     alias: name,
@@ -26,7 +24,7 @@ const setRegisterPosition = async (
     wallet: walletAddress,
     idRound,
   });
-  if (error) console.log(error);
+
   if (data) await updateInvite(email, idRound);
   return data;
 };

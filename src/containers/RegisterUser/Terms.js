@@ -25,8 +25,7 @@ function Terms({ form, baseUrl, walletAddress, roundData, provider }) {
       .then(() => {
         history.push(`${baseUrl}/join?roundId=${roundData.roundId}`);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         setLoading(false);
       });
   };

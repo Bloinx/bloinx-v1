@@ -8,9 +8,9 @@ import supabase from "../supabase";
 
 const setRegisterUser = async (props) => {
   const { walletAddress, roundId, provider } = props;
-  console.log(roundId);
+
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-  console.log(data);
+
   const cUSD = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
@@ -31,7 +31,6 @@ const setRegisterUser = async (props) => {
         resolve(receipt);
       })
       .on("error", async (err) => {
-        console.log(err);
         reject(err);
       });
   });

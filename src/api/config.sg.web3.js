@@ -22,7 +22,6 @@ export default async function config(savingGroupAddress) {
 
     return contract;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }

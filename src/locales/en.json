@@ -88,6 +88,10 @@
       }
     }
   },
+  "roundCardInfo": {
+    "roundAddr": "Round ",
+    "turn": "Turn "
+  },
   "commons": {
     "buttons": {
       "next": "Next",

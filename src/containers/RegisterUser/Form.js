@@ -48,11 +48,9 @@ function Form({ form, setForm, roundData, walletAddress, provider }) {
         provider,
       })
         .then((receipt) => {
-          console.log(receipt);
           history.push("/register-user/success");
         })
         .catch((err) => {
-          console.log(err);
           setLoading(false);
           Modal.error({
             title: "Error al registrar",
