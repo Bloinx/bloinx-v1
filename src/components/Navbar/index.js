@@ -6,6 +6,7 @@ import styles from "./styles.module.scss";
 import Wallets from "../Wallets/Wallets";
 
 import icon from "../../assets/icon.png";
+import TokenBalance from "../TokenBalance";
 
 export default function Navbar({ width, toggleDrawer, visible }) {
   const Icon = visible ? CloseOutlined : MenuOutlined;
@@ -19,6 +20,7 @@ export default function Navbar({ width, toggleDrawer, visible }) {
           </>
         )}
       </div>
+      <TokenBalance />
       <Wallets />
     </div>
   );
