@@ -1,16 +1,13 @@
-const getTokenBalance = (methods, { walletAddress }) =>
+const getTokenBalance = (methods, walletAddress) =>
   new Promise((resolve) => {
+    console.log(walletAddress);
     methods
-      .balanceOf()
-      .send({
-        account: walletAddress,
-      })
+      .balanceOf(walletAddress)
       .call()
-      .then((balanceOf) => {
-        resolve(balanceOf);
+      .then((balance) => {
+        console.log(balance);
+        resolve(balance);
       });
   });
 
 export default getTokenBalance;
-
-
