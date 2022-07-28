@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-// import { getCurrentWallet, getCurrentProvider } from "../../redux/actions/main";
-import styles from "./styles.module.scss";
 import getTokenBLX from "../../api/getTokenBalance";
+import styles from "./styles.module.scss";
 
 const TokenBalance = ({ currentAddress, currentProvider }) => {
   const [BLXToken, setBLXToken] = useState(0);
 
   useEffect(() => {
+    const getBalance = async () => {
+      const result = await getTokenBLX(currentAddress, currentProvider);
+      setBLXToken(result);
+    };
+
     if (currentAddress === null) {
       setBLXToken(0);
     } else {
-      setBLXToken(getTokenBLX(currentAddress, currentProvider));
+      getBalance().catch((error) => console.error(error));
     }
-
-    console.log(currentAddress);
-    console.log(currentProvider);
-  }, [currentAddress]);
+  }, [currentAddress, currentProvider]);
 
   return (
     <div className={styles.BalanceContent}>
@@ -42,23 +43,4 @@ const mapStateToProps = (state) => {
   return { currentAddress, currentProvider };
 };
 
-const mapDispatchToProps = () => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TokenBalance);
-
-// TokenBalance.defaultProps = {
-//   currentAddressWallet: () => {},
-//   currentProvider: () => {},
-// };
-
-// TokenBalance.propTypes = {
-//   currentAddressWallet: PropTypes.func,
-//   currentProvider: PropTypes.func,
-// };
-
-// const mapDispatchToProps = (dispatch) => ({
-//   currentAddressWallet: (address) => dispatch(getCurrentWallet(address)),
-//   currentProvider: (provider) => dispatch(getCurrentProvider(provider)),
-// });
-
-// export default connect(null, mapDispatchToProps)(TokenBalance);
+export default connect(mapStateToProps, null)(TokenBalance);
