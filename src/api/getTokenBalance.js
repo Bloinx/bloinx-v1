@@ -1,3 +1,4 @@
+import web3 from "web3";
 import config, { walletConnect } from "./config.blxt.web3";
 import MethodGetTokenBalance from "./methods/getTokenBalance";
 
@@ -9,6 +10,6 @@ const getTokenBLX = async (address, provider) => {
 
   const balance = await MethodGetTokenBalance(sg.methods, address);
 
-  return balance;
+  return web3.utils.fromWei(balance, "ether");
 };
 export default getTokenBLX;
