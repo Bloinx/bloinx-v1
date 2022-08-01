@@ -216,6 +216,7 @@ function Dashboard({ currentAddress, currentProvider }) {
 
   const handleButton = (roundData) => {
     const { stage, isAdmin, missingPositions, withdraw, turn } = roundData;
+    console.log(stage);
     if (stage === "ON_REGISTER_STAGE" && isAdmin) {
       return {
         disable: missingPositions > 0,
@@ -236,6 +237,8 @@ function Dashboard({ currentAddress, currentProvider }) {
     }
     if (stage === "ON_ROUND_ACTIVE") {
       const payDisable = roundData.positionToWithdrawPay === Number(turn);
+      console.log(roundData.positionToWithdrawPay);
+      console.log(turn);
       return {
         disable: false,
         text: paymentStatusText[roundData.paymentStatus],
