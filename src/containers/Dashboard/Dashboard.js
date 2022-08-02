@@ -237,11 +237,6 @@ function Dashboard({ currentAddress, currentProvider }) {
     }
     if (stage === "ON_ROUND_ACTIVE") {
       const payDisable = roundData.positionToWithdrawPay === Number(turn);
-      console.log('positionToWithdrawPay', roundData.positionToWithdrawPay);
-      console.log('turn',turn);
-      console.log('realturn', roundData.realTurn);
-      console.log('groupSize', roundData.groupSize);
-      console.log('payDisable', payDisable);
 
       return {
         disable: false,

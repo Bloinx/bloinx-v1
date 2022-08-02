@@ -38,7 +38,6 @@ export function RoundCard({
     }
     return indents;
   };
-  console.log('withdraw', withdraw);
   const arePending = missingPositions > 0;
 
   return (

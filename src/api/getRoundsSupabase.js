@@ -6,7 +6,6 @@ import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodGetStage from "./methods/getStage";
 import MethodGetTurn from "./methods/getTurn";
 import MethodGetRealTurn from "./methods/getRealTurn";
-import MethodGetUserAvailableSavings from "./methods/getUserAvailableSavings";
 import MethodGetUserAmountPaid from "./methods/getUserAmountPaid";
 import MethodGetObligationAtTime from "./methods/getObligationAtTime";
 import MethodGetUserUnassignedPayments from "./methods/getUserUnassignedPayments";
@@ -41,13 +40,6 @@ export const configByPosition = async (
   const turn = await MethodGetTurn(sg.methods);
   const cashIn = await MethodGetCashIn(sg.methods);
   const saveAmount = await MethodGetSaveAmount(sg.methods);
-  let res;
-  if (data?.position) {
-    res = data?.position;
-  } else {
-    res = 1;
-  }
-  const savings = await MethodGetUserAvailableSavings(sg.methods, res);
 
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
@@ -118,7 +110,7 @@ export const configByPosition = async (
       walletAddress === data?.wallet && walletAddress === admin.toLowerCase(),
     positionToWithdrawPay: data?.position,
     realTurn,
-    withdraw: Number(realTurn) > data?.position && Number(savings) > 0,
+    withdraw: Number(realTurn) > data?.position,
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
   };
