@@ -1,3 +1,16 @@
 
-- store_test_results:
-    path: test-results
+# ~/.circleci/config.yml
+version: 2
+jobs:
+  test:
+    docker:
+      - image: cimg/<language>:<version TAG>
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    parallelism: 4
+    steps:
+      - run:
+          command: |
+            echo $(circleci tests glob "foo/**/*" "bar/**/*")
+            circleci tests glob "foo/**/*" "bar/**/*" | xargs -n 1 echo
