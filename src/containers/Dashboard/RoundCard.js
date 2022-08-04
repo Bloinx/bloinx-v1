@@ -83,15 +83,13 @@ export function RoundCard({
             `${groupSize - missingPositions} de ${groupSize} unidos`}
           {!arePending &&
             missingPositions === 0 &&
-            stage !== "ON_ROUND_ACTIVE" &&
+            stage === "ON_REGISTER_STAGE" &&
             "Esperando iniciar..."}
-          {!arePending &&
-            missingPositions === 0 &&
-            stage === "ON_ROUND_ACTIVE" &&
-            `Turno ${turn}`}
+          {!arePending && stage === "ON_ROUND_ACTIVE" && `Turno ${turn}`}
+          {!arePending && stage === "ON_ROUND_FINISHED" && "Ronda terminada"}
+          {!arePending && stage === "ON_EMERGENCY_STAGE" && "Ronda sin fondos"}
           <div style={{ display: "block" }}>
             {!arePending &&
-              missingPositions === 0 &&
               stage === "ON_ROUND_ACTIVE" &&
               `$ ${saveAmount} cUSD a pagar`}
           </div>

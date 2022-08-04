@@ -258,6 +258,15 @@ function Dashboard({ currentAddress, currentProvider }) {
         withdrawAction: () => {},
       };
     }
+    if (stage === "ON_EMERGENCY_STAGE") {
+      return {
+        disable: true,
+        text: "Finalizado",
+        action: () => {},
+        withdrawText: "Finalizado",
+        withdrawAction: () => {},
+      };
+    }
     return {};
   };
 
