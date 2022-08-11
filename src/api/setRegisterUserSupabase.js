@@ -2,12 +2,10 @@ import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 
 const updateInvite = async (email, idRound) => {
-  const { data, error } = await supabase
+  await supabase
     .from("invitationsByRound")
     .update({ isRegister: true })
     .match({ userEmail: email, idRound });
-  if (error) console.log(error);
-  if (data) console.log(error);
 };
 const setRegisterPosition = async (
   email,
@@ -18,7 +16,7 @@ const setRegisterPosition = async (
   motivation,
   walletAddress
 ) => {
-  const { data, error } = await supabase.from("positionByRound").insert({
+  const { data } = await supabase.from("positionByRound").insert({
     idUser: userId,
     position,
     alias: name,
@@ -26,7 +24,7 @@ const setRegisterPosition = async (
     wallet: walletAddress,
     idRound,
   });
-  if (error) console.log(error);
+
   if (data) await updateInvite(email, idRound);
   return data;
 };
@@ -44,17 +42,14 @@ const setRegisterUser = async (props) => {
 
   const user = supabase.auth.user();
 
-  const { data } = await supabase
-    .from("rounds")
-    .select("id")
-    .match({ id: roundId });
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
-        resolve(config(data.contract));
+        resolve(config(data[0].contract));
       } else {
-        resolve(walletConnect(data.contract));
+        resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
       reject(error);
@@ -67,7 +62,7 @@ const setRegisterUser = async (props) => {
       .registerUser(position)
       .send({
         from: walletAddress,
-        to: data.contract,
+        to: data[0].contract,
       })
       .once("receipt", async (recpt) => {
         const res = await setRegisterPosition(

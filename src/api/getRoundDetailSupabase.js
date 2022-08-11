@@ -8,90 +8,148 @@ import MethodGetPayTime from "./methods/getPayTime";
 import MethodGetStartTime from "./methods/getStartTime";
 import config, { walletConnect } from "./config.sg.web3";
 
-const getPositionUser = async (idRound, userId) => {
-  const { data, error } = await supabase
-    .from("positionByRound")
+const getPositionAdmin = async (idRound, userId) => {
+  const filterByUserId = userId;
+  const filterbyRound = idRound;
+
+  let query = supabase.from("positionByRound").select();
+
+  if (filterbyRound) {
+    query = query.eq("idRound", filterbyRound);
+  }
+  if (filterByUserId) {
+    query = query.eq("idUser", filterByUserId);
+  }
+
+  const { data } = await query;
+  return data[0];
+};
+
+const getPositionUserByAddress = async (roundId) => {
+  const filterbyRound = roundId;
+
+  let query = supabase.from("positionByRound").select();
+
+  if (filterbyRound) {
+    query = query.eq("idRound", filterbyRound);
+  }
+  // if (filterByAddress) {
+  //   query = query.eq("wallet", filterByAddress);
+  // }
+
+  const { data } = await query;
+  return data;
+};
+
+const getParticipantsData = (
+  orderList,
+  round,
+  payTime,
+  startTime,
+  admin,
+  positionByRoundData
+) => {
+  const participantsData = orderList.map((user) => {
+    const res = positionByRoundData.find((dat) => {
+      return dat?.wallet.toLowerCase() === user?.address.toLowerCase();
+    });
+    return {
+      ...user,
+      address:
+        user?.address === "0x0000000000000000000000000000000000000000"
+          ? ""
+          : user?.address,
+      userId: res?.idUser,
+      walletAddress: res?.wallet,
+      admin: admin === user?.address,
+      dateToWithdraw:
+        startTime === "0"
+          ? "---"
+          : moment(
+              new Date(
+                (Number(startTime) + user?.position * payTime + 10) * 1000
+              )
+            ).format("DD - MMM - YYYY HH:mm"),
+    };
+  });
+  return participantsData;
+};
+
+const getRoundDetailData = async (
+  round,
+  positionAdminData,
+  currentProvider,
+  invitations
+) => {
+  const sg =
+    (await currentProvider) !== "WalletConnect"
+      ? await config(round?.contract)
+      : await walletConnect(round?.contract);
+
+  // const sg = await config(contract);
+  const admin = await MethodGetAdmin(sg.methods);
+
+  const stage = await MethodGetStage(sg.methods);
+  const startTime = await MethodGetStartTime(sg.methods);
+  const payTime = await MethodGetPayTime(sg.methods);
+
+  const orderList = await MethodGetAddressOrderList(sg.methods);
+  const positionByRoundData = await getPositionUserByAddress(round?.id);
+  const participantsData = await getParticipantsData(
+    orderList,
+    round,
+    payTime,
+    startTime,
+    admin,
+    positionByRoundData
+  );
+
+  const { contract, userAdmin } = round;
+  const a = {
+    round,
+    stage,
+    contract,
+    userAdmin,
+    positionAdminData,
+    participantsData,
+    invitations,
+  };
+  return a;
+};
+
+const getRoundData = async (roundId) => {
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
+
+  return data[0];
+};
+
+const getRoundInvitations = async (roundId) => {
+  const { data } = await supabase
+    .from("invitationsByRound")
     .select()
-    .eq("idRound", idRound)
-    .neq("idUser", userId);
+    .eq("idRound", roundId);
 
   return data;
 };
 
-const getPositionUserByAddress = async (user) => {
-  const { data, error } = await supabase.from("positionByRound").select();
-
-  const roundData =
-    data.find((position) => position.wallet === user.address.toLowerCase()) ||
-    [];
-
-  return roundData;
+const getRoundDetailSupabase = async (roundId, currentProvider) => {
+  return new Promise((resolve, reject) => {
+    getRoundData(roundId).then((round) => {
+      getPositionAdmin(roundId, round.userAdmin).then((positionAdminData) => {
+        getRoundInvitations(roundId).then((invitations) => {
+          getRoundDetailData(
+            round,
+            positionAdminData,
+            currentProvider,
+            invitations
+          ).then((rs) => {
+            resolve(rs);
+          });
+        });
+      });
+    });
+  });
 };
 
-const getRoundDetail = async (roundId, currentProvider) => {
-  try {
-    const { data } = await supabase
-      .from("rounds")
-      .select("id")
-      .match({ id: roundId });
-
-    const { contract, userAdmin, ...other } = data;
-
-    const positionData = await getPositionUser(roundId, userAdmin);
-
-    const sg = await new Promise((resolve, reject) => {
-      try {
-        if (currentProvider !== "WalletConnect") {
-          resolve(config(contract));
-        } else {
-          resolve(walletConnect(contract));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    // const sg = await config(contract);
-    const admin = await MethodGetAdmin(sg.methods);
-    const orderList = await MethodGetAddressOrderList(sg.methods);
-    const stage = await MethodGetStage(sg.methods);
-    const startTime = await MethodGetStartTime(sg.methods);
-    const payTime = await MethodGetPayTime(sg.methods);
-
-    const participantsData = orderList.map((user) => {
-      const roundData = getPositionUserByAddress(user);
-
-      return {
-        ...user,
-        address:
-          user.address === "0x0000000000000000000000000000000000000000"
-            ? null
-            : user.address,
-        userId: roundData.userAdmin,
-        walletAddress: roundData.wallet,
-        admin: admin === user.address,
-        dateToWithdraw:
-          startTime === "0"
-            ? "---"
-            : moment(
-                new Date(
-                  (Number(startTime) + user.position * payTime + 10) * 1000
-                )
-              ).format("DD - MMM - YYYY HH:mm"),
-      };
-    });
-    const a = {
-      ...other,
-      stage,
-      contract,
-      userAdmin,
-      positionData,
-      participantsData,
-    };
-    return a;
-  } catch (err) {
-    return err;
-  }
-};
-
-export default getRoundDetail;
+export default getRoundDetailSupabase;
+// export default getRoundDetail;

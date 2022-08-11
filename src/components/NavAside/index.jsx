@@ -10,10 +10,12 @@ import {
   DesktopOutlined,
   HomeFilled,
   // FileOutlined,
+  StarOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 
 import LogOut from "../../api/setLogoutSupabase";
+import getUserScore from "../../api/getUserScore";
 
 import styles from "./styles.module.scss";
 import logo from "../../assets/bloinxLogo.png";
@@ -23,6 +25,7 @@ const { Sider } = Layout;
 
 function NavAside({ user, width, toggleDrawer, visible }) {
   const [sliderStatus, setSliderStatus] = useState(false);
+  const [score, setScore] = useState(0);
   const isTablet = width <= 800;
   const isMobile = width <= 768;
 
@@ -34,6 +37,11 @@ function NavAside({ user, width, toggleDrawer, visible }) {
       toggleDrawer();
     }
   }, [width]);
+
+  useEffect(async () => {
+    const result = await getUserScore("123");
+    setScore(result);
+  }, []);
 
   const selected = 1;
 
@@ -50,6 +58,9 @@ function NavAside({ user, width, toggleDrawer, visible }) {
       )}
       <Menu.Item key={0} className={styles.MenuItem} onClick={toggleDrawer}>
         <span>{user.email}</span>
+      </Menu.Item>
+      <Menu.Item key={4} className={styles.MenuItem} icon={<StarOutlined />}>
+        <span>Score: {score}</span>
       </Menu.Item>
       <Menu.Item
         className={classnames(
@@ -76,9 +87,11 @@ function NavAside({ user, width, toggleDrawer, visible }) {
         icon={<LogoutOutlined />}
         onClick={() => LogOut}
       >
-        <span>
-          <FormattedMessage id="navAside.logout" />
-        </span>
+        <Link to="/logout">
+          <span>
+            <FormattedMessage id="navAside.logout" />
+          </span>
+        </Link>
       </Menu.Item>
       <Menu.Item
         className={classnames(

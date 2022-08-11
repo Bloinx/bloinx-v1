@@ -21,7 +21,6 @@ function SignUp({ saveUser }) {
     apiSignUp({
       values,
       onSuccess: (data) => {
-        console.log(data);
         apiUserData(data, values);
         saveUser(data);
         setLoading(false);
@@ -44,7 +43,6 @@ function SignUp({ saveUser }) {
           <Form
             layout="vertical"
             onFinish={(values) => {
-              console.log(values);
               registerUser(values);
             }}
           >
@@ -140,51 +138,38 @@ function SignUp({ saveUser }) {
             <Row gutter={10}>
               <Col span={12}>
                 <Form.Item
-                  name="firstName"
-                  label="Name"
+                  name="yearsOld"
+                  label="Age"
                   rules={[
                     {
                       required: true,
-                      message: "Please, type your name",
+                      message: "Your age is required",
                     },
-                    {
-                      whitespace: true,
-                      message: "Your name cannot be empty",
-                    },
+                    () => ({
+                      validator(_, value) {
+                        if (!value) {
+                          return Promise.reject();
+                        }
+                        if (value.isNaN) {
+                          return Promise.reject(
+                            new Error("Your age has to be a number.")
+                          );
+                        }
+                        if (value < 18) {
+                          return Promise.reject(
+                            new Error("You need to have more or 18 years old")
+                          );
+                        }
+                        if (value > 130) {
+                          return Promise.reject(new Error("Invalid age"));
+                        }
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
                   hasFeedback
                 >
-                  <Input placeholder="Your name" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="lastName"
-                  label="lastName"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please, type your Lastname",
-                    },
-                    {
-                      whitespace: true,
-                      message: "Your lastname cannot be empty",
-                    },
-                  ]}
-                  hasFeedback
-                >
-                  <Input placeholder="Your lastname" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={10}>
-              <Col span={12}>
-                <Form.Item
-                  name="phoneNumber"
-                  label="Phone"
-                  requiredMark="optional"
-                >
-                  <Input placeholder="Your phone number" />
+                  <Input placeholder="Your age" />
                 </Form.Item>
               </Col>
               <Col span={12}>

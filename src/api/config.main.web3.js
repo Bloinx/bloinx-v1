@@ -7,7 +7,7 @@ export const MAIN_FACTORY_ALFAJORES =
   "0x5379Db9Fb4e50572F161A8c3E0685448271Df72F";
 
 export const MAIN_FACTORY_CELO_MAINNET =
-  "0xaeCe4d1c7c8101bd41642bF8DBb51966B1B2E891";
+  "0xfF0e77E52bC1B21F4b4CE6d77ac48E3f9abdb5fE";
 
 export async function getContract(provider, abi, contractAddress) {
   const contract = await new provider.eth.Contract(abi, contractAddress);

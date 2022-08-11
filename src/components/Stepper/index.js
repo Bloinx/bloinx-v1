@@ -43,7 +43,11 @@ Stepper.defaultProps = {
 };
 
 Stepper.propTypes = {
-  steps: PropTypes.objectOf,
-  current: PropTypes.number,
+  steps: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.number.isRequired,
+    })
+  ),
+  current: PropTypes.string,
   turnWithDraw: PropTypes.number,
 };

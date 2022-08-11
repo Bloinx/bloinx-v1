@@ -6,17 +6,17 @@ import supabase from "../supabase";
 
 const getRoundRegisterDetail = async (roundId, provider) => {
   try {
-    const { data } = await supabase
-      .from("rounds")
-      .select("id")
-      .match({ id: roundId });
-
+    // const { data } = await supabase
+    //   .from("rounds")
+    //   .select("id")
+    //   .match({ id: roundId });
+    const { data } = await supabase.from("rounds").select().eq("id", roundId);
     const sg = await new Promise((resolve, reject) => {
       try {
         if (provider !== "WalletConnect") {
-          resolve(config(data.contract));
+          resolve(config(data[0].contract));
         } else {
-          resolve(walletConnect(data.contract));
+          resolve(walletConnect(data[0].contract));
         }
       } catch (error) {
         reject(error);
@@ -28,7 +28,7 @@ const getRoundRegisterDetail = async (roundId, provider) => {
     const feeCost = await MethodGetFeeCost(sg.methods);
 
     return {
-      ...data,
+      ...data[0],
       roundId,
       positionsAvailable,
       cashIn: (Number(cashIn) * 10 ** -18).toFixed(2),

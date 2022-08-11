@@ -14,8 +14,6 @@ const Status = () => {
     }, 3000);
   }, []);
 
-  console.log(history);
-
   return (
     <div className={styles.Status}>
       <SmileOutlined

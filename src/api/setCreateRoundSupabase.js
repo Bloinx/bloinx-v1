@@ -8,6 +8,7 @@ import config, {
 import { CUSD_TOKEN_CELO_MAINNET } from "./config.erc";
 
 const adminFee = 2;
+const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX
 
 const setCreateRound = async ({
   warranty,
@@ -36,7 +37,8 @@ const setCreateRound = async ({
             groupSize,
             adminFee,
             payTime,
-            CUSD_TOKEN_CELO_MAINNET
+            CUSD_TOKEN_CELO_MAINNET,
+            BLX_TOKEN_CELO_MAINNET
           )
           .send({
             from: walletAddress,
@@ -47,29 +49,23 @@ const setCreateRound = async ({
               receipt?.events?.RoundCreated?.returnValues?.childRound;
             const admin = receipt.from;
             const folio = receipt.transactionHash;
-
             const session = supabase.auth.session();
-            const dateCreated = new Date().getTime();
+            const idUser = session.user.id;
             await supabase
               .from("rounds")
               .insert([
                 {
-                  userAdmin: session.user.id,
+                  userAdmin: idUser,
                   wallet: admin,
                   contract,
                   folio,
                   isPublic,
-                  created_at: dateCreated,
-                  // positions: [],
-                  // invitations: [],
                 },
               ])
               .then((data) => {
-                console.log("Supabase Data ", data);
                 resolve(data);
               })
               .catch((error) => {
-                console.log("Supabase Insert Error ", error);
                 reject(error);
               });
           })
@@ -78,7 +74,7 @@ const setCreateRound = async ({
           });
       });
     } catch (error) {
-      console.log("catch Error ", error);
+      console.log(error);
     }
   })();
 
