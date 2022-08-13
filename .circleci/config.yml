@@ -1,33 +1,28 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
+  node: circleci/node@5.0.0
   coveralls: coveralls/coveralls@1.0.6
 
 jobs:
-  build:
+  npm-test:
     docker:
-      - image: node:11.10.1
-
-    working_directory: ~/repo
-
+      - image: circleci/node:14.18.2
     steps:
+     
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+          key: dependency-cache-{{ checksum "package.json"}}
 
       - run: npm install
-
+  
       - save_cache:
+          key: dependency-cache-{{ checksum "package.json"}}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
+            - ./node_modules
+    
+      - run: npm run lint
       - run: npm run test
+      - run: npm run build
+      - run: npm run test:coveralls
       - coveralls/upload:
           path_to_lcov: ./coverage/lcov.info
