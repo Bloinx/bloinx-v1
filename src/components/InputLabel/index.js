@@ -8,6 +8,7 @@ export default function InputLabel({ value, label }) {
     ON_REGISTER_STAGE: "Registro",
     ON_ROUND_ACTIVE: "En Progreso",
     ON_ROUND_FINISHED: "Finalizada",
+    ON_EMERGENCY_STAGE: "Sin Fondos",
   };
 
   return (
