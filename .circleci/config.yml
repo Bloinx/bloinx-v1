@@ -1,7 +1,14 @@
+---
+# https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 orbs:
   node: circleci/node@5.0.0
   coveralls: coveralls/coveralls@1.0.6
+
+workflows:
+  main:
+    jobs:
+      - npm-test
 
 jobs:
   npm-test:
@@ -21,8 +28,11 @@ jobs:
             - ./node_modules
     
       - run: npm run lint
-      - run: npm run test
+      - run: npm test
       - run: npm run build
-      - run: npm run test:coveralls
+      - run: npm run test:coverage
       - coveralls/upload:
           path_to_lcov: ./coverage/lcov.info
+      #- run: cat coverage/lcov.info | npx coveralls
+      # - run: npx codechecks
+      # - run: cat coverage/lcov.info | npx coveralls
