@@ -1,16 +1,33 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+  coveralls: coveralls/coveralls@1.0.6
 
-# ~/.circleci/config.yml
-version: 2
 jobs:
-  test:
+  build:
     docker:
-      - image: cimg/<language>:<version TAG>
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    parallelism: 4
+      - image: node:11.10.1
+
+    working_directory: ~/repo
+
     steps:
-      - run:
-          command: |
-            echo $(circleci tests glob "foo/**/*" "bar/**/*")
-            circleci tests glob "foo/**/*" "bar/**/*" | xargs -n 1 echo
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm run test
+      - coveralls/upload:
+          path_to_lcov: ./coverage/lcov.info

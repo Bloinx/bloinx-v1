@@ -6,6 +6,7 @@ exports[`InputEmailTags renders correctly 1`] = `
 >
   <span
     className="ant-typography TextFieldLabel"
+    onClick={null}
     style={
       Object {
         "WebkitLineClamp": undefined,
@@ -30,6 +31,7 @@ exports[`InputEmailTags renders correctly 1`] = `
   />
   <span
     className="ant-typography"
+    onClick={null}
     style={
       Object {
         "WebkitLineClamp": undefined,

@@ -6,6 +6,7 @@ exports[`InputSwitch renders correctly 1`] = `
 >
   <span
     className="ant-typography Label"
+    onClick={null}
     style={
       Object {
         "WebkitLineClamp": undefined,
