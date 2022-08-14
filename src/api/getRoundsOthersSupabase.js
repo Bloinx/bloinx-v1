@@ -103,9 +103,14 @@ export const configByPositionOther = async (
         Number(unassignedPayments) -
         (Number(cashIn) - Number(availableCashIn))) /
       Number(saveAmount);
+    console.log(pagos, groupSize);
 
     const ads = () => {
+      if (pagos === groupSize - 1) {
+        return "payments_done";
+      }
       if (pagos === Number(obligationAtTime) / Number(saveAmount)) {
+        console.log("pagos a tiempo");
         return "payments_on_time";
       }
       if (pagos > Number(obligationAtTime) / Number(saveAmount)) {

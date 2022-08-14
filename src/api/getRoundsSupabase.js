@@ -79,6 +79,9 @@ export const configByPosition = async (
       Number(saveAmount);
 
     const ads = () => {
+      if (turnosPagadas === groupSize - 1) {
+        return "payments_done";
+      }
       if (turnosPagadas === Number(obligationAtTime) / Number(saveAmount)) {
         return "payments_on_time";
       }

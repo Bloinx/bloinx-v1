@@ -212,6 +212,7 @@ function Dashboard({ currentAddress, currentProvider }) {
     payments_on_time: "Adelantar pago",
     payments_advanced: "Adelantar otro pago",
     payments_late: "Pagar",
+    payments_done: "Terminaste",
   };
 
   const handleButton = (roundData) => {
