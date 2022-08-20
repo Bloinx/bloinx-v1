@@ -142,10 +142,12 @@ export const configByPositionOther = async (
     positionToWithdrawPay: positionByRound.position,
     realTurn,
     withdraw:
-      Number(realTurn) > positionByRound.position && Number(savings) > 0,
+      (Number(realTurn) > positionByRound.position && Number(savings) > 0) ||
+      (Number(groupSize) === positionByRound.position &&
+        realTurn > Number(groupSize)),
     fromInvitation: false,
   };
-
+  console.log(round?.contract, realTurn, positionByRound.position, groupSize);
   return roundData;
 };
 
