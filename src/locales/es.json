@@ -1,6 +1,7 @@
 {
   "navAside": {
     "dashboard": "Mis Rondas",
+    "history": "Historial",
     "createbatch": "Crear Ronda",
     "registerpay": "Pagos",
     "batchDetails": "Detalle",
@@ -10,6 +11,19 @@
   "dashboardPage": {
     "title": "Mis Rondas",
     "subtitle": "Invitaciones a las rondas",
+    "roundCaption": "Comienza ahora creando tu círculo de ahorro con tu familia y amigos",
+    "table": {
+      "name": "Nombre",
+      "address": "Dirección de contrato",
+      "startDate": "Inicio",
+      "participants": "Paritipantes",
+      "liquidity": "Liquidez",
+      "status": "Estatus"
+    }
+  },
+  "historyPage": {
+    "title": "Mi historial de Rondas",
+    "subtitle": "Mi historial de invitaciones",
     "roundCaption": "Comienza ahora creando tu círculo de ahorro con tu familia y amigos",
     "table": {
       "name": "Nombre",

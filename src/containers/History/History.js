@@ -11,7 +11,7 @@ import RoundCard from "./RoundCard";
 import RoundCardNew from "./RoundCardNew";
 import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
-import styles from "./Dashboard.module.scss";
+import styles from "./History.module.scss";
 
 import APIGetRounds, {
   getAll,
@@ -32,14 +32,12 @@ import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
 import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
-import { useRoundContext } from "../../contexts/RoundsContext";
 
-function Dashboard({ currentAddress, currentProvider }) {
+function History({ currentAddress, currentProvider }) {
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
-  // const [roundList, setRoundList] = useState([]);
-  const { roundList, setRoundList } = useRoundContext();
+  const [roundList, setRoundList] = useState([]);
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,8 +56,8 @@ function Dashboard({ currentAddress, currentProvider }) {
         configByPosition(round, res, walletAddress, provider).then(
           (resData) => {
             if (
-              resData.stage === "ON_REGISTER_STAGE" ||
-              resData.stage === "ON_ROUND_ACTIVE"
+              resData.stage === "ON_ROUND_FINISHED" ||
+              resData.stage === "ON_EMERGENCY_STAGE"
             ) {
               setRoundList((oldArray) => [...oldArray, resData]);
             }
@@ -81,8 +79,8 @@ function Dashboard({ currentAddress, currentProvider }) {
         configByPositionOther(res, positionRound, walletAddress, provider).then(
           (resData) => {
             if (
-              resData.stage === "ON_REGISTER_STAGE" ||
-              resData.stage === "ON_ROUND_ACTIVE"
+              resData.stage === "ON_ROUND_FINISHED" ||
+              resData.stage === "ON_EMERGENCY_STAGE"
             ) {
               setOtherList((oldArray) => [...oldArray, resData]);
             }
@@ -98,8 +96,8 @@ function Dashboard({ currentAddress, currentProvider }) {
         getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
           configByInvitation(round, provider, roundAdmin).then((roundData) => {
             if (
-              roundData.stage === "ON_REGISTER_STAGE" ||
-              roundData.stage === "ON_ROUND_ACTIVE"
+              roundData.stage === "ON_ROUND_FINISHED" ||
+              roundData.stage === "ON_EMERGENCY_STAGE"
             ) {
               setInvitationsList((oldArray) => [...oldArray, roundData]);
             }
@@ -297,7 +295,7 @@ function Dashboard({ currentAddress, currentProvider }) {
   return (
     <>
       <PageHeader
-        title={<FormattedMessage id="dashboardPage.title" />}
+        title={<FormattedMessage id="historyPage.title" />}
         action={
           <PlusCircleOutlined
             onClick={goToCreate}
@@ -348,9 +346,7 @@ function Dashboard({ currentAddress, currentProvider }) {
           })}
       </div>
       {otherList?.length && (
-        <PageSubHeader
-          title={<FormattedMessage id="dashboardPage.subtitle" />}
-        />
+        <PageSubHeader title={<FormattedMessage id="historyPage.subtitle" />} />
       )}
       {currentAddress &&
         otherList &&
@@ -384,14 +380,14 @@ function Dashboard({ currentAddress, currentProvider }) {
   );
 }
 
-Dashboard.propTypes = {
+History.propTypes = {
   currentAddress: PropTypes.string,
   currentProvider: PropTypes.string,
 };
 
-Dashboard.defaultProps = {
+History.defaultProps = {
   currentAddress: undefined,
   currentProvider: undefined,
 };
 
-export default Dashboard;
+export default History;
