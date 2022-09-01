@@ -6,6 +6,7 @@ import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodGetStage from "./methods/getStage";
 import MethodGetTurn from "./methods/getTurn";
 import MethodGetRealTurn from "./methods/getRealTurn";
+import MethodGetUserAvailableSavings from "./methods/getUserAvailableSavings";
 import MethodGetUserAmountPaid from "./methods/getUserAmountPaid";
 import MethodGetObligationAtTime from "./methods/getObligationAtTime";
 import MethodGetUserUnassignedPayments from "./methods/getUserUnassignedPayments";
@@ -40,6 +41,10 @@ export const configByPosition = async (
   const turn = await MethodGetTurn(sg.methods);
   const cashIn = await MethodGetCashIn(sg.methods);
   const saveAmount = await MethodGetSaveAmount(sg.methods);
+  const savings = await MethodGetUserAvailableSavings(
+    sg.methods,
+    data?.position || 1
+  );
 
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
@@ -79,6 +84,9 @@ export const configByPosition = async (
       Number(saveAmount);
 
     const ads = () => {
+      if (turnosPagadas === groupSize - 1) {
+        return "payments_done";
+      }
       if (turnosPagadas === Number(obligationAtTime) / Number(saveAmount)) {
         return "payments_on_time";
       }
@@ -110,11 +118,13 @@ export const configByPosition = async (
       walletAddress === data?.wallet && walletAddress === admin.toLowerCase(),
     positionToWithdrawPay: data?.position,
     realTurn,
-    withdraw: Number(realTurn) > data?.position,
+    withdraw:
+      (Number(realTurn) > data?.position && Number(savings) > 0) ||
+      (Number(groupSize) === data?.position && realTurn > Number(groupSize)),
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
   };
-
+  console.log(realTurn, data?.position, groupSize);
   return roundData;
 };
 

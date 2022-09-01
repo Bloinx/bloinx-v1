@@ -212,11 +212,11 @@ function Dashboard({ currentAddress, currentProvider }) {
     payments_on_time: "Adelantar pago",
     payments_advanced: "Adelantar otro pago",
     payments_late: "Pagar",
+    payments_done: "Terminaste",
   };
 
   const handleButton = (roundData) => {
     const { stage, isAdmin, missingPositions, withdraw, turn } = roundData;
-    console.log(stage);
     if (stage === "ON_REGISTER_STAGE" && isAdmin) {
       return {
         disable: missingPositions > 0,
@@ -236,10 +236,10 @@ function Dashboard({ currentAddress, currentProvider }) {
       };
     }
     if (stage === "ON_ROUND_ACTIVE") {
-      const payDisable = roundData.positionToWithdrawPay === Number(turn);
+      const payDisable = roundData.realTurn > roundData.groupSize;
 
       return {
-        disable: false,
+        disable: payDisable,
         text: paymentStatusText[roundData.paymentStatus],
         action: () => handlePayRound(roundData.roundKey),
         withdrawText:

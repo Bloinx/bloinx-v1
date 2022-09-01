@@ -103,9 +103,14 @@ export const configByPositionOther = async (
         Number(unassignedPayments) -
         (Number(cashIn) - Number(availableCashIn))) /
       Number(saveAmount);
+    console.log(pagos, groupSize);
 
     const ads = () => {
+      if (pagos === groupSize - 1) {
+        return "payments_done";
+      }
       if (pagos === Number(obligationAtTime) / Number(saveAmount)) {
+        console.log("pagos a tiempo");
         return "payments_on_time";
       }
       if (pagos > Number(obligationAtTime) / Number(saveAmount)) {
@@ -137,10 +142,12 @@ export const configByPositionOther = async (
     positionToWithdrawPay: positionByRound.position,
     realTurn,
     withdraw:
-      Number(realTurn) > positionByRound.position && Number(savings) > 0,
+      (Number(realTurn) > positionByRound.position && Number(savings) > 0) ||
+      (Number(groupSize) === positionByRound.position &&
+        realTurn > Number(groupSize)),
     fromInvitation: false,
   };
-
+  console.log(round?.contract, realTurn, positionByRound.position, groupSize);
   return roundData;
 };
 
