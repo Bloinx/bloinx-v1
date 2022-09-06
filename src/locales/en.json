@@ -96,6 +96,7 @@
   "invitations": {
     "title": "Invitations",
     "description": "Please enter the emails of all your guests for this round.",
+    "caption": "** Press Enter to add each email **",
     "form": {
       "label": {
         "emails": "Add the emails"
