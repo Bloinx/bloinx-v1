@@ -6,17 +6,14 @@ import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodSetEndRound from "./methods/setEndRound";
 
 const setWithdrawTurn = async (roundId, walletAddress, provider) => {
-  const { data } = await supabase
-    .from("rounds")
-    .select("id")
-    .match({ id: roundId });
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
-        resolve(config(data.contract));
+        resolve(config(data[0].contract));
       } else {
-        resolve(walletConnect(data.contract));
+        resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
       reject(error);
@@ -32,19 +29,18 @@ const setWithdrawTurn = async (roundId, walletAddress, provider) => {
       .withdrawTurn()
       .send({
         from: walletAddress,
-        to: data.contract,
+        to: data[0].contract,
       })
       .once("receipt", async (receipt) => {
         if (Number(realTurn) > Number(groupSize)) {
           MethodSetEndRound(sg.methods, {
             walletAddress,
-            contract: data.contract,
+            contract: data[0].contract,
           })
             .then((endReceipt) => {
               resolve([receipt, endReceipt]);
             })
             .catch((endErr) => {
-              console.log("ERR END", endErr);
               const er = [receipt, endErr];
               reject(er);
             });

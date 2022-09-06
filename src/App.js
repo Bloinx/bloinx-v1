@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -9,23 +10,29 @@ import Logout from "./containers/Logout";
 import SignUp from "./containers/Signup";
 import Markup from "./containers/Markup";
 import Dashboard from "./containers/Dashboard";
+import History from "./containers/History";
 import CreateBatch from "./containers/CreateBatch";
 import RegisterPay from "./containers/RegisterPay";
 import RegisterUser from "./containers/RegisterUser";
 import RoundDetails from "./containers/RoundDetails";
 import Invitations from "./containers/Invitations";
 import { getInitialContractInstance } from "./redux/actions/main";
-
+import { RoundsContext } from "./contexts/RoundsContext";
 import "./App.scss";
 
 function App({ initialContractInstance }) {
+  const [roundList, setRoundList] = useState([]);
+
   return (
     <Switch>
       <Route exact path="/login" component={Login} />
       <Route exact path="/logout" component={Logout} />
       <Route exact path="/signup" component={SignUp} />
       <Markup initialContractInstance={initialContractInstance}>
-        <Route exact path="/dashboard" component={Dashboard} />
+        <RoundsContext.Provider value={{ roundList, setRoundList }}>
+          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/history" component={History} />
+        </RoundsContext.Provider>
         <Route path="/create-round" component={CreateBatch} />
         <Route path="/invitations" component={Invitations} />
         <Route path="/register-user" component={RegisterUser} />

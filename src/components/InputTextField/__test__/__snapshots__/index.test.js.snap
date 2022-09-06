@@ -6,6 +6,7 @@ exports[`InputTextField renders correctly 1`] = `
 >
   <span
     className="ant-typography TextFieldLabel"
+    onClick={null}
     style={
       Object {
         "WebkitLineClamp": undefined,

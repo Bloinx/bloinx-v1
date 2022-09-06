@@ -20,7 +20,6 @@ function Form({ roundId, provider }) {
   const handleSendEmails = () => {
     APISetSaveInvitations(mailList, roundId, provider)
       .then((status) => {
-        console.log(status);
         Modal.success({
           title: "Invitaciones enviadas correctamente",
           content: "Por favor verifica.",
@@ -28,7 +27,6 @@ function Form({ roundId, provider }) {
         history.push(`/round-details?roundId=${roundId}`);
       })
       .catch((err) => {
-        console.log(err);
         Modal.error({
           title: "Error al enviar las invitaciones",
           content: "Por favor verifica.",

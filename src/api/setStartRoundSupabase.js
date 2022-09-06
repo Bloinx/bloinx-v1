@@ -3,17 +3,14 @@ import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
 
 const api = async (roundId, provider) => {
-  const { data } = await supabase
-    .from("rounds")
-    .select("id")
-    .match({ id: roundId });
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
       if (provider !== "WalletConnect") {
-        resolve(config(data.contract));
+        resolve(config(data[0].contract));
       } else {
-        resolve(walletConnect(data.contract));
+        resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
       reject(error);
@@ -25,8 +22,8 @@ const api = async (roundId, provider) => {
     sg.methods
       .startRound()
       .send({
-        from: data.wallet,
-        to: data.contract,
+        from: data[0].wallet,
+        to: data[0].contract,
       })
       .once("receipt", async (receipt) => {
         // await updateDoc(docRef, {

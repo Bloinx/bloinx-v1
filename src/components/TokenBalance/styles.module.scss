@@ -1,0 +1,19 @@
+@import "../../theme.scss";
+
+.BalanceContent {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: $pink !important;
+  margin: 1rem;
+  width: 150px;
+  height: 32px;
+  border-radius: 30px;
+  color: $pink;
+  display: flex;
+  justify-content: center;
+  // align-items: center;
+  align-content: flex-end;
+  p{
+    margin-bottom: 0;
+  }
+}

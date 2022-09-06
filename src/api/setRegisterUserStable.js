@@ -4,11 +4,12 @@ import {
   walletConnect,
 } from "./config.erc";
 
+import supabase from "../supabase";
+
 const setRegisterUser = async (props) => {
-  const { walletAddress, provider } = props;
-  // const docRef = doc(db, "round", roundId);
-  // const docSnap = await getDoc(docRef);
-  // const data = docSnap.data();
+  const { walletAddress, roundId, provider } = props;
+
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const cUSD = await new Promise((resolve, reject) => {
     try {
@@ -21,16 +22,15 @@ const setRegisterUser = async (props) => {
       reject(error);
     }
   });
-  const data = { contract: "" };
+
   return new Promise((resolve, reject) => {
     cUSD.methods
-      .approve(data.contract, "300000000000000000000")
+      .approve(data[0].contract, "300000000000000000000")
       .send({ from: walletAddress, to: CUSD_TOKEN_CELO_MAINNET })
       .once("receipt", async (receipt) => {
         resolve(receipt);
       })
       .on("error", async (err) => {
-        console.log(err);
         reject(err);
       });
   });

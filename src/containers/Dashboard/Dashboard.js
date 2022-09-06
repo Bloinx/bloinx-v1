@@ -13,21 +13,33 @@ import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
 
-import APIGetRounds from "../../api/getRoundsSupabase";
-import APIGetOtherRounds from "../../api/getRoundsOthersSupabase";
-import APIGetRoundsByInvitation from "../../api/getRoundsByInvitationSupabase";
+import APIGetRounds, {
+  getAll,
+  configByPosition,
+} from "../../api/getRoundsSupabase";
+import APIGetOtherRounds, {
+  getAllOtherRounds,
+  configByPositionOther,
+} from "../../api/getRoundsOthersSupabase";
+import APIGetRoundsByInvitation, {
+  getRoundInvite,
+  getUserAdminEmail,
+  configByInvitation,
+} from "../../api/getRoundsByInvitationSupabase";
 import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
 import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
 import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
+import { useRoundContext } from "../../contexts/RoundsContext";
 
 function Dashboard({ currentAddress, currentProvider }) {
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
-  const [roundList, setRoundList] = useState([]);
+  // const [roundList, setRoundList] = useState([]);
+  const { roundList, setRoundList } = useRoundContext();
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,33 +52,87 @@ function Dashboard({ currentAddress, currentProvider }) {
     history.push(`/register-user?roundId=${roundKey}`);
   };
 
-  const handleGetRounds = () => {
-    console.log("ACTUALIZANDO");
-    if (user && user.uid) {
-      APIGetRounds({
-        userId: user.uid,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((rounds) => {
-        console.log("ACTUALIZADO MIS RONDAS");
-        setRoundList(rounds);
+  const getRoundsData = (rounds, userId, walletAddress, provider) => {
+    rounds.forEach((round, index) => {
+      getAll(userId, round).then((res) => {
+        configByPosition(round, res, walletAddress, provider).then(
+          (resData) => {
+            if (
+              resData.stage === "ON_REGISTER_STAGE" ||
+              resData.stage === "ON_ROUND_ACTIVE"
+            ) {
+              setRoundList((oldArray) => [...oldArray, resData]);
+            }
+          }
+        );
       });
-      APIGetRoundsByInvitation({
-        email: user.email,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((invitations) => {
-        console.log("ACTUALIZADO MIS INVITES");
-        setInvitationsList(invitations);
+    });
+  };
+
+  const getRoundsOtherData = (
+    roundsPosition,
+    userId,
+    walletAddress,
+    provider
+  ) => {
+    roundsPosition.forEach((positionRound, index) => {
+      getAllOtherRounds(userId, positionRound).then((res) => {
+        if (res === undefined) return;
+        configByPositionOther(res, positionRound, walletAddress, provider).then(
+          (resData) => {
+            if (
+              resData.stage === "ON_REGISTER_STAGE" ||
+              resData.stage === "ON_ROUND_ACTIVE"
+            ) {
+              setOtherList((oldArray) => [...oldArray, resData]);
+            }
+          }
+        );
       });
-      APIGetOtherRounds({
-        userId: user.uid,
-        walletAddress: currentAddress,
-        provider: currentProvider,
-      }).then((other) => {
-        console.log("ACTUALIZADO OTRAS RONDAS");
-        setOtherList(other);
+    });
+  };
+
+  const getRoundsByInvitationData = (invitesData, provider) => {
+    invitesData.forEach((invite, index) => {
+      getRoundInvite(invite).then((round) => {
+        getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
+          configByInvitation(round, provider, roundAdmin).then((roundData) => {
+            if (
+              roundData.stage === "ON_REGISTER_STAGE" ||
+              roundData.stage === "ON_ROUND_ACTIVE"
+            ) {
+              setInvitationsList((oldArray) => [...oldArray, roundData]);
+            }
+          });
+        });
       });
+    });
+  };
+
+  const handleGetRounds = async () => {
+    setRoundList([]);
+    setOtherList([]);
+    setInvitationsList([]);
+
+    if (user && currentAddress) {
+      const rounds = await APIGetRounds({
+        userId: user.id,
+      });
+
+      getRoundsData(rounds, user.id, currentAddress, currentProvider);
+
+      const invitations = await APIGetRoundsByInvitation({ email: user.email });
+      getRoundsByInvitationData(invitations, currentProvider);
+      const otherRoundsPosition = await APIGetOtherRounds({
+        userId: user.id,
+      });
+
+      getRoundsOtherData(
+        otherRoundsPosition,
+        user.id,
+        currentAddress,
+        currentProvider
+      );
     }
   };
 
@@ -163,6 +229,7 @@ function Dashboard({ currentAddress, currentProvider }) {
     payments_on_time: "Adelantar pago",
     payments_advanced: "Adelantar otro pago",
     payments_late: "Pagar",
+    payments_done: "Terminaste",
   };
 
   const handleButton = (roundData) => {
@@ -186,9 +253,10 @@ function Dashboard({ currentAddress, currentProvider }) {
       };
     }
     if (stage === "ON_ROUND_ACTIVE") {
-      const payDisable = roundData.positionToWithdrawPay === Number(turn);
+      const payDisable = roundData.realTurn > roundData.groupSize;
+
       return {
-        disable: false,
+        disable: payDisable,
         text: paymentStatusText[roundData.paymentStatus],
         action: () => handlePayRound(roundData.roundKey),
         withdrawText:
@@ -207,16 +275,25 @@ function Dashboard({ currentAddress, currentProvider }) {
         withdrawAction: () => {},
       };
     }
+    if (stage === "ON_EMERGENCY_STAGE") {
+      return {
+        disable: true,
+        text: "Finalizado",
+        action: () => {},
+        withdrawText: "Finalizado",
+        withdrawAction: () => {},
+      };
+    }
     return {};
   };
 
-  useEffect(() => handleGetRounds(), [user, currentAddress]);
+  useEffect(() => handleGetRounds(), [currentAddress]);
 
   if (!currentAddress) {
     return <Placeholder />;
   }
 
-  const completeRoundList = roundList.concat(invitationsList);
+  const completeRoundList = roundList?.concat(invitationsList);
   return (
     <>
       <PageHeader
@@ -229,11 +306,11 @@ function Dashboard({ currentAddress, currentProvider }) {
         }
       />
       <div className={styles.RoundCards}>
-        {currentAddress && completeRoundList.length === 0 && (
+        {currentAddress && completeRoundList?.length === 0 && (
           <NotFoundPlaceholder />
         )}
         {currentAddress &&
-          completeRoundList.map((round) => {
+          completeRoundList?.map((round) => {
             if (round.stage === "ON_REGISTER_STAGE" && round.toRegister) {
               return (
                 <RoundCardNew
@@ -248,6 +325,7 @@ function Dashboard({ currentAddress, currentProvider }) {
               handleButton(round);
             return (
               <RoundCard
+                key={round.roundKey}
                 name={round.name}
                 groupSize={round.groupSize}
                 missingPositions={round.missingPositions}
@@ -269,18 +347,19 @@ function Dashboard({ currentAddress, currentProvider }) {
             );
           })}
       </div>
-      {otherList.length && (
+      {otherList?.length && (
         <PageSubHeader
           title={<FormattedMessage id="dashboardPage.subtitle" />}
         />
       )}
       {currentAddress &&
         otherList &&
-        otherList.map((round) => {
+        otherList?.map((round) => {
           const { disable, text, action, withdrawText, withdrawAction } =
             handleButton(round);
           return (
             <RoundCard
+              key={round.roundKey}
               name={round.name}
               groupSize={round.groupSize}
               missingPositions={round.missingPositions}
