@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Menu, Layout, Drawer } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import {
   DesktopOutlined,
@@ -12,6 +12,7 @@ import {
   // FileOutlined,
   StarOutlined,
   LogoutOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 
 import LogOut from "../../api/setLogoutSupabase";
@@ -26,8 +27,19 @@ const { Sider } = Layout;
 function NavAside({ user, width, toggleDrawer, visible }) {
   const [sliderStatus, setSliderStatus] = useState(false);
   const [score, setScore] = useState(0);
+  const [selected, setSelected] = useState();
   const isTablet = width <= 800;
   const isMobile = width <= 768;
+  const location = useLocation();
+  console.log(location.pathname);
+
+  useEffect(() => {
+    if (location.pathname === "/history") {
+      setSelected("5");
+    } else {
+      setSelected("1");
+    }
+  }, []);
 
   useEffect(() => {
     if (isTablet && !sliderStatus) {
@@ -43,12 +55,18 @@ function NavAside({ user, width, toggleDrawer, visible }) {
     setScore(result);
   }, []);
 
-  const selected = 1;
+  const isVisible = (key) => {
+    toggleDrawer();
+    console.log(key);
+    setSelected(key);
+  };
+
+  // const selected = 1;
 
   const MenuOptions = () => (
     <Menu
       className={styles.MenuOptions}
-      defaultSelectedKeys={["1"]}
+      defaultSelectedKeys={[selected]}
       mode="inline"
     >
       {!isMobile && (
@@ -56,20 +74,25 @@ function NavAside({ user, width, toggleDrawer, visible }) {
           <img src={sliderStatus ? icon : logo} alt="bloinx-logo" />
         </div>
       )}
-      <Menu.Item key={0} className={styles.MenuItem} onClick={toggleDrawer}>
+      <Menu.Item key="0" className={styles.MenuItem} onClick={toggleDrawer}>
         <span>{user.email}</span>
       </Menu.Item>
-      <Menu.Item key={4} className={styles.MenuItem} icon={<StarOutlined />}>
+      <Menu.Item
+        // key="4"
+        className={styles.MenuItem}
+        onClick={toggleDrawer}
+        icon={<StarOutlined />}
+      >
         <span>Score: {score}</span>
       </Menu.Item>
       <Menu.Item
         className={classnames(
           styles.MenuItem,
-          selected === 1 && styles.MenuItemSelected
+          selected === "1" ? styles.MenuItemSelected : styles.MenuItemUnselect
         )}
-        key={1}
+        key="1"
         icon={<HomeFilled />}
-        onClick={toggleDrawer}
+        onClick={() => isVisible("1")}
       >
         <Link to="/dashboard">
           <span>
@@ -81,9 +104,25 @@ function NavAside({ user, width, toggleDrawer, visible }) {
       <Menu.Item
         className={classnames(
           styles.MenuItem,
-          selected === 2 && styles.MenuItemSelected
+          selected === "5" ? styles.MenuItemSelected : styles.MenuItemUnselect
         )}
-        key={2}
+        key="5"
+        icon={<HistoryOutlined />}
+        onClick={() => isVisible("5")}
+      >
+        <Link to="/history">
+          <span>
+            <FormattedMessage id="navAside.history" />
+          </span>
+        </Link>
+      </Menu.Item>
+
+      <Menu.Item
+        className={classnames(
+          styles.MenuItem,
+          selected === "2" ? styles.MenuItemSelected : styles.MenuItemUnselect
+        )}
+        key="2"
         icon={<LogoutOutlined />}
         onClick={() => LogOut}
       >
@@ -96,9 +135,9 @@ function NavAside({ user, width, toggleDrawer, visible }) {
       <Menu.Item
         className={classnames(
           styles.MenuItem,
-          selected === 3 && styles.MenuItemSelected
+          selected === "3" && styles.MenuItemSelected
         )}
-        key={3}
+        key="3"
         icon={<DesktopOutlined />}
         onClick={toggleDrawer}
       >

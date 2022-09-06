@@ -1,6 +1,7 @@
 {
   "navAside": {
     "dashboard": "My Rounds",
+    "history": "History",
     "createbatch": "Create Round",
     "registerpay": "Payments",
     "batchDetails": "Details",
@@ -10,6 +11,19 @@
   "dashboardPage": {
     "title": "My Rounds",
     "subtitle": "Invitations to Rounds",
+    "roundCaption": "Start your saving circle with your friends or family now.",
+    "table": {
+      "name": "Name",
+      "address": "Contract Address",
+      "startDate": "Start",
+      "participants": "Paritipants",
+      "liquidity": "Liquidity",
+      "status": "Status"
+    }
+  },
+  "historyPage": {
+    "title": "My Round's history",
+    "subtitle": "My Invitations' history",
     "roundCaption": "Start your saving circle with your friends or family now.",
     "table": {
       "name": "Name",
