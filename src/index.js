@@ -13,6 +13,7 @@ import App from "./App";
 
 import "antd/dist/antd.css";
 import "./index.less";
+import MainProvider from "./providers/provider";
 
 // eslint-disable-next-line no-undef
 const locale = window.navigator.language.split("-")[0];
@@ -29,9 +30,11 @@ ReactDOM.render(
       defaultLocale={defaultLocale}
     >
       <BrowserRouter>
-        <Provider store={store}>
-          <App />
-        </Provider>
+        <MainProvider>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </MainProvider>
       </BrowserRouter>
     </IntlProvider>
   </React.StrictMode>,
