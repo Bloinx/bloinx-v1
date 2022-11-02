@@ -3,11 +3,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { Button, PageHeader, notification, Spin } from "antd";
-import { connect } from "react-redux";
+// import { connect } from "react-redux";
 import { LeftOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 
@@ -19,8 +19,8 @@ import styles from "./index.module.scss";
 import ContractInstance from "../../utils/contractInstance";
 import APIGetAvailablePlaces from "../../api/methods/getAvailablePlaces";
 import APISetRegisterUser from "../../api/setRegisterUser";
-
-function RegisterUser({ currentAddress }) {
+import { MainContext } from "../../providers/provider";
+function RegisterUser() {
   const history = useHistory();
   const {
     contract: { methods },
@@ -30,6 +30,7 @@ function RegisterUser({ currentAddress }) {
   const [availablePlaces, setAvailablePlaces] = useState([]);
   const [turnSelected, setTurnSelected] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { currentAddress } = useContext(MainContext);
 
   const handleSelectTurn = ({ target }) => {
     setTurnSelected(target.value);
@@ -119,19 +120,19 @@ function RegisterUser({ currentAddress }) {
   );
 }
 
-RegisterUser.propTypes = {
-  currentAddress: PropTypes.string,
-};
+// RegisterUser.propTypes = {
+//   currentAddress: PropTypes.string,
+// };
 
-RegisterUser.defaultProps = {
-  currentAddress: null,
-};
+// RegisterUser.defaultProps = {
+//   currentAddress: null,
+// };
 
-const mapStateToProps = (state) => {
-  const currentAddress = state?.main?.currentAddress;
-  return { currentAddress };
-};
+// const mapStateToProps = (state) => {
+//   const currentAddress = state?.main?.currentAddress;
+//   return { currentAddress };
+// };
 
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterUser);
+// const mapDispatchToProps = (dispatch) => ({});
+// connect(null, null)(RegisterUser);
+export default RegisterUser;

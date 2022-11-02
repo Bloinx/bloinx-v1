@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -7,12 +7,14 @@ import APIGetRoundDetail from "../../api/getRoundDetailSupabase";
 import { getUrlParams } from "../../utils/browser";
 
 import Details from "./Details";
+import { MainContext } from "../../providers/provider";
 
-function RoundDetails({ currentAddress, currentProvider }) {
+function RoundDetails({ currentProvider }) {
   const history = useHistory();
   const baseUrl = "/round-details";
   const { roundId } = getUrlParams(history.location.search);
   const [roundData, setRoundData] = useState({});
+  const { currentAddress } = useContext(MainContext);
 
   useEffect(() => {
     APIGetRoundDetail(roundId, currentProvider).then((dataRound) => {
@@ -38,12 +40,10 @@ function RoundDetails({ currentAddress, currentProvider }) {
 }
 
 RoundDetails.propTypes = {
-  currentAddress: PropTypes.string,
   currentProvider: PropTypes.string,
 };
 
 RoundDetails.defaultProps = {
-  currentAddress: undefined,
   currentProvider: undefined,
 };
 
@@ -67,9 +67,8 @@ RoundDetails.defaultProps = {
 // export default connect(mapStateToProps, mapDispatchToProps)(memo(RoundDetails));
 
 const mapStateToProps = (state) => {
-  const currentAddress = state?.main?.currentAddress;
   const currentProvider = state?.main?.currentProvider;
-  return { currentAddress, currentProvider };
+  return { currentProvider };
 };
 
 const mapDispatchToProps = () => ({});

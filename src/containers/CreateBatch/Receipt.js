@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
@@ -21,11 +21,12 @@ import {
   periodicityOptions,
   paymentTime,
 } from "./constants";
+import { MainContext } from "../../providers/provider";
 
-const Receipt = ({ form, setForm, walletAddress, provider }) => {
+const Receipt = ({ form, setForm, provider }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-
+  const { walletAddress } = useContext(MainContext);
   const handlerOnSubmit = (values) =>
     setForm({
       ...form,
@@ -129,9 +130,9 @@ Receipt.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const walletAddress = state?.main?.currentAddress;
+  // const walletAddress = state?.main?.currentAddress;
   const provider = state?.main?.currentProvider;
-  return { walletAddress, provider };
+  return { provider };
 };
 
 const mapDispatchToProps = () => ({});

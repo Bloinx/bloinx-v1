@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Typography, Row, Col, Button, Space } from "antd";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
@@ -8,6 +8,7 @@ import Web3 from "web3";
 
 import InputSelect from "../../components/InputSelect";
 import InputSwitch from "../../components/InputSwitch";
+import { MainContext } from "../../providers/provider";
 
 const { Title } = Typography;
 
@@ -31,7 +32,8 @@ const turns = [
 ];
 
 function RegisterPay({ main }) {
-  const { contract, currentAddress } = main;
+  const { contract } = main;
+  const { currentAddress } = useContext(MainContext);
   // eslint-disable-next-line no-unused-vars
   const [turn, setTurn] = useState("1");
   // eslint-disable-next-line no-unused-vars

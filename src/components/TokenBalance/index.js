@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import getTokenBLX from "../../api/getTokenBalance";
 import styles from "./styles.module.scss";
+import { MainContext } from "../../providers/provider";
 
-const TokenBalance = ({ currentAddress, currentProvider }) => {
+const TokenBalance = ({ currentProvider }) => {
   const [BLXToken, setBLXToken] = useState(0);
+  const { currentAddress } = useContext(MainContext);
 
   useEffect(() => {
     const getBalance = async () => {
       const result = await getTokenBLX(currentAddress, currentProvider);
       setBLXToken(result);
     };
-
     if (currentAddress === null) {
       setBLXToken(0);
     } else {
@@ -28,19 +29,16 @@ const TokenBalance = ({ currentAddress, currentProvider }) => {
 };
 
 TokenBalance.propTypes = {
-  currentAddress: PropTypes.string,
   currentProvider: PropTypes.string,
 };
 
 TokenBalance.defaultProps = {
-  currentAddress: undefined,
   currentProvider: undefined,
 };
 
 const mapStateToProps = (state) => {
-  const currentAddress = state?.main?.currentAddress;
   const currentProvider = state?.main?.currentProvider;
-  return { currentAddress, currentProvider };
+  return { currentProvider };
 };
 
 export default connect(mapStateToProps, null)(TokenBalance);

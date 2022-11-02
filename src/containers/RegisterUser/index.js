@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Route, Switch, useHistory } from "react-router-dom";
@@ -11,14 +11,16 @@ import { getUrlParams } from "../../utils/browser";
 import APIgetRoundRegisterDetail from "../../api/getRoundRegisterDetailSupabase";
 
 import { INITIAL_FORM_VALUES } from "./constants";
+import { MainContext } from "../../providers/provider";
 
-function RegisterUser({ walletAddress, provider }) {
+function RegisterUser({ provider }) {
   const history = useHistory();
   const baseUrl = "/register-user";
   const { roundId } = getUrlParams(history.location.search);
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
   const [roundData, setRoundData] = useState({});
+  const { currentAddress } = useContext(MainContext);
 
   useEffect(() => {
     APIgetRoundRegisterDetail(roundId, provider).then((dataRound) => {
@@ -36,7 +38,7 @@ function RegisterUser({ walletAddress, provider }) {
             form={form}
             setForm={setForm}
             roundData={roundData}
-            walletAddress={walletAddress}
+            currentAddress={currentAddress}
             baseUrl={baseUrl}
             provider={provider}
           />
@@ -49,7 +51,7 @@ function RegisterUser({ walletAddress, provider }) {
             form={form}
             setForm={setForm}
             roundData={roundData}
-            walletAddress={walletAddress}
+            currentAddress={currentAddress}
             provider={provider}
           />
         )}
@@ -60,19 +62,16 @@ function RegisterUser({ walletAddress, provider }) {
 }
 
 RegisterUser.defaultProps = {
-  walletAddress: undefined,
   provider: null,
 };
 
 RegisterUser.propTypes = {
-  walletAddress: PropTypes.string,
   provider: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {
-  const walletAddress = state?.main?.currentAddress;
   const provider = state?.main?.currentProvider;
-  return { walletAddress, provider };
+  return { provider };
 };
 
 const mapDispatchToProps = () => ({});

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { WalletOutlined } from "@ant-design/icons";
@@ -6,10 +6,11 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { Button, Drawer, Typography, Spin, Result } from "antd";
 
 import config, { walletConnect } from "../../api/config.main.web3";
-import { getCurrentWallet, getCurrentProvider } from "../../redux/actions/main";
+import { getCurrentProvider } from "../../redux/actions/main";
 import { iOS } from "../../utils/browser";
 
 import styles from "./styles.module.scss";
+import { MainContext } from "../../providers/provider";
 
 const errorMessages = [
   {
@@ -49,7 +50,9 @@ const errorMessages = [
 
 const { Title } = Typography;
 
-function Wallets({ currentAddressWallet, currentProvider }) {
+function Wallets({ currentProvider }) {
+  const { setCurrentAddress } = useContext(MainContext);
+
   const [accountData, setAccountData] = useState({
     publicAddress: null,
     originalAdress: null,
@@ -80,9 +83,11 @@ function Wallets({ currentAddressWallet, currentProvider }) {
         .substring(originalAdress.length - 4, originalAdress.length)
         .toUpperCase()}`;
       publicAddress = `${firstPart}...${secondPart}`;
-      currentAddressWallet(originalAdress);
+      // currentAddressWallet(originalAdress);
     }
     setAccountData({ publicAddress, originalAdress });
+    // console.log("originalAdress", originalAdress);
+    setCurrentAddress(originalAdress);
   }
 
   const loadPubKeyData = async (ethProvider) => {
@@ -245,17 +250,14 @@ function Wallets({ currentAddressWallet, currentProvider }) {
 }
 
 Wallets.defaultProps = {
-  currentAddressWallet: () => {},
   currentProvider: () => {},
 };
 
 Wallets.propTypes = {
-  currentAddressWallet: PropTypes.func,
   currentProvider: PropTypes.func,
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  currentAddressWallet: (address) => dispatch(getCurrentWallet(address)),
   currentProvider: (provider) => dispatch(getCurrentProvider(provider)),
 });
 

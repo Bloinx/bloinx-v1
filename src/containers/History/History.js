@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -32,8 +32,9 @@ import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
 import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
+import { MainContext } from "../../providers/provider";
 
-function History({ currentAddress, currentProvider }) {
+function History({ currentProvider }) {
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
@@ -41,6 +42,7 @@ function History({ currentAddress, currentProvider }) {
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { currentAddress } = useContext(MainContext);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -381,12 +383,10 @@ function History({ currentAddress, currentProvider }) {
 }
 
 History.propTypes = {
-  currentAddress: PropTypes.string,
   currentProvider: PropTypes.string,
 };
 
 History.defaultProps = {
-  currentAddress: undefined,
   currentProvider: undefined,
 };
 
