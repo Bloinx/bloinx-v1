@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import Login from "./containers/Login";
@@ -16,49 +14,38 @@ import RegisterPay from "./containers/RegisterPay";
 import RegisterUser from "./containers/RegisterUser";
 import RoundDetails from "./containers/RoundDetails";
 import Invitations from "./containers/Invitations";
-import { getInitialContractInstance } from "./redux/actions/main";
 import { RoundsContext } from "./contexts/RoundsContext";
 import "./App.scss";
+import { ProvideAuth } from "./hooks/useAuth";
 
-function App({ initialContractInstance }) {
+function App() {
   const [roundList, setRoundList] = useState([]);
 
   return (
     <Switch>
-      <Route exact path="/login" component={Login} />
-      <Route exact path="/logout" component={Logout} />
-      <Route exact path="/signup" component={SignUp} />
-      <Markup initialContractInstance={initialContractInstance}>
-        <RoundsContext.Provider value={{ roundList, setRoundList }}>
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/history" component={History} />
-        </RoundsContext.Provider>
-        <Route path="/create-round" component={CreateBatch} />
-        <Route path="/invitations" component={Invitations} />
-        <Route path="/register-user" component={RegisterUser} />
-        <Route exact path="/registerpay" component={RegisterPay} />
-        <Route path="/round-details" component={RoundDetails} />
-        <Route exact path="/">
-          <Redirect to="/login" />
-        </Route>
-      </Markup>
+      <ProvideAuth>
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/logout" component={Logout} />
+        <Route exact path="/signup" component={SignUp} />
+
+        <Markup>
+          <RoundsContext.Provider value={{ roundList, setRoundList }}>
+            <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/history" component={History} />
+          </RoundsContext.Provider>
+
+          <Route path="/create-round" component={CreateBatch} />
+          <Route path="/invitations" component={Invitations} />
+          <Route path="/register-user" component={RegisterUser} />
+          <Route exact path="/registerpay" component={RegisterPay} />
+          <Route path="/round-details" component={RoundDetails} />
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
+        </Markup>
+      </ProvideAuth>
     </Switch>
   );
 }
 
-App.defaultProps = {
-  initialContractInstance: () => {},
-};
-
-App.propTypes = {
-  initialContractInstance: PropTypes.func,
-};
-
-const mapStateToProps = (state) => state;
-
-const mapDispatchToProps = (dispatch) => ({
-  initialContractInstance: (instance) =>
-    dispatch(getInitialContractInstance(instance)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

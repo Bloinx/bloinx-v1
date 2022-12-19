@@ -1,12 +1,9 @@
 import React, { useState, useContext } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { WalletOutlined } from "@ant-design/icons";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { Button, Drawer, Typography, Spin, Result } from "antd";
 
 import config, { walletConnect } from "../../api/config.main.web3";
-import { getCurrentProvider } from "../../redux/actions/main";
 import { iOS } from "../../utils/browser";
 
 import styles from "./styles.module.scss";
@@ -50,8 +47,8 @@ const errorMessages = [
 
 const { Title } = Typography;
 
-function Wallets({ currentProvider }) {
-  const { setCurrentAddress } = useContext(MainContext);
+function Wallets() {
+  const { setCurrentAddress, setCurrentProvider } = useContext(MainContext);
 
   const [accountData, setAccountData] = useState({
     publicAddress: null,
@@ -121,7 +118,8 @@ function Wallets({ currentProvider }) {
   const loadWeb3Provider = async () => {
     setLoading(true);
     const provider = await detectEthereumProvider();
-    currentProvider("Metamask");
+    setCurrentProvider("Metamask");
+    // currentProvider("Metamask");
     if (provider) {
       try {
         await provider.enable();
@@ -153,7 +151,8 @@ function Wallets({ currentProvider }) {
         }
       });
       const { provider } = await walletConnect();
-      currentProvider("WalletConnect");
+      setCurrentProvider("WalletConnect");
+      // currentProvider("WalletConnect");
       await provider.on("accountsChanged", (newAccount) => {
         setLoading(true);
         setTimeout(() => {
@@ -249,16 +248,4 @@ function Wallets({ currentProvider }) {
   );
 }
 
-Wallets.defaultProps = {
-  currentProvider: () => {},
-};
-
-Wallets.propTypes = {
-  currentProvider: PropTypes.func,
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  currentProvider: (provider) => dispatch(getCurrentProvider(provider)),
-});
-
-export default connect(null, mapDispatchToProps)(Wallets);
+export default Wallets;

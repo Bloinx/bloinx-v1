@@ -5,12 +5,11 @@ import { Button } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import apiLogin from "../../api/setLoginSupabase";
-
 import logo from "../../assets/bloinxLogo.png";
 import { validateEmail, validatePassword } from "./vlidators";
 import styles from "./index.module.scss";
 import saveUserAction from "./actions";
+import { useAuth } from "../../hooks/useAuth";
 
 const errors = {
   "auth/user-not-found": "El usuario no existe.",
@@ -30,13 +29,14 @@ function Login({ saveUser }) {
   const [passwordError, setPasswordError] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const { signIn } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLogin = () => {
     setLoading(true);
-    apiLogin({
+    signIn({
       userLogin: email,
       password,
       onSuccess: (data) => {

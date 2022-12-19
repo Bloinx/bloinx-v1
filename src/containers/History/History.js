@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
@@ -34,7 +34,7 @@ import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { MainContext } from "../../providers/provider";
 
-function History({ currentProvider }) {
+function History() {
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
@@ -42,7 +42,7 @@ function History({ currentProvider }) {
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentAddress } = useContext(MainContext);
+  const { currentAddress, currentProvider } = useContext(MainContext);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -381,13 +381,5 @@ function History({ currentProvider }) {
     </>
   );
 }
-
-History.propTypes = {
-  currentProvider: PropTypes.string,
-};
-
-History.defaultProps = {
-  currentProvider: undefined,
-};
 
 export default History;

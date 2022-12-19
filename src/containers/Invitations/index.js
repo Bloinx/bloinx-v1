@@ -1,17 +1,17 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useContext } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 
 import Form from "./Form";
 import Receipt from "./Receipt";
 import { getUrlParams } from "../../utils/browser";
+import { MainContext } from "../../providers/provider";
 
-function RegisterUser({ provider }) {
+function RegisterUser() {
   const history = useHistory();
   const baseUrl = "/invitations";
   const { roundId } = getUrlParams(history.location.search);
+  const { currentProvider } = useContext(MainContext);
 
   return (
     <Switch>
@@ -20,7 +20,7 @@ function RegisterUser({ provider }) {
         component={() => (
           <Form
             roundId={roundId}
-            provider={provider}
+            provider={currentProvider}
             // walletAddress={walletAddress}
           />
         )}
@@ -30,19 +30,4 @@ function RegisterUser({ provider }) {
   );
 }
 
-RegisterUser.defaultProps = {
-  provider: undefined,
-};
-
-RegisterUser.propTypes = {
-  provider: PropTypes.string,
-};
-
-const mapStateToProps = (state) => {
-  const provider = state?.main?.currentProvider;
-  return { provider };
-};
-
-const mapDispatchToProps = () => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterUser);
+export default RegisterUser;

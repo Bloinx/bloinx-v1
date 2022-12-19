@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
@@ -36,7 +36,7 @@ import { useRoundContext } from "../../contexts/RoundsContext";
 
 import { MainContext } from "../../providers/provider";
 
-function Dashboard({ currentProvider }) {
+function Dashboard() {
   const history = useHistory();
   // const user = getAuth().currentUser;
   const user = supabase.auth.user();
@@ -45,7 +45,7 @@ function Dashboard({ currentProvider }) {
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentAddress } = useContext(MainContext);
+  const { currentAddress, currentProvider } = useContext(MainContext);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -386,13 +386,5 @@ function Dashboard({ currentProvider }) {
     </>
   );
 }
-
-Dashboard.propTypes = {
-  currentProvider: PropTypes.string,
-};
-
-Dashboard.defaultProps = {
-  currentProvider: undefined,
-};
 
 export default Dashboard;

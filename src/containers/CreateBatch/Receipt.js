@@ -23,10 +23,10 @@ import {
 } from "./constants";
 import { MainContext } from "../../providers/provider";
 
-const Receipt = ({ form, setForm, provider }) => {
+const Receipt = ({ form, setForm }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const { walletAddress } = useContext(MainContext);
+  const { currentAddress, currentProvider } = useContext(MainContext);
   const handlerOnSubmit = (values) =>
     setForm({
       ...form,
@@ -35,7 +35,7 @@ const Receipt = ({ form, setForm, provider }) => {
     });
 
   useEffect(() => {
-    if (form.isComplete && !walletAddress) {
+    if (form.isComplete && !currentAddress) {
       Modal.warning({
         title: "Wallet no encontrada",
         content: "Por favor conecta tu wallet antes de continuar.",
@@ -45,7 +45,7 @@ const Receipt = ({ form, setForm, provider }) => {
         isComplete: false,
       });
     }
-    if (form.isComplete && walletAddress) {
+    if (form.isComplete && currentAddress) {
       setLoading(true);
       APISetCreateRound({
         warranty: form.amount,
@@ -53,8 +53,8 @@ const Receipt = ({ form, setForm, provider }) => {
         groupSize: form.participants,
         payTime: paymentTime[form.periodicity],
         isPublic: false,
-        walletAddress,
-        provider,
+        currentAddress,
+        currentProvider,
       })
         .then(() => {
           setLoading(false);
@@ -129,12 +129,4 @@ Receipt.propTypes = {
   setForm: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  // const walletAddress = state?.main?.currentAddress;
-  const provider = state?.main?.currentProvider;
-  return { provider };
-};
-
-const mapDispatchToProps = () => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Receipt);
+export default Receipt;
