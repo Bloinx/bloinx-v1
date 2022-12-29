@@ -2,27 +2,23 @@
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { Button, Form, Input, Select, Row, Col } from "antd";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-
-import apiSignUp from "../../api/setSignUpSupabase";
 import apiUserData from "../../api/setUserData";
 
 import logo from "../../assets/bloinxLogo.png";
 import styles from "./index.module.scss";
-import saveUserAction from "./actions";
+import { useAuth } from "../../hooks/useAuth";
 
-function SignUp({ saveUser }) {
+function SignUp() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-
+  const { signUp } = useAuth();
   const registerUser = (values) => {
     setLoading(true);
-    apiSignUp({
+    signUp({
       values,
       onSuccess: (data) => {
         apiUserData(data, values);
-        saveUser(data);
+
         setLoading(false);
         history.push("/dashboard");
       },
@@ -200,18 +196,5 @@ function SignUp({ saveUser }) {
   );
 }
 
-SignUp.defaultProps = {
-  saveUser: () => {},
-};
 
-SignUp.propTypes = {
-  saveUser: PropTypes.func,
-};
-
-const mapStateToProps = (state) => state;
-
-const mapDispatchToProps = (dispatch) => ({
-  saveUser: (user) => dispatch(saveUserAction(user)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default SignUp;

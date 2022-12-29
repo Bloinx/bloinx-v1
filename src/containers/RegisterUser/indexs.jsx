@@ -7,7 +7,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 // import PropTypes from "prop-types";
 import { Button, PageHeader, notification, Spin } from "antd";
-// import { connect } from "react-redux";
 import { LeftOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 
@@ -120,19 +119,4 @@ function RegisterUser() {
   );
 }
 
-// RegisterUser.propTypes = {
-//   currentAddress: PropTypes.string,
-// };
-
-// RegisterUser.defaultProps = {
-//   currentAddress: null,
-// };
-
-// const mapStateToProps = (state) => {
-//   const currentAddress = state?.main?.currentAddress;
-//   return { currentAddress };
-// };
-
-// const mapDispatchToProps = (dispatch) => ({});
-// connect(null, null)(RegisterUser);
 export default RegisterUser;

@@ -10,7 +10,7 @@ import Markup from "./containers/Markup";
 import Dashboard from "./containers/Dashboard";
 import History from "./containers/History";
 import CreateBatch from "./containers/CreateBatch";
-import RegisterPay from "./containers/RegisterPay";
+// import RegisterPay from "./containers/RegisterPay";
 import RegisterUser from "./containers/RegisterUser";
 import RoundDetails from "./containers/RoundDetails";
 import Invitations from "./containers/Invitations";
@@ -37,7 +37,7 @@ function App() {
           <Route path="/create-round" component={CreateBatch} />
           <Route path="/invitations" component={Invitations} />
           <Route path="/register-user" component={RegisterUser} />
-          <Route exact path="/registerpay" component={RegisterPay} />
+          {/* <Route exact path="/registerpay" component={RegisterPay} /> */}
           <Route path="/round-details" component={RoundDetails} />
           <Route exact path="/">
             <Redirect to="/login" />

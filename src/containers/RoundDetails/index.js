@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
-import withAuthProvider from "../../providers/withAuthProvider";
 import APIGetRoundDetail from "../../api/getRoundDetailSupabase";
 import { getUrlParams } from "../../utils/browser";
 
@@ -37,4 +36,4 @@ function RoundDetails() {
   );
 }
 
-export default withAuthProvider(RoundDetails);
+export default RoundDetails;

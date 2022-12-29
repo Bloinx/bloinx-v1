@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Menu, Layout, Drawer } from "antd";
@@ -21,17 +20,18 @@ import getUserScore from "../../api/getUserScore";
 import styles from "./styles.module.scss";
 import logo from "../../assets/bloinxLogo.png";
 import icon from "../../assets/icon.png";
+import { useAuth } from "../../hooks/useAuth";
 
 const { Sider } = Layout;
 
-function NavAside({ user, width, toggleDrawer, visible }) {
+function NavAside({ width, toggleDrawer, visible }) {
   const [sliderStatus, setSliderStatus] = useState(false);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState();
   const isTablet = width <= 800;
   const isMobile = width <= 768;
   const location = useLocation();
-  console.log(location.pathname);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (location.pathname === "/history") {
@@ -224,21 +224,13 @@ function NavAside({ user, width, toggleDrawer, visible }) {
 }
 
 NavAside.propTypes = {
-  user: PropTypes.instanceOf(Object),
   visible: PropTypes.bool,
   width: PropTypes.number.isRequired,
   toggleDrawer: PropTypes.func.isRequired,
 };
 
 NavAside.defaultProps = {
-  user: undefined,
   visible: false,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.user,
-  };
-};
-
-export default connect(mapStateToProps)(NavAside);
+export default NavAside;
