@@ -2,6 +2,7 @@ import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { newKitFromWeb3 } from "@celo/contractkit";
 import Main from "../abis/Main.json";
+import MainP from "../abis/MainP.json";
 
 export const MAIN_FACTORY_ALFAJORES =
   "0x5379Db9Fb4e50572F161A8c3E0685448271Df72F";
@@ -9,27 +10,40 @@ export const MAIN_FACTORY_ALFAJORES =
 export const MAIN_FACTORY_CELO_MAINNET =
   "0xfF0e77E52bC1B21F4b4CE6d77ac48E3f9abdb5fE";
 
+export const MAIN_FACTORY_MUMBAI = "0x9d7E6A5fE13C335DEE43F3DeEc366Fa75FA616Da";
+
+export const MAIN_FACTORY_POLYGON = "0x000000000";
+
 export async function getContract(provider, abi, contractAddress) {
+  console.log({ provider, abi, contractAddress });
   const contract = await new provider.eth.Contract(abi, contractAddress);
+  console.log({ contract });
   return contract;
 }
 
-export default async function config() {
+export default async function config(chainId) {
   try {
-    const httpProvider = new Web3.providers.HttpProvider(
-      "https://forno.celo.org",
-      {
-        timeout: 10000,
-      }
-    );
+    const rpcUrl =
+      parseInt(chainId, 16) === 42220
+        ? "https://forno.celo.org"
+        : "https://rpc-mumbai.maticvigil.com";
+
+    console.log({ rpcUrl });
+    const httpProvider = new Web3.providers.HttpProvider(rpcUrl, {
+      timeout: 10000,
+    });
 
     const web3Provider = new Web3(
       window?.web3?.currentProvider || httpProvider
     );
+
+    const ABI = parseInt(chainId, 16) === 42220 ? Main : MainP;
     const contract = await getContract(
       web3Provider,
-      Main,
-      MAIN_FACTORY_CELO_MAINNET
+      ABI,
+      parseInt(chainId, 16) === 42220
+        ? MAIN_FACTORY_CELO_MAINNET
+        : MAIN_FACTORY_MUMBAI
     );
 
     return { contract, web3Provider };
@@ -43,10 +57,13 @@ export async function walletConnect() {
     rpc: {
       44787: "https://alfajores-forno.celo-testnet.org",
       42220: "https://forno.celo.org",
+      80001: "https://rpc-mumbai.maticvigil.com",
     },
   });
   await provider.enable();
   const web3Provider = new Web3(provider);
+  console.log({ web3Provider });
+
   const kit = newKitFromWeb3(web3Provider);
   // eslint-disable-next-line prefer-destructuring
   kit.defaultAccount = provider.accounts[0];

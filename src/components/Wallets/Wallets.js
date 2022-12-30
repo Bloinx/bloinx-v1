@@ -95,22 +95,25 @@ function Wallets() {
         setLoading(false);
       }, 2000);
     });
-    await ethProvider.request({
-      method: "wallet_addEthereumChain",
-      params: [
-        {
-          chainId: "0xA4EC",
-          chainName: "Celo",
-          nativeCurrency: {
-            name: "CELO",
-            symbol: "CELO",
-            decimals: 18,
-          },
-          rpcUrls: ["https://forno.celo.org"],
-          blockExplorerUrls: ["https://explorer.celo.org"],
-        },
-      ],
-    });
+    // if (!chainId || chainId !== "0xA4EC" || chainId !== "") {
+    //   await ethProvider.request({
+    //     method: "wallet_addEthereumChain",
+    //     params: [
+    //       {
+    //         chainId: "0xA4EC",
+    //         chainName: "Celo",
+    //         nativeCurrency: {
+    //           name: "CELO",
+    //           symbol: "CELO",
+    //           decimals: 18,
+    //         },
+    //         rpcUrls: ["https://forno.celo.org"],
+    //         blockExplorerUrls: ["https://explorer.celo.org"],
+    //       },
+    //     ],
+    //   });
+    // }
+
     const accounts = await ethProvider.request({ method: "eth_accounts" });
     getAddress(accounts[0]);
   };
@@ -123,7 +126,11 @@ function Wallets() {
     if (provider) {
       try {
         await provider.enable();
-        const web3Loadie = await config();
+        const chainId = await provider.request({
+          method: "eth_chainId",
+        });
+        console.log({ chainId });
+        const web3Loadie = await config(chainId);
         if (web3Loadie) {
           loadPubKeyData(provider);
           setLoading(false);
