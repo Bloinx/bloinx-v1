@@ -19,6 +19,9 @@
       "participants": "Paritipantes",
       "liquidity": "Liquidez",
       "status": "Estatus"
+    },
+    "modal": {
+      "title": "Selecione la Red"
     }
   },
   "historyPage": {
@@ -34,7 +37,7 @@
       "status": "Estatus"
     }
   },
-  "createRound":{
+  "createRound": {
     "title": "Crear nueva ronda",
     "titleConfirm": "Personaliza tu ronda",
     "titleReceipt": "Pagar depósito de seguridad",
@@ -46,8 +49,8 @@
       "roundTime": "Tiempo de duración por ronda",
       "terms": "Entiendo completamente como el depósito de seguridad funciona"
     },
-    "form":{
-      "label":{
+    "form": {
+      "label": {
         "participants": "Número de participantes",
         "amount": "Monto por periodo",
         "periodicity": "Duración de la ronda",
@@ -56,23 +59,23 @@
           "weekly": "Semanal",
           "biweekly": "Quincenal"
         },
-        "name":"Nombre de la ronda",
-        "motivation":"Motivación personal",
+        "name": "Nombre de la ronda",
+        "motivation": "Motivación personal",
         "turn": "Turno para recibir la ronda"
       },
       "placeholder": {
-        "batchName":"Nombre de la ronda"
+        "batchName": "Nombre de la ronda"
       }
     },
-    "actions":{
+    "actions": {
       "registerMe": "Registrarme",
       "payGuarantee": "Crear ronda",
       "chooseTurn": "Elige tu lugar en la ronda",
       "continue": "Continuar"
     }
   },
-  "payments":{
-    "wallet":{
+  "payments": {
+    "wallet": {
       "title": "Cartera Digital",
       "description": "Por favor ingresa tu wallet desde la barra de navegación."
     },

@@ -1,7 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+// import { FormattedMessage } from "react-intl";
 import { WalletOutlined } from "@ant-design/icons";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { Button, Drawer, Typography, Spin, Result } from "antd";
+import { Button, Drawer, Typography, Spin, Result, Modal, Space } from "antd";
 
 import config, { walletConnect } from "../../api/config.main.web3";
 import { iOS } from "../../utils/browser";
@@ -54,6 +55,10 @@ function Wallets() {
     publicAddress: null,
     originalAdress: null,
   });
+  const [networkSelected, setNetworkSelected] = useState({
+    chainId: null,
+    name: null,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
@@ -86,6 +91,34 @@ function Wallets() {
     // console.log("originalAdress", originalAdress);
     setCurrentAddress(originalAdress);
   }
+
+  useEffect(() => {
+    Modal.info({
+      centered: true,
+      title: "Select Network", // <FormattedMessage id="dashboard.modal.title" />,
+      content: (
+        <div>
+          <Space
+            direction="vertical"
+            style={{
+              width: "100%",
+            }}
+          >
+            <Button
+              type="primary"
+              block
+              onClick={() => {
+                console.log("Network");
+                setNetworkSelected({ chainId: "80001", name: "Polygon" });
+              }}
+            >
+              Primary
+            </Button>
+          </Space>
+        </div>
+      ),
+    });
+  }, []);
 
   const loadPubKeyData = async (ethProvider) => {
     await ethProvider.on("accountsChanged", (newAccount) => {
@@ -196,7 +229,7 @@ function Wallets() {
           </Button>
         )}
 
-      {!accountData.publicAddress && (
+      {!accountData.publicAddress && !networkSelected && (
         <Button type="primary" shape="round" onClick={handleToggleDrawer}>
           Conecta Tu Wallet
         </Button>
