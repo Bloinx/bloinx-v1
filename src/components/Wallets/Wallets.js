@@ -1,59 +1,19 @@
-import React, { useState, useContext, useEffect } from "react";
-// import { FormattedMessage } from "react-intl";
+import React, { useState } from "react";
 import { WalletOutlined } from "@ant-design/icons";
-import detectEthereumProvider from "@metamask/detect-provider";
-import { Button, Drawer, Typography, Spin, Result, Modal, Space } from "antd";
+import { Button, Drawer, Typography, Spin, Result } from "antd";
+import NETWORKS from "../../constants/networks";
+import { useWallet } from "../../hooks/useWallet";
 
-import config, { walletConnect } from "../../api/config.main.web3";
-import { iOS } from "../../utils/browser";
-
+// import config, { walletConnect } from "../../api/config.main.web3";
 import styles from "./styles.module.scss";
-import { MainContext } from "../../providers/provider";
-
-const errorMessages = [
-  {
-    code: 503,
-    status: "warning",
-    title: "Servicio no disponible",
-    description:
-      "Metamask no se encuentra instalado en tu navegador, por favor instalalo desde su pagina oficial.",
-    hrefs: [
-      {
-        url: "https://metamask.io/",
-        title: "Ir al sitio",
-      },
-    ],
-  },
-  {
-    code: 502,
-    status: "warning",
-    title: "Implementacion erronea",
-    description:
-      "Metamask no se encuentra instalado en tu navegador, por favor instalalo desde su pagina oficial.",
-    hrefs: [
-      {
-        url: "https://metamask.io/",
-        title: "Ir al sitio",
-      },
-    ],
-  },
-  {
-    code: 500,
-    status: "error",
-    title: "No se pudo ejecutar",
-    description: "",
-    hrefs: [],
-  },
-];
 
 const { Title } = Typography;
 
 function Wallets() {
-  const { setCurrentAddress, setCurrentProvider } = useContext(MainContext);
-
+  const { connect, userWallet, disconnect, account } = useWallet();
   const [accountData, setAccountData] = useState({
-    publicAddress: null,
-    originalAdress: null,
+    publicAddress: userWallet(),
+    originalAdress: account(),
   });
   const [networkSelected, setNetworkSelected] = useState({
     chainId: null,
@@ -65,152 +25,46 @@ function Wallets() {
 
   const handleToggleDrawer = () => setOpen(!open);
 
-  const handleReset = async () => {
-    setAccountData({ publicAddress: null, originalAdress: null });
-    if (!window.ethereum?.isMetaMask) {
-      const { provider } = await walletConnect();
-      await provider.disconnect();
-    }
-    setError(null);
-    window.location.reload();
-  };
-
-  function getAddress(originalAdress) {
-    let publicAddress = "";
-    if (originalAdress) {
-      const firstPart = `${originalAdress.substring(0, 2)}${originalAdress
-        .substring(2, 6)
-        .toUpperCase()}`;
-      const secondPart = `${originalAdress
-        .substring(originalAdress.length - 4, originalAdress.length)
-        .toUpperCase()}`;
-      publicAddress = `${firstPart}...${secondPart}`;
-      // currentAddressWallet(originalAdress);
-    }
-    setAccountData({ publicAddress, originalAdress });
-    // console.log("originalAdress", originalAdress);
-    setCurrentAddress(originalAdress);
-  }
-
-  useEffect(() => {
-    Modal.info({
-      centered: true,
-      title: "Select Network", // <FormattedMessage id="dashboard.modal.title" />,
-      content: (
-        <div>
-          <Space
-            direction="vertical"
-            style={{
-              width: "100%",
-            }}
-          >
-            <Button
-              type="primary"
-              block
-              onClick={() => {
-                console.log("Network");
-                setNetworkSelected({ chainId: "80001", name: "Polygon" });
-              }}
-            >
-              Primary
-            </Button>
-          </Space>
-        </div>
-      ),
-    });
-  }, []);
-
-  const loadPubKeyData = async (ethProvider) => {
-    await ethProvider.on("accountsChanged", (newAccount) => {
-      setLoading(true);
-      setTimeout(() => {
-        getAddress(newAccount[0]);
-        setLoading(false);
-      }, 2000);
-    });
-    // if (!chainId || chainId !== "0xA4EC" || chainId !== "") {
-    //   await ethProvider.request({
-    //     method: "wallet_addEthereumChain",
-    //     params: [
-    //       {
-    //         chainId: "0xA4EC",
-    //         chainName: "Celo",
-    //         nativeCurrency: {
-    //           name: "CELO",
-    //           symbol: "CELO",
-    //           decimals: 18,
-    //         },
-    //         rpcUrls: ["https://forno.celo.org"],
-    //         blockExplorerUrls: ["https://explorer.celo.org"],
-    //       },
-    //     ],
-    //   });
-    // }
-
-    const accounts = await ethProvider.request({ method: "eth_accounts" });
-    getAddress(accounts[0]);
-  };
-
-  const loadWeb3Provider = async () => {
-    setLoading(true);
-    const provider = await detectEthereumProvider();
-    setCurrentProvider("Metamask");
-    // currentProvider("Metamask");
-    if (provider) {
-      try {
-        await provider.enable();
-        const chainId = await provider.request({
-          method: "eth_chainId",
-        });
-        console.log({ chainId });
-        const web3Loadie = await config(chainId);
-        if (web3Loadie) {
-          loadPubKeyData(provider);
-          setLoading(false);
-          handleToggleDrawer();
-        } else {
-          setLoading(false);
-          setError(502);
-        }
-      } catch (err) {
-        setLoading(false);
-        setError(503);
-      }
-    } else {
-      setLoading(false);
-      setError(500);
-    }
-  };
-
-  const loadWalletConnectProvider = async () => {
-    setLoading(true);
+  const connectMMWallet = async () => {
     try {
-      document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden" && iOS()) {
-          localStorage.removeItem("WALLETCONNECT_DEEPLINK_CHOICE");
-        }
-      });
-      const { provider } = await walletConnect();
-      setCurrentProvider("WalletConnect");
-      // currentProvider("WalletConnect");
-      await provider.on("accountsChanged", (newAccount) => {
-        setLoading(true);
-        setTimeout(() => {
-          getAddress(newAccount[0]);
-          setLoading(false);
-        }, 2000);
-      });
-      getAddress(provider.accounts[0]);
+      setLoading(true);
+      await connect("Metamask", NETWORKS[1]);
       setLoading(false);
       handleToggleDrawer();
     } catch (err) {
-      setLoading(false);
-      setError(500);
-      window.location.reload();
+      console.log("Ocurrio un Error: ", err);
+      setError(err);
     }
   };
 
-  const errorData = errorMessages.find((item) => item.code === error) || {};
+  const connectWalletConnect = async () => {
+    try {
+      setLoading(true);
+      await connect("walletconnect", NETWORKS[1]);
+      setLoading(false);
+      handleToggleDrawer();
+    } catch (err) {
+      console.log("Ocurrio un Error: ", err);
+      setError(err);
+    }
+  };
+
+  const handleReset = async () => {
+    setAccountData({ publicAddress: null, originalAdress: null });
+    try {
+      await disconnect();
+    } catch (err) {
+      console.log("ERR: ", err);
+    }
+    // if (!window.ethereum?.isMetaMask) {
+    //   const { provider } = await walletConnect();
+    //   await provider.disconnect();
+    // }
+    // setError(null);
+    // window.location.reload();
+  };
+
+  const errorData = "Ocurrio un error"; // errorMessages.find((item) => item.code === error) || {};
   const options =
     errorData.hrefs &&
     errorData.hrefs.map((item) => (
@@ -219,17 +73,18 @@ function Wallets() {
       </a>
     ));
 
+  console.log({ accountData });
   return (
     <div>
       {accountData.publicAddress &&
-        accountData.publicAddress.startsWith("0x") &&
+        accountData.publicAddress.startsWith("0X") &&
         !loading && (
           <Button type="primary" shape="round" onClick={handleReset}>
             {accountData.publicAddress}
           </Button>
         )}
 
-      {!accountData.publicAddress && !networkSelected && (
+      {!accountData.publicAddress && (
         <Button type="primary" shape="round" onClick={handleToggleDrawer}>
           Conecta Tu Wallet
         </Button>
@@ -238,43 +93,67 @@ function Wallets() {
       {loading && <Spin size="medium" />}
 
       <Drawer
-        title="My Wallet"
+        title={networkSelected.chainId ? "My Wallet" : "Select Network"}
         visible={open}
         placement="right"
         closable
         onClose={handleToggleDrawer}
         width={400}
       >
-        <div className={styles.Loading}>
-          <Title level={5}>Elige tu Wallet dentro de Metamask</Title>
-          {!loading && !error && (
-            <Button
-              type="primary"
-              icon={<WalletOutlined />}
-              size="large"
-              shape="round"
-              onClick={loadWeb3Provider}
-            >
-              METAMASK
-            </Button>
-          )}
-          {loading && <Spin size="large" tip="Loading..." />}
-        </div>
-        <div className={styles.Loading}>
-          <Title level={5}>Elige tu Wallet dentro de Valora</Title>
-          {!loading && !error && (
-            <Button
-              type="primary"
-              icon={<WalletOutlined />}
-              size="large"
-              shape="round"
-              onClick={loadWalletConnectProvider}
-            >
-              VALORA
-            </Button>
-          )}
-          {loading && <Spin size="large" tip="Loading..." />}
-        </div>
+        {!networkSelected.chainId &&
+          !accountData.publicAddress &&
+          NETWORKS.map((network) => {
+            return (
+              <div
+                className={styles.Loading}
+                style={{ marginTop: "20px", marginBottom: "10px" }}
+              >
+                <Button
+                  key={network.chainId}
+                  type="primary"
+                  size="large"
+                  shape="round"
+                  onClick={() => setNetworkSelected(network.chainId)}
+                >
+                  {network.name}
+                </Button>
+              </div>
+            );
+          })}
+        {networkSelected.chainId && (
+          <>
+            <div className={styles.Loading}>
+              <Title level={5}>Elige tu Wallet dentro de Metamask</Title>
+              {!loading && !error && (
+                <Button
+                  type="primary"
+                  icon={<WalletOutlined />}
+                  size="large"
+                  shape="round"
+                  onClick={connectMMWallet}
+                >
+                  METAMASK
+                </Button>
+              )}
+              {loading && <Spin size="large" tip="Loading..." />}
+            </div>
+            <div className={styles.Loading}>
+              <Title level={5}>Elige tu Wallet dentro de Valora</Title>
+              {!loading && !error && (
+                <Button
+                  type="primary"
+                  icon={<WalletOutlined />}
+                  size="large"
+                  shape="round"
+                  onClick={connectWalletConnect}
+                >
+                  VALORA
+                </Button>
+              )}
+              {loading && <Spin size="large" tip="Loading..." />}
+            </div>
+          </>
+        )}
         {!loading && error && (
           <Result
             status={errorData.status}

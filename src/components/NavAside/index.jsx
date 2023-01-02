@@ -75,7 +75,7 @@ function NavAside({ width, toggleDrawer, visible }) {
         </div>
       )}
       <Menu.Item key="0" className={styles.MenuItem} onClick={toggleDrawer}>
-        <span>{user.email}</span>
+        <span>{user?.email ? user.email : ""}</span>
       </Menu.Item>
       <Menu.Item
         // key="4"
