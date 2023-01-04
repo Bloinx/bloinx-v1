@@ -43,13 +43,8 @@ import { iOS } from "../utils/browser";
 // ];
 
 export const useWallet = () => {
-  const {
-    setCurrentAddress,
-    setCurrentProvider,
-    setWallet,
-    currentProvider,
-    currentWallet,
-  } = useContext(MainContext);
+  const { setCurrentAddress, setCurrentProvider, setWallet } =
+    useContext(MainContext);
   const userData = localStorage.getItem("user_address");
 
   const account = () => {
@@ -115,6 +110,7 @@ export const useWallet = () => {
               console.log(`Not available chain ${network.id}`);
               break;
           }
+
           setCurrentProvider(Web3.givenProvider);
         }
         setWallet("Metamask");
@@ -126,6 +122,7 @@ export const useWallet = () => {
         });
         provider = walletconnect(network.id, true);
         await provider.enable();
+
         setCurrentProvider(provider);
         setWallet("WalletConnect");
       }
@@ -138,7 +135,7 @@ export const useWallet = () => {
         "user_address",
         JSON.stringify({
           name: walletName,
-          chainId: network.id,
+          chainId: network.chainId,
           address: provider.selectedAddress,
         })
       );
@@ -148,16 +145,5 @@ export const useWallet = () => {
     }
   };
 
-  const disconnect = async () => {
-    try {
-      localStorage.removeItem("user_address");
-      console.log("Disconnect...");
-      console.log({ currentProvider });
-      console.log({ currentWallet });
-    } catch (error) {
-      console.info(error);
-    }
-  };
-
-  return { connect, userWallet, account, disconnect };
+  return { connect, userWallet, account };
 };
