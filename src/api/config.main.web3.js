@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { newKitFromWeb3 } from "@celo/contractkit";
+import { RPC_URL } from "../constants/web3Providers";
 import Main from "../abis/Main.json";
 import MainP from "../abis/MainP.json";
 
@@ -21,12 +22,25 @@ export async function getContract(provider, abi, contractAddress) {
   return contract;
 }
 
-export default async function config(chainId) {
+export const selectContractAddress = (network) => {
+  if (network === 42220) {
+    return MAIN_FACTORY_CELO_MAINNET;
+  }
+  if (network === 44787) {
+    return MAIN_FACTORY_ALFAJORES;
+  }
+  if (network === 137) {
+    return MAIN_FACTORY_POLYGON;
+  }
+  return MAIN_FACTORY_MUMBAI;
+};
+
+export default async function config() {
   try {
-    const rpcUrl =
-      parseInt(chainId, 16) === 42220
-        ? "https://forno.celo.org"
-        : "https://rpc-mumbai.maticvigil.com";
+    const userData = localStorage.getItem("user_address");
+
+    const { chainId } = JSON.parse(userData);
+    const rpcUrl = RPC_URL[chainId];
 
     console.log({ rpcUrl });
     const httpProvider = new Web3.providers.HttpProvider(rpcUrl, {
@@ -37,14 +51,9 @@ export default async function config(chainId) {
       window?.web3?.currentProvider || httpProvider
     );
 
-    const ABI = parseInt(chainId, 16) === 42220 ? Main : MainP;
-    const contract = await getContract(
-      web3Provider,
-      ABI,
-      parseInt(chainId, 16) === 42220
-        ? MAIN_FACTORY_CELO_MAINNET
-        : MAIN_FACTORY_MUMBAI
-    );
+    const ABI = chainId === 42220 ? Main : MainP;
+    const contractAddress = selectContractAddress(chainId);
+    const contract = await getContract(web3Provider, ABI, contractAddress);
 
     return { contract, web3Provider };
   } catch (error) {
@@ -55,15 +64,14 @@ export default async function config(chainId) {
 export async function walletConnect() {
   const provider = new WalletConnectProvider({
     rpc: {
-      44787: "https://alfajores-forno.celo-testnet.org",
-      42220: "https://forno.celo.org",
-      80001: "https://rpc-mumbai.maticvigil.com",
+      ...RPC_URL,
     },
   });
   await provider.enable();
   const web3Provider = new Web3(provider);
   console.log({ web3Provider });
 
+  // TODO: chainId Validation
   const kit = newKitFromWeb3(web3Provider);
   // eslint-disable-next-line prefer-destructuring
   kit.defaultAccount = provider.accounts[0];
