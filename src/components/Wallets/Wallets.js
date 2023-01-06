@@ -4,8 +4,8 @@ import { Button, Drawer, Typography, Spin, Result } from "antd";
 import NETWORKS from "../../constants/networks";
 import { useWallet } from "../../hooks/useWallet";
 import { MainContext } from "../../providers/provider";
+import config, { walletConnect } from "../../api/config.main.web3";
 
-// import config, { walletConnect } from "../../api/config.main.web3";
 import styles from "./styles.module.scss";
 
 const { Title } = Typography;
@@ -13,8 +13,6 @@ const { Title } = Typography;
 function Wallets() {
   const { connect, userWallet, account } = useWallet();
   const {
-    wallet,
-    currentProvider,
     setCurrentProvider,
     setCurrentAddress,
     setContractInstance,
@@ -39,11 +37,14 @@ function Wallets() {
         publicAddress: userWallet(),
         originalAdress: await account(),
       });
+      await config();
       setLoading(false);
       handleToggleDrawer();
     } catch (err) {
       console.log("Ocurrio un Error: ", err);
       setError(err);
+      setLoading(false);
+      handleToggleDrawer();
     }
   };
 
@@ -52,10 +53,13 @@ function Wallets() {
       setLoading(true);
       await connect("walletconnect", NETWORKS[networkSelected]);
       setLoading(false);
+      await walletConnect();
       handleToggleDrawer();
     } catch (err) {
       console.log("Ocurrio un Error: ", err);
       setError(err);
+      setLoading(false);
+      handleToggleDrawer();
     }
   };
 
@@ -64,12 +68,10 @@ function Wallets() {
       setAccountData({ publicAddress: null, originalAdress: null });
       localStorage.removeItem("user_address");
       console.log("Disconnect...");
-      console.log(currentProvider);
-      console.log(wallet);
-      //   if (!window.ethereum?.isMetaMask) {
-      //   const { provider } = await walletConnect();
-      //   await provider.disconnect();
-      // }
+      if (!window.ethereum?.isMetaMask) {
+        const { provider } = await walletConnect();
+        await provider.disconnect();
+      }
       setContractInstance(null);
       setCurrentAddress(null);
       setCurrentProvider(null);

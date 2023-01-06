@@ -5,24 +5,32 @@ import { MainContext } from "../../providers/provider";
 
 const TokenBalance = () => {
   const [BLXToken, setBLXToken] = useState(0);
-  const { currentAddress, currentProvider } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
+  const [currentNetwork, setCurrentNetwork] = useState(null);
 
   useEffect(() => {
     const getBalance = async () => {
-      const result = await getTokenBLX(currentAddress, currentProvider);
+      const result = await getTokenBLX(currentAddress, wallet);
       setBLXToken(result);
     };
-    if (currentAddress === null) {
-      setBLXToken(0);
-    } else {
+    setBLXToken(0);
+    setCurrentNetwork(currentProvider?.networkVersion);
+    if (
+      currentAddress !== null &&
+      (currentNetwork === "42220" || currentNetwork === "44787")
+    ) {
       getBalance().catch((error) => console.error(error));
     }
-  }, [currentAddress, currentProvider]);
+  }, [currentAddress, wallet, currentProvider, currentNetwork]);
 
   return (
-    <div className={styles.BalanceContent}>
-      <p>{BLXToken} BLX</p>
-    </div>
+    <>
+      {(currentNetwork === "42220" || currentNetwork === "44787") && (
+        <div className={styles.BalanceContent}>
+          <p>{BLXToken} BLX</p>
+        </div>
+      )}
+    </>
   );
 };
 

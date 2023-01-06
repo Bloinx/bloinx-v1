@@ -25,7 +25,7 @@ import { MainContext } from "../../providers/provider";
 const Receipt = ({ form, setForm }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const { currentAddress, currentProvider } = useContext(MainContext);
+  const { currentAddress, wallet } = useContext(MainContext);
   const handlerOnSubmit = (values) =>
     setForm({
       ...form,
@@ -53,7 +53,7 @@ const Receipt = ({ form, setForm }) => {
         payTime: paymentTime[form.periodicity],
         isPublic: false,
         currentAddress,
-        currentProvider,
+        wallet,
       })
         .then(() => {
           setLoading(false);
