@@ -4,9 +4,9 @@ import config, { walletConnect } from "./config.sg.web3";
 
 import MethodGetStage from "./methods/getStage";
 
-export const configByInvitation = async (round, provider, adminEmail) => {
+export const configByInvitation = async (round, wallet, adminEmail) => {
   const sg =
-    (await provider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round.contract)
       : await walletConnect(round.contract);
   const stage = await MethodGetStage(sg.methods);

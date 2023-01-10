@@ -23,14 +23,9 @@ const getRounds = async ({ userId }) => {
   return data;
 };
 
-export const configByPosition = async (
-  round,
-  data,
-  walletAddress,
-  provider
-) => {
+export const configByPosition = async (round, data, walletAddress, wallet) => {
   const sg =
-    (await provider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
 

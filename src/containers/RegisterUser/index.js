@@ -18,10 +18,10 @@ function RegisterUser() {
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
   const [roundData, setRoundData] = useState({});
-  const { currentAddress, currentProvider } = useContext(MainContext);
+  const { currentAddress, wallet } = useContext(MainContext);
 
   useEffect(() => {
-    APIgetRoundRegisterDetail(roundId, currentProvider).then((dataRound) => {
+    APIgetRoundRegisterDetail(roundId, wallet).then((dataRound) => {
       setRoundData(dataRound);
     });
   }, []);
@@ -38,7 +38,7 @@ function RegisterUser() {
             roundData={roundData}
             walletAddress={currentAddress}
             baseUrl={baseUrl}
-            provider={currentProvider}
+            wallet={wallet}
           />
         )}
       />
@@ -50,7 +50,7 @@ function RegisterUser() {
             setForm={setForm}
             roundData={roundData}
             walletAddress={currentAddress}
-            provider={currentProvider}
+            wallet={wallet}
           />
         )}
       />

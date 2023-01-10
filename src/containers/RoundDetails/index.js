@@ -11,10 +11,10 @@ function RoundDetails() {
   const baseUrl = "/round-details";
   const { roundId } = getUrlParams(history.location.search);
   const [roundData, setRoundData] = useState({});
-  const { currentAddress, currentProvider } = useContext(MainContext);
+  const { currentAddress, wallet } = useContext(MainContext);
 
   useEffect(() => {
-    APIGetRoundDetail(roundId, currentProvider).then((dataRound) => {
+    APIGetRoundDetail(roundId, wallet).then((dataRound) => {
       setRoundData(dataRound);
     });
   }, []);
@@ -28,7 +28,7 @@ function RoundDetails() {
             roundData={roundData}
             roundId={roundId}
             currentAddress={currentAddress}
-            currentProvider={currentProvider}
+            wallet={wallet}
           />
         )}
       />

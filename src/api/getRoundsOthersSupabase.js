@@ -43,10 +43,10 @@ export const configByPositionOther = async (
   round,
   positionByRound,
   walletAddress,
-  provider
+  wallet
 ) => {
   const sg =
-    (await provider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
 

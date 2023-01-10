@@ -25,7 +25,7 @@ import { confirmValidation } from "./validations";
 import { motivationOptions } from "./constants";
 import { getOptions } from "./utils";
 
-function Form({ form, setForm, roundData, walletAddress, provider }) {
+function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const user = supabase.auth.user();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ function Form({ form, setForm, roundData, walletAddress, provider }) {
         name: values.name,
         motivation: values.motivation,
         position: values.turnSelected,
-        provider,
+        wallet,
       })
         .then((receipt) => {
           history.push("/register-user/success");

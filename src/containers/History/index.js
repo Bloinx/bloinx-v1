@@ -42,7 +42,7 @@ function History() {
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentAddress, currentProvider } = useContext(MainContext);
+  const { currentAddress, wallet } = useContext(MainContext);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -119,27 +119,22 @@ function History() {
         userId: user.id,
       });
 
-      getRoundsData(rounds, user.id, currentAddress, currentProvider);
+      getRoundsData(rounds, user.id, currentAddress, wallet);
 
       const invitations = await APIGetRoundsByInvitation({ email: user.email });
-      getRoundsByInvitationData(invitations, currentProvider);
+      getRoundsByInvitationData(invitations, wallet);
       const otherRoundsPosition = await APIGetOtherRounds({
         userId: user.id,
       });
 
-      getRoundsOtherData(
-        otherRoundsPosition,
-        user.id,
-        currentAddress,
-        currentProvider
-      );
+      getRoundsOtherData(otherRoundsPosition, user.id, currentAddress, wallet);
     }
   };
 
   const handleStartRound = (roundId) => {
     setLoading(true);
-    APISetStartRound(roundId, currentProvider)
-      .then((receip) => {
+    APISetStartRound(roundId, wallet)
+      .then((receipt) => {
         Modal.success({
           title: "Ronda iniciada correctamente",
           content: "Por favor verifica.",
@@ -161,7 +156,7 @@ function History() {
     const remainingAmount = APIGetFuturePayments(
       roundId,
       currentAddress,
-      currentProvider
+      wallet
     );
     remainingAmount
       .then((amount) => {
@@ -169,7 +164,7 @@ function History() {
           APISetAddPayment({
             roundId,
             walletAddress: currentAddress,
-            provider: currentProvider,
+            wallet,
           })
             .then((success) => {
               Modal.success({
@@ -205,7 +200,7 @@ function History() {
 
   const handleWithdrawRound = (roundId) => {
     setLoading(true);
-    APISetWithdrawTurn(roundId, currentAddress, currentProvider)
+    APISetWithdrawTurn(roundId, currentAddress, wallet)
       .then(() => {
         Modal.success({
           title: "Cobro correcto",

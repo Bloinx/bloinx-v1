@@ -4,13 +4,13 @@ import MethodGetSaveAmount from "./methods/saveAmount";
 import supabase from "../supabase";
 
 const setAddPayment = async (props) => {
-  const { walletAddress, roundId, provider } = props;
+  const { walletAddress, roundId, wallet } = props;
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
-      if (provider !== "WalletConnect") {
+      if (wallet !== "WalletConnect") {
         resolve(config(data[0].contract));
       } else {
         resolve(walletConnect(data[0].contract));

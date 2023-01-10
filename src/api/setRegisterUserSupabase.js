@@ -30,15 +30,8 @@ const setRegisterPosition = async (
 };
 
 const setRegisterUser = async (props) => {
-  const {
-    userId,
-    walletAddress,
-    roundId,
-    name,
-    motivation,
-    position,
-    provider,
-  } = props;
+  const { userId, walletAddress, roundId, name, motivation, position, wallet } =
+    props;
 
   const user = supabase.auth.user();
 
@@ -46,7 +39,7 @@ const setRegisterUser = async (props) => {
 
   const sg = await new Promise((resolve, reject) => {
     try {
-      if (provider !== "WalletConnect") {
+      if (wallet !== "WalletConnect") {
         resolve(config(data[0].contract));
       } else {
         resolve(walletConnect(data[0].contract));

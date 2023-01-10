@@ -7,13 +7,13 @@ import {
 import supabase from "../supabase";
 
 const setRegisterUser = async (props) => {
-  const { walletAddress, roundId, provider } = props;
+  const { walletAddress, roundId, wallet } = props;
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const cUSD = await new Promise((resolve, reject) => {
     try {
-      if (provider !== "WalletConnect") {
+      if (wallet !== "WalletConnect") {
         resolve(configCUSD());
       } else {
         resolve(walletConnect());

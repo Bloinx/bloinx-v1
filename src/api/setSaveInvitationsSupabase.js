@@ -37,9 +37,9 @@ const setEmailInvite = (mailList, roundId) => {
   });
 };
 
-const setSaveInvitations = async (mailList, round, provider, positionData) => {
+const setSaveInvitations = async (mailList, round, wallet, positionData) => {
   const sg =
-    (await provider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
 
@@ -100,13 +100,13 @@ export const getRoundData = async (roundId) => {
   return data[0];
 };
 
-export const setAllInvites = (mailList, roundId, provider) => {
+export const setAllInvites = (mailList, roundId, wallet) => {
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
       setEmailInvite(mailList, round?.id);
       getPositionUserAdmin(round?.id, round?.userAdmin).then(
         (positionAdminData) => {
-          setSaveInvitations(mailList, round, provider, positionAdminData)
+          setSaveInvitations(mailList, round, wallet, positionAdminData)
             .then((status) => {
               resolve(status);
               // return status;

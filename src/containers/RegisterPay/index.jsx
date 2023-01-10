@@ -29,6 +29,7 @@ const turns = [
     value: "4",
     label: "5",
   },
+  {},
 ];
 
 function RegisterPay({ main }) {

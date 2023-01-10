@@ -81,7 +81,6 @@ const setCreateRound = async ({
       }
 
       await new Promise((resolve, reject) => {
-        console.log("AQUII!!!", currentAddress);
         factory.contract.methods
           .createRound(
             warranty,
