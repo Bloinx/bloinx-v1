@@ -16,7 +16,6 @@ export const MAIN_FACTORY_MUMBAI = "0x9d7E6A5fE13C335DEE43F3DeEc366Fa75FA616Da";
 export const MAIN_FACTORY_POLYGON = "0x000000000";
 
 export async function getContract(provider, abi, contractAddress) {
-  console.log({ provider, abi, contractAddress });
   const contract = await new provider.eth.Contract(abi, contractAddress);
   console.log({ contract });
   return contract;
@@ -35,6 +34,13 @@ export const selectContractAddress = (network) => {
   return MAIN_FACTORY_MUMBAI;
 };
 
+export const selectContractABI = (network) => {
+  if (network === 44787 || network === 42220) {
+    return Main;
+  }
+  return MainP;
+};
+
 export default async function config() {
   try {
     const userData = localStorage.getItem("user_address");
@@ -51,7 +57,7 @@ export default async function config() {
       window?.web3?.currentProvider || httpProvider
     );
 
-    const ABI = chainId === 42220 ? Main : MainP;
+    const ABI = selectContractABI(chainId);
     const contractAddress = selectContractAddress(chainId);
     const contract = await getContract(web3Provider, ABI, contractAddress);
 

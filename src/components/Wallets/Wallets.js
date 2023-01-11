@@ -76,6 +76,7 @@ function Wallets() {
       setCurrentAddress(null);
       setCurrentProvider(null);
       setWallet(null);
+      window.location.reload();
     } catch (err) {
       console.log("ERR: ", err);
     }

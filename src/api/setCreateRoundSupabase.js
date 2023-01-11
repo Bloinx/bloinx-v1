@@ -33,6 +33,7 @@ const setCreateRound = async ({
       });
 
       if (chainId === 42220 || chainId === 44787) {
+        const token = selectTokenAddress(chainId);
         await new Promise((resolve, reject) => {
           factory.contract.methods
             .createRound(
@@ -41,7 +42,7 @@ const setCreateRound = async ({
               groupSize,
               adminFee,
               payTime,
-              selectTokenAddress(chainId),
+              token,
               BLX_TOKEN_CELO_MAINNET
             )
             .send({
@@ -78,52 +79,52 @@ const setCreateRound = async ({
               reject(error);
             });
         });
+      } else {
+        await new Promise((resolve, reject) => {
+          factory.contract.methods
+            .createRound(
+              warranty,
+              saving,
+              groupSize,
+              adminFee,
+              payTime,
+              selectTokenAddress(chainId)
+            )
+            .send({
+              from: currentAddress,
+              to: selectContractAddress(chainId),
+            })
+            .once("receipt", async (receipt) => {
+              const contract =
+                receipt?.events?.RoundCreated?.returnValues?.childRound;
+              const admin = receipt.from;
+              const folio = receipt.transactionHash;
+              const session = supabase.auth.session();
+              const idUser = session.user.id;
+              await supabase
+                .from("rounds")
+                .insert([
+                  {
+                    userAdmin: idUser,
+                    wallet: admin,
+                    contract,
+                    folio,
+                    isPublic,
+                    chainId,
+                  },
+                ])
+                .then((data) => {
+                  resolve(data);
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            })
+            .on("error", async (error) => {
+              reject(error);
+            });
+        });
       }
-
-      await new Promise((resolve, reject) => {
-        factory.contract.methods
-          .createRound(
-            warranty,
-            saving,
-            groupSize,
-            adminFee,
-            payTime,
-            selectTokenAddress(chainId)
-          )
-          .send({
-            from: currentAddress,
-            to: selectContractAddress(chainId),
-          })
-          .once("receipt", async (receipt) => {
-            const contract =
-              receipt?.events?.RoundCreated?.returnValues?.childRound;
-            const admin = receipt.from;
-            const folio = receipt.transactionHash;
-            const session = supabase.auth.session();
-            const idUser = session.user.id;
-            await supabase
-              .from("rounds")
-              .insert([
-                {
-                  userAdmin: idUser,
-                  wallet: admin,
-                  contract,
-                  folio,
-                  isPublic,
-                  chainId,
-                },
-              ])
-              .then((data) => {
-                resolve(data);
-              })
-              .catch((error) => {
-                reject(error);
-              });
-          })
-          .on("error", async (error) => {
-            reject(error);
-          });
-      });
     } catch (error) {
       console.log(error);
     }
