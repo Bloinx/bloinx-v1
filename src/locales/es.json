@@ -43,6 +43,7 @@
     "titleReceipt": "Pagar depósito de seguridad",
     "labels": {
       "payPerRound": "Monto pagado por ronda",
+      "tokens": "Tipo de token",
       "rewards": "Tú recibirás",
       "amount": "Cada participante pagará",
       "receiptAmount": "A su vez recibirá",

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
-
+import { Select } from "antd";
 import PageHeader from "../../components/PageHeader";
 import InputSlider from "../../components/InputSlider";
 import InputOptionSelect from "../../components/InputOptionSelect";
@@ -14,9 +14,18 @@ import ButtonOnlyOneStep from "../../components/ButtonOnlyOneStep";
 import styles from "./index.module.scss";
 import { periodicityOptions, participantsOptions } from "./constants";
 import { confirmForm } from "./validations";
+import useToken from "../../hooks/useToken";
 
 const Form = ({ form, setForm }) => {
   const history = useHistory();
+
+  //  Celo or Polygon
+  const provider = "Polygon";
+
+  const { tokens } = useToken(provider);
+  const [tokenSelected, setTokenSelected] = React.useState(
+    `${provider === "Polygon" ? "USDC" : "cUSD"}`
+  );
 
   const handlerOnSubmit = (values) => {
     setForm({
@@ -24,6 +33,12 @@ const Form = ({ form, setForm }) => {
       ...values,
     });
     history.push("/create-round/confirm");
+  };
+
+  const getOptions = () => {
+    return tokens.map((token) => {
+      return { value: token, label: token };
+    });
   };
 
   return (
@@ -34,6 +49,7 @@ const Form = ({ form, setForm }) => {
           participants: form.participants,
           amount: form.amount,
           periodicity: form.periodicity,
+          token: form.token,
         }}
         validate={confirmForm}
         onSubmit={handlerOnSubmit}
@@ -48,6 +64,10 @@ const Form = ({ form, setForm }) => {
             isValid,
             isSubmitting,
           } = props;
+          const handleTokenChange = (value) => {
+            setTokenSelected(value);
+            handleChange({ target: { name: "token", value } });
+          };
           return (
             <form onSubmit={handleSubmit}>
               <InputOptionSelect
@@ -78,7 +98,20 @@ const Form = ({ form, setForm }) => {
                     <FormattedMessage id="createRound.labels.payPerRound" />
                   </div>
                   <div className={styles.CreateRoundAmount}>
-                    {`${values.amount} cUSD`}
+                    {`${values.amount}`}
+                    <Select
+                      name="token"
+                      value={values.token}
+                      defaultValue={tokenSelected}
+                      style={{ width: 120, marginLeft: 10 }}
+                      onChange={handleTokenChange}
+                    >
+                      {getOptions().map((token) => (
+                        <Select.Option key={token.value} value={token.value}>
+                          {token.label}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </div>
                 </div>
                 <div>
@@ -86,7 +119,9 @@ const Form = ({ form, setForm }) => {
                     <FormattedMessage id="createRound.labels.rewards" />
                   </div>
                   <div className={styles.CreateRoundAmount}>
-                    {`${values.amount * (values.participants - 1)} cUSD`}
+                    {`${
+                      values.amount * (values.participants - 1)
+                    } ${tokenSelected}`}
                   </div>
                 </div>
               </div>
