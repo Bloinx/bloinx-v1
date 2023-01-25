@@ -34,6 +34,7 @@ const Receipt = ({ form, setForm }) => {
     });
 
   useEffect(() => {
+    let cancel = false;
     if (form.isComplete && !currentAddress) {
       Modal.warning({
         title: "Wallet no encontrada",
@@ -44,7 +45,7 @@ const Receipt = ({ form, setForm }) => {
         isComplete: false,
       });
     }
-    if (form.isComplete && currentAddress) {
+    if (form.isComplete && currentAddress && !cancel) {
       setLoading(true);
       APISetCreateRound({
         warranty: form.amount,
@@ -69,7 +70,10 @@ const Receipt = ({ form, setForm }) => {
           history.push("/create-round/receipt/error");
         });
     }
-  }, [form.isComplete]);
+    return () => {
+      cancel = true;
+    };
+  }, [form.isComplete, currentAddress, wallet, form, setForm, history]);
 
   return (
     <>

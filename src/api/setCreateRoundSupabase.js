@@ -88,7 +88,8 @@ const setCreateRound = async ({
               groupSize,
               adminFee,
               payTime,
-              selectTokenAddress(chainId)
+              selectTokenAddress(chainId),
+              "0x0"
             )
             .send({
               from: currentAddress,
