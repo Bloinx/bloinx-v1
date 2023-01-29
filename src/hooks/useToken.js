@@ -4,10 +4,22 @@ export default function useToken(networkId) {
   const [tokens, setTokens] = useState([]);
 
   useEffect(() => {
-    if (networkId === "Celo") {
-      setTokens(["cUSD", "CELO", "cEUR"]);
-    } else {
-      setTokens(["MATIC", "USDC", "DAI", "USDT", "WBTC", "WETH"]);
+    switch (networkId) {
+      case 42220:
+        setTokens(["cUSD", "CELO", "cEUR"]);
+        break;
+      case 44787:
+        setTokens(["cUSD", "CELO", "cEUR"]);
+        break;
+      case 137:
+        setTokens(["MATIC", "USDC", "DAI", "USDT", "WBTC", "WETH"]);
+        break;
+      case 80001:
+        setTokens(["MATIC", "USDC", "DAI", "USDT", "WBTC", "WETH"]);
+        break;
+
+      default:
+        break;
     }
   }, [networkId]);
 

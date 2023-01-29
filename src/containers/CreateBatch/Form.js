@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { useHistory } from "react-router-dom";
@@ -15,17 +15,11 @@ import styles from "./index.module.scss";
 import { periodicityOptions, participantsOptions } from "./constants";
 import { confirmForm } from "./validations";
 import useToken from "../../hooks/useToken";
+import { getTokenId } from "../../api/utils/getTokenData";
 
-const Form = ({ form, setForm }) => {
+const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
   const history = useHistory();
-
-  //  Celo or Polygon
-  const provider = "Polygon";
-
-  const { tokens } = useToken(provider);
-  const [tokenSelected, setTokenSelected] = React.useState(
-    `${provider === "Polygon" ? "USDC" : "cUSD"}`
-  );
+  const { tokens } = useToken(chainId);
 
   const handlerOnSubmit = (values) => {
     setForm({
@@ -148,6 +142,7 @@ const Form = ({ form, setForm }) => {
 Form.propTypes = {
   form: PropTypes.instanceOf(Object).isRequired,
   setForm: PropTypes.func.isRequired,
+  //  chainId: PropTypes.number,
 };
 
 export default Form;

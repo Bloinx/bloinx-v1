@@ -22,7 +22,7 @@ import {
 } from "./constants";
 import { MainContext } from "../../providers/provider";
 
-const Receipt = ({ form, setForm }) => {
+const Receipt = ({ form, setForm, tokenSelected }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet } = useContext(MainContext);
@@ -88,13 +88,15 @@ const Receipt = ({ form, setForm }) => {
               <div>
                 <FormattedMessage id="createRound.labels.amount" />
               </div>
-              <div>{`${form.amount} cUSD`}</div>
+              <div>{`${form.amount} ${tokenSelected}`}</div>
             </div>
             <div className={styles.ReceiptCardItem}>
               <div>
                 <FormattedMessage id="createRound.labels.receiptAmount" />
               </div>
-              <div>{`${form.amount * (form.participants - 1)} cUSD`}</div>
+              <div>{`${
+                form.amount * (form.participants - 1)
+              } ${tokenSelected}`}</div>
             </div>
             <div className={styles.ReceiptCardItem}>
               <div>

@@ -6,6 +6,7 @@ import config, {
   selectContractAddress,
 } from "./config.main.web3";
 import { selectTokenAddress } from "./config.erc";
+import { getTokenId } from "./utils/getTokenData";
 
 const adminFee = 2;
 const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX
@@ -65,7 +66,7 @@ const setCreateRound = async ({
                     contract,
                     folio,
                     isPublic,
-                    chainId,
+                    tokenId: getTokenId(),
                   },
                 ])
                 .then((data) => {
@@ -110,7 +111,7 @@ const setCreateRound = async ({
                     contract,
                     folio,
                     isPublic,
-                    chainId,
+                    tokenId: getTokenId(),
                   },
                 ])
                 .then((data) => {

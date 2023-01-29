@@ -16,11 +16,18 @@ import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
 
 const getRounds = async ({ userId }) => {
-  const { data } = await supabase
-    .from("rounds")
-    .select()
-    .eq("userAdmin", userId);
-  return data;
+  try {
+    const { data } = await supabase
+      .from("rounds")
+      .select()
+      .eq("userAdmin", userId);
+    // console.log(userId, "getRounds");
+    // console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error, "error");
+    return [];
+  }
 };
 
 export const configByPosition = async (round, data, walletAddress, wallet) => {
@@ -124,17 +131,15 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
 };
 
 export const getAll = async (userId, round) => {
-  // const { data } = await supabase
-  //   .from("positionByRound")
-  //   .select("idUser, idRound")
-  //   .match({ idUser: userId, idRound: round?.id });
-
-  const { data } = await supabase
-    .from("positionByRound")
-    .select()
-    .eq("idUser", userId)
-    .eq("idRound", round?.id);
-  return data[0];
+  try {
+    const { data, error } = await supabase
+      .from("positionByRound")
+      .select()
+      .eq("idUser", userId)
+    return data[0];
+  } catch {
+    return []
+  }
 };
 
 export default getRounds;
