@@ -105,6 +105,11 @@ function Wallets() {
         accountData.publicAddress.startsWith("0X") &&
         !loading && (
           <Button type="primary" shape="round" onClick={handleReset}>
+            <img
+              src={NETWORKS[networkSelected].icon}
+              alt="bloinx-icon"
+              width="20"
+            />
             {accountData.publicAddress}
           </Button>
         )}
@@ -130,9 +135,14 @@ function Wallets() {
             return (
               <div
                 key={network}
-                className={styles.Loading}
+                className={styles.LoadingIcon}
                 style={{ marginTop: "20px", marginBottom: "10px" }}
               >
+                <img
+                  src={NETWORKS[network].icon}
+                  alt="bloinx-icon"
+                  width="40"
+                />
                 <Button
                   key={NETWORKS[network].chainId}
                   type="primary"
