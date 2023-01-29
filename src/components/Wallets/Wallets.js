@@ -52,8 +52,12 @@ function Wallets() {
     try {
       setLoading(true);
       await connect("walletconnect", NETWORKS[networkSelected]);
-      setLoading(false);
+      setAccountData({
+        publicAddress: userWallet(),
+        originalAdress: await account(),
+      });
       await walletConnect();
+      setLoading(false);
       handleToggleDrawer();
     } catch (err) {
       console.log("Ocurrio un Error: ", err);

@@ -68,21 +68,33 @@ export default async function config() {
 }
 
 export async function walletConnect() {
-  const provider = new WalletConnectProvider({
-    rpc: {
-      ...RPC_URL,
-    },
-  });
-  await provider.enable();
-  const web3Provider = new Web3(provider);
-  console.log({ web3Provider });
+  try {
+    const userData = localStorage.getItem("user_address");
 
-  // TODO: chainId Validation
-  const kit = newKitFromWeb3(web3Provider);
-  // eslint-disable-next-line prefer-destructuring
-  kit.defaultAccount = provider.accounts[0];
-  kit.defaultFeeCurrency = await kit.contracts.getStableToken();
+    const { chainId } = JSON.parse(userData);
+    const provider = new WalletConnectProvider({
+      rpc: {
+        ...RPC_URL,
+      },
+    });
+    await provider.enable();
+    const web3Provider = new Web3(provider);
 
-  const contract = await getContract(kit.web3, Main, MAIN_FACTORY_CELO_MAINNET);
-  return { contract, provider };
+    const ABI = selectContractABI(chainId);
+    const contractAddress = selectContractAddress(chainId);
+
+    if (chainId === 42220 || chainId === 44787) {
+      const kit = newKitFromWeb3(web3Provider);
+      // eslint-disable-next-line prefer-destructuring
+      kit.defaultAccount = provider.accounts[0];
+      kit.defaultFeeCurrency = await kit.contracts.getStableToken();
+
+      const contract = await getContract(kit.web3, ABI, contractAddress);
+      return { contract, provider };
+    }
+    const contract = await getContract(ABI, contractAddress);
+    return { contract, provider };
+  } catch (error) {
+    return error;
+  }
 }
