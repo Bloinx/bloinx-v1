@@ -103,6 +103,7 @@ const setCreateRound = async ({
               const folio = receipt.transactionHash;
               const session = supabase.auth.session();
               const idUser = session.user.id;
+              const tokenIds = await getTokenId();
               await supabase
                 .from("rounds")
                 .insert([
@@ -112,7 +113,7 @@ const setCreateRound = async ({
                     contract,
                     folio,
                     isPublic,
-                    tokenId: getTokenId(),
+                    tokenId: tokenIds,
                   },
                 ])
                 .then((data) => {

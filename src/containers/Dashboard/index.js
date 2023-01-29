@@ -35,6 +35,7 @@ import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
 
 import { MainContext } from "../../providers/provider";
+import { getTokenData } from "../../api/utils/getTokenData";
 
 function Dashboard() {
   const history = useHistory();
@@ -113,6 +114,9 @@ function Dashboard() {
   };
 
   const handleGetRounds = async () => {
+    // getTokenData(137).then((res) => {
+    //   console.log("res", res);
+    // });
     setRoundList([]);
     setOtherList([]);
     setInvitationsList([]);
