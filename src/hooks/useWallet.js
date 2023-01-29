@@ -112,8 +112,17 @@ export const useWallet = () => {
           }
 
           setCurrentProvider(Web3.givenProvider);
+          setCurrentAddress(provider.selectedAddress);
         }
         setWallet("Metamask");
+        localStorage.setItem(
+          "user_address",
+          JSON.stringify({
+            name: walletName,
+            chainId: network.chainId,
+            address: provider.selectedAddress,
+          })
+        );
       } else if (walletName === "walletconnect") {
         document.addEventListener("visibilitychange", () => {
           if (document.visibilityState === "hidden" && iOS()) {
@@ -125,20 +134,19 @@ export const useWallet = () => {
 
         setCurrentProvider(provider);
         setWallet("WalletConnect");
+        setCurrentAddress(provider.accounts[0]);
+        localStorage.setItem(
+          "user_address",
+          JSON.stringify({
+            name: walletName,
+            chainId: network.chainId,
+            address: provider.accounts[0],
+          })
+        );
       }
 
       const chain = network;
       chain.provider = provider;
-      setCurrentAddress(provider.selectedAddress);
-
-      localStorage.setItem(
-        "user_address",
-        JSON.stringify({
-          name: walletName,
-          chainId: network.chainId,
-          address: provider.selectedAddress,
-        })
-      );
     } catch (error) {
       console.error("Error: ", error);
       throw new Error(error);
