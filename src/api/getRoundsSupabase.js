@@ -130,16 +130,30 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
   return roundData;
 };
 
+// export const getAll = async (userId, round) => {
+//   try {
+//     const { data, error } = await supabase
+//       .from("positionByRound")
+//       .select()
+//       .eq("idUser", userId);
+//       console.log(error);
+//     return data[0];
+//   } catch {
+//     return [];
+//   }
+// };
 export const getAll = async (userId, round) => {
-  try {
-    const { data, error } = await supabase
-      .from("positionByRound")
-      .select()
-      .eq("idUser", userId)
-    return data[0];
-  } catch {
-    return []
-  }
+  // const { data } = await supabase
+  //   .from("positionByRound")
+  //   .select("idUser, idRound")
+  //   .match({ idUser: userId, idRound: round?.id });
+
+  const { data } = await supabase
+    .from("positionByRound")
+    .select()
+    .eq("idUser", userId)
+    .eq("idRound", round?.id);
+  return data[0];
 };
 
 export default getRounds;
