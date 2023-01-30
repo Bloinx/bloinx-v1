@@ -110,7 +110,7 @@ function Wallets() {
               alt="bloinx-icon"
               width="20"
             />
-            {accountData.publicAddress}
+            &nbsp;&nbsp;{accountData.publicAddress}
           </Button>
         )}
 
