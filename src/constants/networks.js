@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
-import PolygonLogo from "../assets/polygon-token.png";
-import CeloLogo from "../assets/celoLogo.png";
+import PolygonLogo from "../assets/BlackOnTransparent.svg";
+import CeloLogo from "../assets/Celo_Symbol_Onyx.svg";
 
 let networks = [];
 

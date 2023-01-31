@@ -11,3 +11,30 @@
   flex-direction: row;
   justify-content: center;
 }
+
+
+.cardChain{
+  border-radius: 8px !important;
+  transition: 0.3;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.25);
+}
+
+.cardChain:hover{
+  box-shadow: 0px 0px 8px 0px #F58F98;
+}
+
+.chainContainer{
+  display: flex;
+  text-align: center;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.chainNameContainer {
+  color: #939393;
+  background: #F5F5F5;
+  border-radius: 16px;
+  padding: 3px 5px;
+  margin-top: 25px;
+  margin-bottom: 4px;
+}
