@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { WalletOutlined } from "@ant-design/icons";
-import { Button, Drawer, Typography, Spin, Result } from "antd";
+import { Button, Drawer, Typography, Spin, Result, Card } from "antd";
 import NETWORKS from "../../constants/networks";
 import { useWallet } from "../../hooks/useWallet";
 import { MainContext } from "../../providers/provider";
@@ -87,7 +87,7 @@ function Wallets() {
   };
 
   const selectNetwork = (e) => {
-    setNetworkSelected(e.target.value);
+    setNetworkSelected(e);
   };
 
   const errorData = "Ocurrio un error"; // errorMessages.find((item) => item.code === error) || {};
@@ -104,8 +104,18 @@ function Wallets() {
       {accountData.publicAddress &&
         accountData.publicAddress.startsWith("0X") &&
         !loading && (
-          <Button type="primary" shape="round" onClick={handleReset}>
-            {accountData.publicAddress}
+          <Button
+            type="primary"
+            shape="round"
+            onClick={handleReset}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <img
+              src={NETWORKS[networkSelected].icon}
+              alt="bloinx-icon"
+              width="20"
+            />
+            &nbsp;&nbsp;{accountData.publicAddress}
           </Button>
         )}
 
@@ -126,26 +136,33 @@ function Wallets() {
           onClose={handleToggleDrawer}
           width={400}
         >
-          {Object.keys(NETWORKS).map((network) => {
-            return (
-              <div
-                key={network}
-                className={styles.Loading}
-                style={{ marginTop: "20px", marginBottom: "10px" }}
-              >
-                <Button
+          <div className={styles.chainContainer}>
+            {Object.keys(NETWORKS).map((network) => {
+              return (
+                <Card
+                  className={styles.cardChain}
+                  style={{
+                    width: 120,
+                    height: 128,
+                    cursor: "pointer",
+                  }}
                   key={NETWORKS[network].chainId}
-                  type="primary"
-                  size="large"
-                  shape="round"
-                  value={network}
-                  onClick={selectNetwork}
+                  onClick={() => selectNetwork(network)}
                 >
-                  {NETWORKS[network].name}
-                </Button>
-              </div>
-            );
-          })}
+                  <img
+                    src={NETWORKS[network].icon}
+                    alt={NETWORKS[network].name}
+                    width="58"
+                    height={58}
+                    style={{ paddingTop: "10px" }}
+                  />
+                  <p className={styles.chainNameContainer}>
+                    {NETWORKS[network].name}
+                  </p>
+                </Card>
+              );
+            })}
+          </div>
         </Drawer>
       )}
 
