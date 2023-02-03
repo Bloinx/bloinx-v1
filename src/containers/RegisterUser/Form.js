@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { FormattedMessage } from "react-intl";
@@ -24,11 +24,24 @@ import styles from "./Confirm.module.scss";
 import { confirmValidation } from "./validations";
 import { motivationOptions } from "./constants";
 import { getOptions } from "./utils";
+import { getTokenSymbolByRound } from "../../api/utils/getTokenData";
 
 function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const user = supabase.auth.user();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [tokenSymbol, setTokenSymbol] = useState("");
+
+  const getTokenSymbol = async () => {
+    const data = await getTokenSymbolByRound(roundData.tokenId);
+    return data;
+  };
+
+  useEffect(() => {
+    getTokenSymbol().then((data) => {
+      setTokenSymbol(data);
+    });
+  }, [roundData]);
 
   const handlerOnSubmit = (values) => {
     if (!walletAddress) {
@@ -139,7 +152,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
                         <FormattedMessage id="payments.details.securityDeposit" />
                       </div>
                       <div className={styles.TextPaymentDetails}>
-                        {roundData.cashIn || "..."} cUSD
+                        {roundData.cashIn || "..."} {tokenSymbol}
                       </div>
                     </div>
                     <div>
@@ -147,7 +160,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
                         <FormattedMessage id="payments.details.serviceFee" />
                       </div>
                       <div className={styles.TextPaymentDetails}>
-                        {roundData.feeCost || "..."} cUSD
+                        {roundData.feeCost || "..."} {tokenSymbol}
                       </div>
                     </div>
                   </div>

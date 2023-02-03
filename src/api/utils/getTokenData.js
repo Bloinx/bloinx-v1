@@ -18,3 +18,19 @@ export const getTokenId = async (chainId) => {
     .eq("chainId", chainId);
   return data[0].id;
 };
+
+export const getTokenSymbol = async (chainId) => {
+  const { data } = await supabase
+    .from("tokens")
+    .select("symbol")
+    .eq("chainId", chainId);
+  return data;
+};
+
+export const getTokenSymbolByRound = async (tokenId) => {
+  const { data } = await supabase
+    .from("tokens")
+    .select("symbol")
+    .eq("id", tokenId);
+  return data[0].symbol;
+};

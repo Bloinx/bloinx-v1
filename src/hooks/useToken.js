@@ -1,26 +1,19 @@
 import { useState, useEffect } from "react";
+import { getTokenSymbol } from "../api/utils/getTokenData";
 
 export default function useToken(networkId) {
   const [tokens, setTokens] = useState([]);
 
-  useEffect(() => {
-    switch (networkId) {
-      case 42220:
-        setTokens(["cUSD", "CELO", "cEUR"]);
-        break;
-      case 44787:
-        setTokens(["cUSD", "CELO", "cEUR"]);
-        break;
-      case 137:
-        setTokens(["MATIC", "USDC", "DAI", "USDT", "WBTC", "WETH"]);
-        break;
-      case 80001:
-        setTokens(["MATIC", "USDC", "DAI", "USDT", "WBTC", "WETH"]);
-        break;
+  const getTokenSymbolData = async () => {
+    const data = await getTokenSymbol(networkId);
+    return data;
+  };
 
-      default:
-        break;
-    }
+  useEffect(() => {
+    getTokenSymbolData().then((data) => {
+      console.log(data, "symbols");
+      data.map((item) => setTokens((token) => [...token, item.symbol]));
+    });
   }, [networkId]);
 
   return { tokens };
