@@ -3,14 +3,12 @@ import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetFeeCost from "./methods/getFeeCost";
 import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
+import { getTokenDecimals } from "./utils/getTokenData";
 
 const getRoundRegisterDetail = async (roundId, wallet) => {
   try {
-    // const { data } = await supabase
-    //   .from("rounds")
-    //   .select("id")
-    //   .match({ id: roundId });
     const { data } = await supabase.from("rounds").select().eq("id", roundId);
+
     const sg = await new Promise((resolve, reject) => {
       try {
         if (wallet !== "WalletConnect") {
@@ -22,17 +20,17 @@ const getRoundRegisterDetail = async (roundId, wallet) => {
         reject(error);
       }
     });
-    // const sg = await config(data.contract);
     const positionsAvailable = await MethodGetAvailablePlaces(sg.methods);
     const cashIn = await MethodGetCashIn(sg.methods);
     const feeCost = await MethodGetFeeCost(sg.methods);
 
+    const tokenDecimals = await getTokenDecimals(data[0].tokenId);
     return {
       ...data[0],
       roundId,
       positionsAvailable,
-      cashIn: (Number(cashIn) * 10 ** -18).toFixed(2),
-      feeCost: (Number(feeCost) * 10 ** -18).toFixed(2),
+      cashIn: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
+      feeCost: (Number(feeCost) * 10 ** -tokenDecimals).toFixed(2),
     };
   } catch (err) {
     return err;

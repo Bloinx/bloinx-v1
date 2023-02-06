@@ -8,6 +8,7 @@ import config, { walletConnect } from "./config.sg.web3";
 import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodGetPayTime from "./methods/getPayTime";
 import MethodSaveAmount from "./methods/saveAmount";
+import { getTokenDecimals, getTokenSymbolByRound } from "./utils/getTokenData";
 
 const dayInSeconds = 86400;
 
@@ -46,9 +47,11 @@ const setSaveInvitations = async (mailList, round, wallet, positionData) => {
   const groupSize = await MethodGetGroupSize(sg.methods);
   const payTime = await MethodGetPayTime(sg.methods);
   const saveAmount = await MethodSaveAmount(sg.methods);
+  const tokenSymbol = await getTokenSymbolByRound(round.tokenId);
+  const decimals = await getTokenDecimals(round.tokenId);
   const longevity = (payTime / dayInSeconds) * groupSize;
-  const totalAmount =
-    Number(Web3.utils.fromWei(saveAmount)) * Number(groupSize);
+
+  const totalAmount = Number(saveAmount * 10 ** -decimals) * Number(groupSize);
   try {
     await mailList.forEach((mail) => {
       axios
@@ -71,7 +74,7 @@ const setSaveInvitations = async (mailList, round, wallet, positionData) => {
                   // type: "Public/Private",
                   longevity: `${longevity} días`,
                   participant: `${groupSize - 1}`,
-                  amount: `${totalAmount} cUSD`,
+                  amount: `${totalAmount} ${tokenSymbol}`,
                 },
                 subject: "Inviación a la Ronda",
               },

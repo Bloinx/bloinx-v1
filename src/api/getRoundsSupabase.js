@@ -14,6 +14,7 @@ import MethodGetUserAvailableCashIn from "./methods/getUserAvailableCashIn";
 import MethodGetSaveAmount from "./methods/saveAmount";
 import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
+import { getTokenDecimals } from "./utils/getTokenData";
 
 const getRounds = async ({ userId }) => {
   try {
@@ -21,8 +22,7 @@ const getRounds = async ({ userId }) => {
       .from("rounds")
       .select()
       .eq("userAdmin", userId);
-    // console.log(userId, "getRounds");
-    // console.log(data);
+
     return data;
   } catch (error) {
     console.log(error, "error");
@@ -47,6 +47,7 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
     sg.methods,
     data?.position || 1
   );
+  const tokenDecimals = await getTokenDecimals(round?.tokenId);
 
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
@@ -124,7 +125,7 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
       (Number(realTurn) > data?.position && Number(savings) > 0) ||
       (Number(groupSize) === data?.position && realTurn > Number(groupSize)),
     fromInvitation: false,
-    saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
+    saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
   };
   console.log(realTurn, data?.position, groupSize);
   return roundData;

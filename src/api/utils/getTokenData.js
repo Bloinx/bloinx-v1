@@ -34,3 +34,12 @@ export const getTokenSymbolByRound = async (tokenId) => {
     .eq("id", tokenId);
   return data[0].symbol;
 };
+
+export const getTokenDecimals = async (tokenId) => {
+  const { data } = await supabase
+    .from("tokens")
+    .select("decimals")
+    .eq("id", tokenId);
+
+  return data[0].decimals;
+};
