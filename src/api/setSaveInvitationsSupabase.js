@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import Web3 from "web3";
 
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
