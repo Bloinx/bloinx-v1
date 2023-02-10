@@ -6,14 +6,15 @@ import Main from "../abis/Main.json";
 import MainP from "../abis/MainP.json";
 
 export const MAIN_FACTORY_ALFAJORES =
-  "0x5379Db9Fb4e50572F161A8c3E0685448271Df72F";
+  "0xd53E64384Aa1aa736e4B2FD8143D901EFB9CBa8B";
 
 export const MAIN_FACTORY_CELO_MAINNET =
   "0xfF0e77E52bC1B21F4b4CE6d77ac48E3f9abdb5fE";
 
 export const MAIN_FACTORY_MUMBAI = "0xC0Bb95455480C17D8136c1255e7fF06f915d3Dd6";
 
-export const MAIN_FACTORY_POLYGON = "0x000000000";
+export const MAIN_FACTORY_POLYGON =
+  "0x7D69E4A1e8da9D19FC63836F0acAD2052146F202";
 
 export async function getContract(provider, abi, contractAddress) {
   const contract = await new provider.eth.Contract(abi, contractAddress);
