@@ -129,5 +129,34 @@
     "guaranteeInfo": "¿Qué es la garantía? \n Es un pago que se regresará al final de la ronda. Si alguno de ustedes no paga a tiempo, será aplicado automáticamente al turno que corresponda y no lo podrá recuperar. \n ¡Ojo! si alguno de ustedes olvida hacer más de un pago, el monto a regresar de la garantía de todos los participantes será afectado.",
     "waiting": "Espere a que se confirme la transacción"
   },
-  "copyright": "Bloinx 2021 (c) Todos los derechos reservados."
+  "copyright": "Bloinx 2023 (c) Todos los derechos reservados.",
+  "login": {
+    "title": "Iniciar sesión",
+    "subtitle": "¿No tienes una cuenta?",
+    "form": {
+      "label": {
+        "email": "Usuari@",
+        "password": "Contraseña"
+      }
+    },
+    "actions": {
+      "login": "Entrar",
+      "register": "Regístrate",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
+    }
+  },
+  "ForgotPass": {
+    "title": "Cambiar Contraseña",
+    "subtitle": "Ingresa tu correo electrónico para cambiar tu contraseña",
+    "form": {
+      "label": {
+        "email": "Correo electrónico"
+      }
+    },
+    "actions": {
+      "reset": "Cambiar",
+      "register": "Regístrate",
+      "login": "Iniciar sesión"
+    }
+  }
 }

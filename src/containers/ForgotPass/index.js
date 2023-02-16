@@ -5,7 +5,7 @@ import { Button } from "antd";
 import { FormattedMessage } from "react-intl";
 
 import logo from "../../assets/bloinxLogo.png";
-import { validateEmail, validatePassword } from "./vlidators";
+import { validateEmail } from "./vlidators";
 import styles from "./index.module.scss";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -13,7 +13,7 @@ const errors = {
   "auth/user-not-found": "El usuario no existe.",
 };
 
-function Login() {
+function ForgotPass() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -27,40 +27,29 @@ function Login() {
   const [passwordError, setPasswordError] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const { signIn } = useAuth();
+  const { ResetPass, sendRecoveryPass } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = () => {
+  const handleForgotPass = () => {
+    debugger;
     setLoading(true);
-    signIn({
-      userLogin: email,
-      password,
+    ResetPass({
+      emailReset: email,
       onSuccess: (data) => {
         // saveUser(data);
         setLoading(false);
-        history.push("/dashboard");
+        // history.push("/update-password");
       },
       onFailure: (er) => {
-        setLoading(false);
-        setError(true);
-        setErrorMessage("El usuario o contraseña es incorrecto");
+        if (er) {
+          setLoading(false);
+          setError(true);
+          setErrorMessage("Ups, algo salió mal");
+        }
       },
     });
-  };
-
-  const handlePasswordChange = (e) => {
-    const {
-      target: { value },
-    } = e;
-    const validationpasswordError = validatePassword(value);
-    setPasswordError(validationpasswordError !== null);
-    setIsDisabled(validationpasswordError !== null);
-    if (validationpasswordError) {
-      setPasswordErrorMessage(validationpasswordError);
-    }
-    setPassword(value);
   };
 
   const handleEmailChange = (e) => {
@@ -83,23 +72,26 @@ function Login() {
   }, []);
 
   return (
-    <div className={styles.Login}>
-      <div className={styles.Login_Card}>
-        <div className={styles.Login_Card_Content}>
-          <div className={styles.Login_Card_Content_Header}>
-            <img src={logo} alt="logo" className={styles.Login_Icon} />
-            <span className={styles.Login_Title}>
+    <div className={styles.ForgotPass}>
+      <div className={styles.ForgotPass_Card}>
+        <div className={styles.ForgotPass_Card_Content}>
+          <div className={styles.ForgotPass_Card_Content_Header}>
+            <img src={logo} alt="logo" className={styles.ForgotPass_Icon} />
+            <span className={styles.ForgotPass_Title}>
               {" "}
-              <FormattedMessage id="login.title" />
+              <FormattedMessage id="ForgotPass.title" />
             </span>
           </div>
-          <div className={styles.Login_Card_Content_Form}>
+          <div className={styles.ForgotPass_Card_Content_Form}>
+            <div>
+              <FormattedMessage id="ForgotPass.subtitle" />
+            </div>
             <span>
               {" "}
-              <FormattedMessage id="login.form.label.email" />
+              <FormattedMessage id="ForgotPass.form.label.email" />
             </span>
             <input
-              className={styles.Login_Input}
+              className={styles.ForgotPass_Input}
               name="user"
               type="email"
               value={email}
@@ -109,46 +101,27 @@ function Login() {
             <span className={styles.error}>
               {emailError ? emailErrorMessage : ""}
             </span>
-            <span>
-              {" "}
-              <FormattedMessage id="login.form.label.password" />
-            </span>
-            <input
-              className={styles.Login_Input}
-              name="password"
-              type="password"
-              value={password}
-              onChange={handlePasswordChange}
-              disabled={loading}
-            />
-            <span className={styles.error}>
-              {passwordError ? passwordErrorMessage : ""}
-            </span>
           </div>
-          <span className={styles.Login_Card_Content_forgotPass}>
-            <Link to="/forgotpass">
-              <FormattedMessage id="login.actions.forgotPassword" />
-            </Link>
-          </span>
-          <div className={styles.Login_Card_Content_Actions}>
+          <div className={styles.ForgotPass_Card_Content_Actions}>
             <span className={styles.error}>{error ? errorMessage : ""}</span>
             <Button
               loading={loading}
               disabled={isDisabled}
               type="primary"
-              onClick={handleLogin}
+              onClick={handleForgotPass}
             >
-              <FormattedMessage id="login.actions.login" />
+              <FormattedMessage id="ForgotPass.actions.reset" />
             </Button>
           </div>
         </div>
-        <div className={styles.Login_Card_Options}>
-          <div>
-            <FormattedMessage id="login.subtitle" />
-          </div>
-          <div>
+        <div className={styles.ForgotPass_Card_Options}>
+          <div className={styles.ForgotPass_Card_Options_Grid}>
             <Link to="/signup">
-              <FormattedMessage id="login.actions.register" />
+              <FormattedMessage id="ForgotPass.actions.register" />
+            </Link>
+            <span className={styles.ForgotPass_Card_Content_Divider}> | </span>
+            <Link to="/login">
+              <FormattedMessage id="ForgotPass.actions.login" />
             </Link>
           </div>
         </div>
@@ -157,4 +130,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPass;
