@@ -52,7 +52,7 @@ function Terms({ form, baseUrl, walletAddress, roundData, wallet }) {
                   label={<FormattedMessage id="createRound.labels.terms" />}
                   name="termsAndConditions"
                   onChange={handleChange}
-                  error={errors.name}
+                  error={errors?.name}
                   checked={values.termsAndConditions}
                 />
               </div>
