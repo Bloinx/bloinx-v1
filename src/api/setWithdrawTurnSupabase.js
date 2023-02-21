@@ -5,12 +5,12 @@ import MethodGetRealTurn from "./methods/getRealTurn";
 import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodSetEndRound from "./methods/setEndRound";
 
-const setWithdrawTurn = async (roundId, walletAddress, provider) => {
+const setWithdrawTurn = async (roundId, walletAddress, wallet) => {
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
-      if (provider !== "WalletConnect") {
+      if (wallet !== "WalletConnect") {
         resolve(config(data[0].contract));
       } else {
         resolve(walletConnect(data[0].contract));

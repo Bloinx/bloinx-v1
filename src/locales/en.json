@@ -19,6 +19,9 @@
       "participants": "Paritipants",
       "liquidity": "Liquidity",
       "status": "Status"
+    },
+    "modal": {
+      "title": "Select Network"
     }
   },
   "historyPage": {

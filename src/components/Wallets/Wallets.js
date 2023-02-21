@@ -1,172 +1,96 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useState, useContext } from "react";
 import { WalletOutlined } from "@ant-design/icons";
-import detectEthereumProvider from "@metamask/detect-provider";
-import { Button, Drawer, Typography, Spin, Result } from "antd";
-
+import { Button, Drawer, Typography, Spin, Result, Card } from "antd";
+import NETWORKS from "../../constants/networks";
+import { useWallet } from "../../hooks/useWallet";
+import { MainContext } from "../../providers/provider";
 import config, { walletConnect } from "../../api/config.main.web3";
-import { getCurrentWallet, getCurrentProvider } from "../../redux/actions/main";
-import { iOS } from "../../utils/browser";
 
 import styles from "./styles.module.scss";
 
-const errorMessages = [
-  {
-    code: 503,
-    status: "warning",
-    title: "Servicio no disponible",
-    description:
-      "Metamask no se encuentra instalado en tu navegador, por favor instalalo desde su pagina oficial.",
-    hrefs: [
-      {
-        url: "https://metamask.io/",
-        title: "Ir al sitio",
-      },
-    ],
-  },
-  {
-    code: 502,
-    status: "warning",
-    title: "Implementacion erronea",
-    description:
-      "Metamask no se encuentra instalado en tu navegador, por favor instalalo desde su pagina oficial.",
-    hrefs: [
-      {
-        url: "https://metamask.io/",
-        title: "Ir al sitio",
-      },
-    ],
-  },
-  {
-    code: 500,
-    status: "error",
-    title: "No se pudo ejecutar",
-    description: "",
-    hrefs: [],
-  },
-];
-
 const { Title } = Typography;
 
-function Wallets({ currentAddressWallet, currentProvider }) {
+function Wallets() {
+  const { connect, userWallet, account } = useWallet();
+  const {
+    setCurrentProvider,
+    setCurrentAddress,
+    setContractInstance,
+    setWallet,
+  } = useContext(MainContext);
   const [accountData, setAccountData] = useState({
     publicAddress: null,
     originalAdress: null,
   });
+  const [networkSelected, setNetworkSelected] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
 
   const handleToggleDrawer = () => setOpen(!open);
 
-  const handleReset = async () => {
-    setAccountData({ publicAddress: null, originalAdress: null });
-    if (!window.ethereum?.isMetaMask) {
-      const { provider } = await walletConnect();
-      await provider.disconnect();
-    }
-    setError(null);
-    window.location.reload();
-  };
-
-  function getAddress(originalAdress) {
-    let publicAddress = "";
-    if (originalAdress) {
-      const firstPart = `${originalAdress.substring(0, 2)}${originalAdress
-        .substring(2, 6)
-        .toUpperCase()}`;
-      const secondPart = `${originalAdress
-        .substring(originalAdress.length - 4, originalAdress.length)
-        .toUpperCase()}`;
-      publicAddress = `${firstPart}...${secondPart}`;
-      currentAddressWallet(originalAdress);
-    }
-    setAccountData({ publicAddress, originalAdress });
-  }
-
-  const loadPubKeyData = async (ethProvider) => {
-    await ethProvider.on("accountsChanged", (newAccount) => {
-      setLoading(true);
-      setTimeout(() => {
-        getAddress(newAccount[0]);
-        setLoading(false);
-      }, 2000);
-    });
-    await ethProvider.request({
-      method: "wallet_addEthereumChain",
-      params: [
-        {
-          chainId: "0xA4EC",
-          chainName: "Celo",
-          nativeCurrency: {
-            name: "CELO",
-            symbol: "CELO",
-            decimals: 18,
-          },
-          rpcUrls: ["https://forno.celo.org"],
-          blockExplorerUrls: ["https://explorer.celo.org"],
-        },
-      ],
-    });
-    const accounts = await ethProvider.request({ method: "eth_accounts" });
-    getAddress(accounts[0]);
-  };
-
-  const loadWeb3Provider = async () => {
-    setLoading(true);
-    const provider = await detectEthereumProvider();
-    currentProvider("Metamask");
-    if (provider) {
-      try {
-        await provider.enable();
-        const web3Loadie = await config();
-        if (web3Loadie) {
-          loadPubKeyData(provider);
-          setLoading(false);
-          handleToggleDrawer();
-        } else {
-          setLoading(false);
-          setError(502);
-        }
-      } catch (err) {
-        setLoading(false);
-        setError(503);
-      }
-    } else {
-      setLoading(false);
-      setError(500);
-    }
-  };
-
-  const loadWalletConnectProvider = async () => {
-    setLoading(true);
+  const connectMMWallet = async () => {
     try {
-      document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden" && iOS()) {
-          localStorage.removeItem("WALLETCONNECT_DEEPLINK_CHOICE");
-        }
+      setLoading(true);
+      await connect("Metamask", NETWORKS[networkSelected]);
+      setAccountData({
+        publicAddress: userWallet(),
+        originalAdress: await account(),
       });
-      const { provider } = await walletConnect();
-      currentProvider("WalletConnect");
-      await provider.on("accountsChanged", (newAccount) => {
-        setLoading(true);
-        setTimeout(() => {
-          getAddress(newAccount[0]);
-          setLoading(false);
-        }, 2000);
-      });
-      getAddress(provider.accounts[0]);
+      await config();
       setLoading(false);
       handleToggleDrawer();
     } catch (err) {
+      console.log("Ocurrio un Error: ", err);
+      setError(err);
       setLoading(false);
-      setError(500);
-      window.location.reload();
+      handleToggleDrawer();
     }
   };
 
-  const errorData = errorMessages.find((item) => item.code === error) || {};
+  const connectWalletConnect = async () => {
+    try {
+      setLoading(true);
+      await connect("walletconnect", NETWORKS[networkSelected]);
+      setAccountData({
+        publicAddress: userWallet(),
+        originalAdress: await account(),
+      });
+      await walletConnect();
+      setLoading(false);
+      handleToggleDrawer();
+    } catch (err) {
+      console.log("Ocurrio un Error: ", err);
+      setError(err);
+      setLoading(false);
+      handleToggleDrawer();
+    }
+  };
+
+  const handleReset = async () => {
+    try {
+      setAccountData({ publicAddress: null, originalAdress: null });
+      localStorage.removeItem("user_address");
+      console.log("Disconnect...");
+      if (!window.ethereum?.isMetaMask) {
+        const { provider } = await walletConnect();
+        await provider.disconnect();
+      }
+      setContractInstance(null);
+      setCurrentAddress(null);
+      setCurrentProvider(null);
+      setWallet(null);
+      window.location.reload();
+    } catch (err) {
+      console.log("ERR: ", err);
+    }
+  };
+
+  const selectNetwork = (e) => {
+    setNetworkSelected(e);
+  };
+
+  const errorData = "Ocurrio un error"; // errorMessages.find((item) => item.code === error) || {};
   const options =
     errorData.hrefs &&
     errorData.hrefs.map((item) => (
@@ -178,10 +102,20 @@ function Wallets({ currentAddressWallet, currentProvider }) {
   return (
     <div>
       {accountData.publicAddress &&
-        accountData.publicAddress.startsWith("0x") &&
+        accountData.publicAddress.startsWith("0X") &&
         !loading && (
-          <Button type="primary" shape="round" onClick={handleReset}>
-            {accountData.publicAddress}
+          <Button
+            type="primary"
+            shape="round"
+            onClick={handleReset}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <img
+              src={NETWORKS[networkSelected].icon}
+              alt="bloinx-icon"
+              width="20"
+            />
+            &nbsp;&nbsp;{accountData.publicAddress}
           </Button>
         )}
 
@@ -193,70 +127,99 @@ function Wallets({ currentAddressWallet, currentProvider }) {
 
       {loading && <Spin size="medium" />}
 
-      <Drawer
-        title="My Wallet"
-        visible={open}
-        placement="right"
-        closable
-        onClose={handleToggleDrawer}
-        width={400}
-      >
-        <div className={styles.Loading}>
-          <Title level={5}>Elige tu Wallet dentro de Metamask</Title>
-          {!loading && !error && (
-            <Button
-              type="primary"
-              icon={<WalletOutlined />}
-              size="large"
-              shape="round"
-              onClick={loadWeb3Provider}
-            >
-              METAMASK
-            </Button>
+      {!networkSelected && (
+        <Drawer
+          title="Select Network"
+          visible={open}
+          placement="right"
+          closable
+          onClose={handleToggleDrawer}
+          width={400}
+        >
+          <div className={styles.chainContainer}>
+            {Object.keys(NETWORKS).map((network) => {
+              return (
+                <Card
+                  className={styles.cardChain}
+                  style={{
+                    width: 120,
+                    height: 128,
+                    cursor: "pointer",
+                  }}
+                  key={NETWORKS[network].chainId}
+                  onClick={() => selectNetwork(network)}
+                >
+                  <img
+                    src={NETWORKS[network].icon}
+                    alt={NETWORKS[network].name}
+                    width="58"
+                    height={58}
+                    style={{ paddingTop: "10px" }}
+                  />
+                  <p className={styles.chainNameContainer}>
+                    {NETWORKS[network].name}
+                  </p>
+                </Card>
+              );
+            })}
+          </div>
+        </Drawer>
+      )}
+
+      {networkSelected && (
+        <Drawer
+          title="My Wallet"
+          visible={open}
+          placement="right"
+          closable
+          onClose={handleToggleDrawer}
+          width={400}
+        >
+          <div className={styles.Loading}>
+            <Title level={5}>Elige tu Wallet dentro de Metamask</Title>
+            {!loading && !error && (
+              <Button
+                type="primary"
+                icon={<WalletOutlined />}
+                size="large"
+                shape="round"
+                onClick={connectMMWallet}
+              >
+                METAMASK
+              </Button>
+            )}
+            {loading && <Spin size="large" tip="Loading..." />}
+          </div>
+          {(networkSelected === "44787" || networkSelected === "42220") && (
+            <div className={styles.Loading}>
+              <Title level={5}>Elige tu Wallet dentro de Valora</Title>
+              {!loading && !error && (
+                <Button
+                  type="primary"
+                  icon={<WalletOutlined />}
+                  size="large"
+                  shape="round"
+                  onClick={connectWalletConnect}
+                >
+                  VALORA
+                </Button>
+              )}
+              {loading && <Spin size="large" tip="Loading..." />}
+            </div>
           )}
-          {loading && <Spin size="large" tip="Loading..." />}
-        </div>
-        <div className={styles.Loading}>
-          <Title level={5}>Elige tu Wallet dentro de Valora</Title>
-          {!loading && !error && (
-            <Button
-              type="primary"
-              icon={<WalletOutlined />}
-              size="large"
-              shape="round"
-              onClick={loadWalletConnectProvider}
-            >
-              VALORA
-            </Button>
+
+          {!loading && error && (
+            <Result
+              status={errorData.status}
+              title={errorData.title}
+              subTitle={errorData.description}
+              extra={options}
+            />
           )}
-          {loading && <Spin size="large" tip="Loading..." />}
-        </div>
-        {!loading && error && (
-          <Result
-            status={errorData.status}
-            title={errorData.title}
-            subTitle={errorData.description}
-            extra={options}
-          />
-        )}
-      </Drawer>
+        </Drawer>
+      )}
     </div>
   );
 }
 
-Wallets.defaultProps = {
-  currentAddressWallet: () => {},
-  currentProvider: () => {},
-};
-
-Wallets.propTypes = {
-  currentAddressWallet: PropTypes.func,
-  currentProvider: PropTypes.func,
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  currentAddressWallet: (address) => dispatch(getCurrentWallet(address)),
-  currentProvider: (provider) => dispatch(getCurrentProvider(provider)),
-});
-
-export default connect(null, mapDispatchToProps)(Wallets);
+export default Wallets;

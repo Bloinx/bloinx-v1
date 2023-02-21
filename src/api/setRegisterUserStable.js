@@ -1,19 +1,26 @@
-import {
-  CUSD_TOKEN_CELO_MAINNET,
-  configCUSD,
-  walletConnect,
-} from "./config.erc";
+import { selectTokenAddress, configCUSD, walletConnect } from "./config.erc";
 
 import supabase from "../supabase";
 
+const userData = localStorage.getItem("user_address");
+
+const amountToApprove = {
+  4: "300000000",
+  3: "300000000",
+  1: "300000000000000000000",
+  2: "300000000000000000000",
+};
+
 const setRegisterUser = async (props) => {
-  const { walletAddress, roundId, provider } = props;
+  console.log({ props });
+  const { walletAddress, roundId, wallet } = props;
+  const { chainId } = userData ? JSON.parse(userData) : null;
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-
+  const token = selectTokenAddress(chainId);
   const cUSD = await new Promise((resolve, reject) => {
     try {
-      if (provider !== "WalletConnect") {
+      if (wallet !== "WalletConnect") {
         resolve(configCUSD());
       } else {
         resolve(walletConnect());
@@ -25,8 +32,8 @@ const setRegisterUser = async (props) => {
 
   return new Promise((resolve, reject) => {
     cUSD.methods
-      .approve(data[0].contract, "300000000000000000000")
-      .send({ from: walletAddress, to: CUSD_TOKEN_CELO_MAINNET })
+      .approve(data[0].contract, amountToApprove[data[0].tokenId])
+      .send({ from: walletAddress, to: token })
       .once("receipt", async (receipt) => {
         resolve(receipt);
       })

@@ -1,24 +1,26 @@
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { newKitFromWeb3 } from "@celo/contractkit";
+import { RPC_URL } from "../constants/web3Providers";
 import SavingGroups from "../abis/SavingGroups.json";
+import SavingGroupsP from "../abis/SavingGroupsP.json";
 
 export default async function config(savingGroupAddress) {
   try {
-    const httpProvider = new Web3.providers.HttpProvider(
-      "https://forno.celo.org",
-      {
-        timeout: 10000,
-      }
-    );
+    const userData = localStorage.getItem("user_address");
+
+    const { chainId } = JSON.parse(userData);
+    const rpcUrl = RPC_URL[chainId];
+
+    const httpProvider = new Web3.providers.HttpProvider(rpcUrl, {
+      timeout: 10000,
+    });
 
     const web3Provider = new Web3(
       window?.web3?.currentProvider || httpProvider
     );
-    const contract = new web3Provider.eth.Contract(
-      SavingGroups,
-      savingGroupAddress
-    );
+    const ABI = chainId === 42220 ? SavingGroups : SavingGroupsP;
+    const contract = new web3Provider.eth.Contract(ABI, savingGroupAddress);
 
     return contract;
   } catch (error) {
@@ -29,8 +31,7 @@ export default async function config(savingGroupAddress) {
 export async function walletConnect(savingGroupAddress) {
   const provider = new WalletConnectProvider({
     rpc: {
-      44787: "https://alfajores-forno.celo-testnet.org",
-      42220: "https://forno.celo.org",
+      ...RPC_URL,
     },
   });
   await provider.enable();

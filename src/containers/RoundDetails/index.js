@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect, useContext } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
-import withAuthProvider from "../../providers/withAuthProvider";
 import APIGetRoundDetail from "../../api/getRoundDetailSupabase";
 import { getUrlParams } from "../../utils/browser";
 
 import Details from "./Details";
+import { MainContext } from "../../providers/provider";
 
-function RoundDetails({ currentAddress, currentProvider }) {
+function RoundDetails() {
   const history = useHistory();
   const baseUrl = "/round-details";
   const { roundId } = getUrlParams(history.location.search);
   const [roundData, setRoundData] = useState({});
+  const { currentAddress, wallet } = useContext(MainContext);
 
   useEffect(() => {
-    APIGetRoundDetail(roundId, currentProvider).then((dataRound) => {
+    APIGetRoundDetail(roundId, wallet).then((dataRound) => {
       setRoundData(dataRound);
     });
   }, []);
@@ -29,7 +28,7 @@ function RoundDetails({ currentAddress, currentProvider }) {
             roundData={roundData}
             roundId={roundId}
             currentAddress={currentAddress}
-            currentProvider={currentProvider}
+            wallet={wallet}
           />
         )}
       />
@@ -37,44 +36,4 @@ function RoundDetails({ currentAddress, currentProvider }) {
   );
 }
 
-RoundDetails.propTypes = {
-  currentAddress: PropTypes.string,
-  currentProvider: PropTypes.string,
-};
-
-RoundDetails.defaultProps = {
-  currentAddress: undefined,
-  currentProvider: undefined,
-};
-
-// RoundDetails.propTypes = {
-//   currentAddress: PropTypes.string.isRequired,
-//   currentProvider: PropTypes.string,
-// };
-
-// RoundDetails.defaultProps = {
-//   currentProvider: undefined,
-// };
-
-// const mapStateToProps = (state) => {
-//   const currentAddress = state?.main?.currentAddress;
-//   const currentProvider = state?.main?.currentProvider;
-//   return { currentAddress, currentProvider };
-// };
-
-// const mapDispatchToProps = () => ({});
-
-// export default connect(mapStateToProps, mapDispatchToProps)(memo(RoundDetails));
-
-const mapStateToProps = (state) => {
-  const currentAddress = state?.main?.currentAddress;
-  const currentProvider = state?.main?.currentProvider;
-  return { currentAddress, currentProvider };
-};
-
-const mapDispatchToProps = () => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withAuthProvider(RoundDetails));
+export default RoundDetails;

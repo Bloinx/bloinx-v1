@@ -2,12 +2,12 @@
 import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
 
-const api = async (roundId, provider) => {
+const api = async (roundId, wallet) => {
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
-      if (provider !== "WalletConnect") {
+      if (wallet !== "WalletConnect") {
         resolve(config(data[0].contract));
       } else {
         resolve(walletConnect(data[0].contract));

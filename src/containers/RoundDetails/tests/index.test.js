@@ -5,7 +5,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 
-import store from "../../../redux/store";
 import RoundDetails from "../index";
 
 describe("<RoundDetails/>", () => {
@@ -23,7 +22,7 @@ describe("<RoundDetails/>", () => {
 
   test("should render correctly using default props", () => {
     render(
-      <Provider store={store}>
+      <Provider>
         <BrowserRouter>
           <RoundDetails roundData={props.roundData} />
         </BrowserRouter>
