@@ -36,7 +36,7 @@ const setRegisterUser = async (props) => {
   const user = supabase.auth.user();
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-
+  console.log({ data });
   const sg = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {

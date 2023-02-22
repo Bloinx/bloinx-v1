@@ -7,6 +7,7 @@ import config, {
 } from "./config.main.web3";
 import { selectTokenAddress } from "./config.erc";
 import { getTokenId } from "./utils/getTokenData";
+import getGasFee from "./utils/getGasFee";
 
 const adminFee = 2;
 const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX
@@ -23,6 +24,9 @@ const setCreateRound = async ({
 }) =>
   (async function getFactoryMethods() {
     const { chainId } = userData ? JSON.parse(userData) : null;
+    const gasFee = await getGasFee(chainId);
+    console.log("GAS FEE ", gasFee);
+    // getGas
 
     try {
       const factory = await new Promise((resolve, reject) => {
@@ -96,6 +100,7 @@ const setCreateRound = async ({
             .send({
               from: currentAddress,
               to: selectContractAddress(chainId),
+              gas: gasFee,
             })
             .once("receipt", async (receipt) => {
               const contract =

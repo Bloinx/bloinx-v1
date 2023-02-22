@@ -7,7 +7,7 @@ const setAddPayment = async (props) => {
   const { walletAddress, roundId, wallet } = props;
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-
+  console.log({ data });
   const sg = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
