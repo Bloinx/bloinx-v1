@@ -51,7 +51,8 @@ const setCreateRound = async ({
             .send({
               from: currentAddress,
               to: selectContractAddress(chainId),
-              gasPrice: gasFee,
+              maxPriorityFeePerGas: gasFee,
+              maxFeePerGas: "33333333333",
             })
             .once("receipt", async (receipt) => {
               const contract =
@@ -99,7 +100,7 @@ const setCreateRound = async ({
             .send({
               from: currentAddress,
               to: selectContractAddress(chainId),
-              gasPrice: gasFee,
+              getGasFee,
             })
             .once("receipt", async (receipt) => {
               const contract =

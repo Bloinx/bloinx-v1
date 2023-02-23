@@ -10,7 +10,8 @@ const CELO_GAS_STATION =
   "https://api.celoscan.io/api?module=proxy&action=eth_gasPrice&apikey=key";
 
 const getGasFee = async (chainId) => {
-  let baseFee = 0;
+  let maxPriorityFeePerGas = 0;
+  let maxFeePerGas = 0;
 
   switch (chainId) {
     case 137:
@@ -18,7 +19,7 @@ const getGasFee = async (chainId) => {
         const result = await axios.get(POLYGON_GAS_STATION);
         const { standard } = result?.data;
         const formattedFee = standard.maxPriorityFee.toFixed(9);
-        baseFee = Web3.utils.toWei(formattedFee, "gwei");
+        maxPriorityFeePerGas = Web3.utils.toWei(formattedFee, "gwei");
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -27,8 +28,23 @@ const getGasFee = async (chainId) => {
       try {
         const result = await axios.get(MUMBAI_GAS_STATION);
         const { standard } = result?.data;
-        const formattedFee = standard.maxPriorityFee.toFixed(9);
-        baseFee = Web3.utils.toWei(formattedFee, "gwei");
+        console.log(standard);
+        const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
+        maxPriorityFeePerGas = Web3.utils.toWei(
+          formattedMaxPriorityFee,
+          "gwei"
+        );
+        console.log(maxPriorityFeePerGas);
+        const { estimatedBaseFee } = result?.data;
+        console.log(estimatedBaseFee);
+        const formattedestimatedBaseFee = estimatedBaseFee.toFixed(9);
+        const maxFeePerGasTemp = Web3.utils.toWei(
+          formattedestimatedBaseFee,
+          "gwei"
+        );
+        console.log(maxFeePerGasTemp);
+        maxFeePerGas = maxFeePerGasTemp;
+        console.log(maxFeePerGas);
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -38,7 +54,7 @@ const getGasFee = async (chainId) => {
         const result = await axios.get(ALFAJORES_GAS_STATION);
         const { result: standard } = result?.data;
         const formattedFee = parseInt(standard, 16);
-        baseFee = Web3.utils.toWei(formattedFee.toString(), "wei");
+        maxPriorityFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -48,7 +64,7 @@ const getGasFee = async (chainId) => {
         const result = await axios.get(CELO_GAS_STATION);
         const { result: standard } = result?.data;
         const formattedFee = parseInt(standard, 16);
-        baseFee = Web3.utils.toWei(formattedFee.toString(), "wei");
+        maxPriorityFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -57,7 +73,13 @@ const getGasFee = async (chainId) => {
       console.log("[ERROR] !! Invalid Network");
       break;
   }
-  return baseFee;
+
+  const transactionProperties = {
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  };
+
+  return transactionProperties;
 };
 
 export default getGasFee;
