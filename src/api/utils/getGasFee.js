@@ -17,21 +17,21 @@ const getGasFee = async (chainId) => {
     case 137:
       try {
         const result = await axios.get(POLYGON_GAS_STATION);
-        const { standard } = result?.data;
+        const { standard, estimatedBaseFee } = result?.data;
         const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
+        const formattedEstimatedBaseFee = estimatedBaseFee.toFixed(9);
+
         const maxPriorityFeePerGasTemp = Web3.utils.toWei(
           formattedMaxPriorityFee,
           "gwei"
         );
-        maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
-        const { estimatedBaseFee } = result?.data;
-        // const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
-        const formattedestimatedBaseFee = estimatedBaseFee.toFixed(9);
         const maxFeePerGasTemp = Web3.utils.toWei(
-          formattedestimatedBaseFee,
+          formattedEstimatedBaseFee,
           "gwei"
         );
-        maxFeePerGas = Number(maxFeePerGasTemp) + Number(maxPriorityFeePerGas);
+
+        maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
+        maxFeePerGas = Number(maxFeePerGasTemp) + maxPriorityFeePerGas;
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -39,19 +39,21 @@ const getGasFee = async (chainId) => {
     case 80001:
       try {
         const result = await axios.get(MUMBAI_GAS_STATION);
-        const { standard } = result?.data;
+        const { standard, estimatedBaseFee } = result?.data;
         const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
         const maxPriorityFeePerGasTemp = Web3.utils.toWei(
           formattedMaxPriorityFee,
           "gwei"
         );
+
         maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
-        const { estimatedBaseFee } = result?.data;
-        const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
-        const formattedestimatedBaseFee =
-          formattedestimatedBaseFeeTemp.toFixed(9);
+
+        const formattedEstimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
+        const formattedEstimatedBaseFee =
+          formattedEstimatedBaseFeeTemp.toFixed(9);
+
         const maxFeePerGasTemp = Web3.utils.toWei(
-          formattedestimatedBaseFee,
+          formattedEstimatedBaseFee,
           "gwei"
         );
         maxFeePerGas = Number(maxFeePerGasTemp) + maxPriorityFeePerGas;
@@ -65,6 +67,7 @@ const getGasFee = async (chainId) => {
         const { result: standard } = result?.data;
         const formattedFee = parseInt(standard, 16);
         maxPriorityFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
+        maxFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -75,6 +78,7 @@ const getGasFee = async (chainId) => {
         const { result: standard } = result?.data;
         const formattedFee = parseInt(standard, 16);
         maxPriorityFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
+        maxFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
