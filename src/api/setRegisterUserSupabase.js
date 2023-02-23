@@ -60,7 +60,8 @@ const setRegisterUser = async (props) => {
       .send({
         from: walletAddress,
         to: data[0].contract,
-        gasPrice: gasFee,
+        maxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })
       .once("receipt", async (recpt) => {
         const res = await setRegisterPosition(

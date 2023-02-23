@@ -35,7 +35,8 @@ const setWithdrawTurn = async (roundId, walletAddress, wallet) => {
       .send({
         from: walletAddress,
         to: data[0].contract,
-        gasPrice: gasFee,
+        maxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })
       .once("receipt", async (receipt) => {
         if (Number(realTurn) > Number(groupSize)) {

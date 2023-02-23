@@ -24,19 +24,14 @@ const getGasFee = async (chainId) => {
           "gwei"
         );
         maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
-        console.log(maxPriorityFeePerGas);
         const { estimatedBaseFee } = result?.data;
-        console.log(estimatedBaseFee);
         // const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
         const formattedestimatedBaseFee = estimatedBaseFee.toFixed(9);
-        console.log(formattedestimatedBaseFee);
         const maxFeePerGasTemp = Web3.utils.toWei(
           formattedestimatedBaseFee,
           "gwei"
         );
-        console.log(maxFeePerGasTemp);
         maxFeePerGas = Number(maxFeePerGasTemp) + Number(maxPriorityFeePerGas);
-        console.log(maxFeePerGas);
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -45,27 +40,21 @@ const getGasFee = async (chainId) => {
       try {
         const result = await axios.get(MUMBAI_GAS_STATION);
         const { standard } = result?.data;
-        console.log(standard);
         const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
         const maxPriorityFeePerGasTemp = Web3.utils.toWei(
           formattedMaxPriorityFee,
           "gwei"
         );
         maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
-        console.log(maxPriorityFeePerGas);
         const { estimatedBaseFee } = result?.data;
-        console.log(estimatedBaseFee);
         const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
         const formattedestimatedBaseFee =
           formattedestimatedBaseFeeTemp.toFixed(9);
-        console.log(formattedestimatedBaseFee);
         const maxFeePerGasTemp = Web3.utils.toWei(
           formattedestimatedBaseFee,
           "gwei"
         );
-        console.log(maxFeePerGasTemp);
         maxFeePerGas = Number(maxFeePerGasTemp) + maxPriorityFeePerGas;
-        console.log(maxFeePerGas);
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }

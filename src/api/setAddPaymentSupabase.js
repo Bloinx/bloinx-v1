@@ -33,7 +33,8 @@ const setAddPayment = async (props) => {
       .send({
         from: walletAddress,
         to: data[0].contract,
-        gasPrice: gasFee,
+        maxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })
       .once("receipt", async (receipt) => {
         resolve(receipt);
