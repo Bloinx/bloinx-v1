@@ -10,6 +10,7 @@ import TokenBalance from "../TokenBalance";
 
 export default function Navbar({ width, toggleDrawer, visible }) {
   const Icon = visible ? CloseOutlined : MenuOutlined;
+
   return (
     <div className={styles.navbar}>
       <div>

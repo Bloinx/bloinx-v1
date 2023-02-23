@@ -2,17 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { IntlProvider } from "react-intl";
 import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
 
 import reportWebVitals from "./reportWebVitals";
 import flattenMessages from "./utils/locales";
-import store from "./redux/store";
 import es from "./locales/es.json";
 import en from "./locales/en.json";
 import App from "./App";
 
 import "antd/dist/antd.css";
 import "./index.less";
+import MainProvider from "./providers/provider";
 
 // eslint-disable-next-line no-undef
 const locale = window.navigator.language.split("-")[0];
@@ -29,9 +28,9 @@ ReactDOM.render(
       defaultLocale={defaultLocale}
     >
       <BrowserRouter>
-        <Provider store={store}>
+        <MainProvider>
           <App />
-        </Provider>
+        </MainProvider>
       </BrowserRouter>
     </IntlProvider>
   </React.StrictMode>,

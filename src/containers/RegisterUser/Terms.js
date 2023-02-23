@@ -12,7 +12,7 @@ import MethodGetRegisterStable from "../../api/setRegisterUserStable";
 import { receiptValidation } from "./validations";
 import styles from "./Terms.module.scss";
 
-function Terms({ form, baseUrl, walletAddress, roundData, provider }) {
+function Terms({ form, baseUrl, walletAddress, roundData, wallet }) {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const handlerOnSubmit = () => {
@@ -20,7 +20,7 @@ function Terms({ form, baseUrl, walletAddress, roundData, provider }) {
     MethodGetRegisterStable({
       walletAddress,
       roundId: roundData.roundId,
-      provider,
+      wallet,
     })
       .then(() => {
         history.push(`${baseUrl}/join?roundId=${roundData.roundId}`);
@@ -52,7 +52,7 @@ function Terms({ form, baseUrl, walletAddress, roundData, provider }) {
                   label={<FormattedMessage id="createRound.labels.terms" />}
                   name="termsAndConditions"
                   onChange={handleChange}
-                  error={errors.name}
+                  error={errors?.name}
                   checked={values.termsAndConditions}
                 />
               </div>

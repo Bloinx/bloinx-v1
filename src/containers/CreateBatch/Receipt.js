@@ -2,8 +2,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
@@ -21,11 +20,12 @@ import {
   periodicityOptions,
   paymentTime,
 } from "./constants";
+import { MainContext } from "../../providers/provider";
 
-const Receipt = ({ form, setForm, walletAddress, provider }) => {
+const Receipt = ({ form, setForm, tokenSelected }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-
+  const { currentAddress, wallet } = useContext(MainContext);
   const handlerOnSubmit = (values) =>
     setForm({
       ...form,
@@ -34,7 +34,8 @@ const Receipt = ({ form, setForm, walletAddress, provider }) => {
     });
 
   useEffect(() => {
-    if (form.isComplete && !walletAddress) {
+    let cancel = false;
+    if (form.isComplete && !currentAddress) {
       Modal.warning({
         title: "Wallet no encontrada",
         content: "Por favor conecta tu wallet antes de continuar.",
@@ -44,7 +45,7 @@ const Receipt = ({ form, setForm, walletAddress, provider }) => {
         isComplete: false,
       });
     }
-    if (form.isComplete && walletAddress) {
+    if (form.isComplete && currentAddress && !cancel) {
       setLoading(true);
       APISetCreateRound({
         warranty: form.amount,
@@ -52,8 +53,8 @@ const Receipt = ({ form, setForm, walletAddress, provider }) => {
         groupSize: form.participants,
         payTime: paymentTime[form.periodicity],
         isPublic: false,
-        walletAddress,
-        provider,
+        currentAddress,
+        wallet,
       })
         .then(() => {
           setLoading(false);
@@ -69,7 +70,10 @@ const Receipt = ({ form, setForm, walletAddress, provider }) => {
           history.push("/create-round/receipt/error");
         });
     }
-  }, [form.isComplete]);
+    return () => {
+      cancel = true;
+    };
+  }, [form.isComplete, currentAddress, wallet, form, setForm, history]);
 
   return (
     <>
@@ -88,13 +92,15 @@ const Receipt = ({ form, setForm, walletAddress, provider }) => {
               <div>
                 <FormattedMessage id="createRound.labels.amount" />
               </div>
-              <div>{`${form.amount} cUSD`}</div>
+              <div>{`${form.amount} ${tokenSelected}`}</div>
             </div>
             <div className={styles.ReceiptCardItem}>
               <div>
                 <FormattedMessage id="createRound.labels.receiptAmount" />
               </div>
-              <div>{`${form.amount * (form.participants - 1)} cUSD`}</div>
+              <div>{`${
+                form.amount * (form.participants - 1)
+              } ${tokenSelected}`}</div>
             </div>
             <div className={styles.ReceiptCardItem}>
               <div>
@@ -128,12 +134,4 @@ Receipt.propTypes = {
   setForm: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  const walletAddress = state?.main?.currentAddress;
-  const provider = state?.main?.currentProvider;
-  return { walletAddress, provider };
-};
-
-const mapDispatchToProps = () => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Receipt);
+export default Receipt;

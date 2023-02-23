@@ -13,6 +13,7 @@ import MethodGetUserAvailableCashIn from "./methods/getUserAvailableCashIn";
 import MethodGetSaveAmount from "./methods/saveAmount";
 import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
+import { getTokenDecimals } from "./utils/getTokenData";
 
 const getRounds = async ({ userId }) => {
   const { data } = await supabase
@@ -43,10 +44,10 @@ export const configByPositionOther = async (
   round,
   positionByRound,
   walletAddress,
-  provider
+  wallet
 ) => {
   const sg =
-    (await provider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
 
@@ -61,6 +62,7 @@ export const configByPositionOther = async (
     sg.methods,
     positionByRound.position || 1
   );
+  const tokenDecimals = await getTokenDecimals(round?.tokenId);
 
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
@@ -103,7 +105,6 @@ export const configByPositionOther = async (
         Number(unassignedPayments) -
         (Number(cashIn) - Number(availableCashIn))) /
       Number(saveAmount);
-    console.log(pagos, groupSize);
 
     const ads = () => {
       if (pagos === groupSize - 1) {
@@ -129,7 +130,7 @@ export const configByPositionOther = async (
   const roundData = {
     contract: round?.contract,
     paymentStatus,
-    saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
+    saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
     name: positionByRound.alias,
     roundKey: positionByRound.idRound,
     toRegister: Boolean(!exist),

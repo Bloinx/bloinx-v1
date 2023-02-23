@@ -13,14 +13,7 @@
     "test:coverage": "craco test --coverage --watchAll=false",
     "test:coveralls": "jest --coverage && coveralls < coverage/lcov.info",
     "eject": "craco eject",
-    "lint": "eslint .",
-    "deploy": "firebase deploy --only hosting",
-    "deploy:IST": "firebase hosting:channel:deploy IST",
-    "deploy:UAT": "firebase hosting:channel:deploy UAT",
-    "commitlint": "commitlint --from=development",
-    "release": "standard-version && git push --follow-tags origin development && yarn build && yarn deploy",
-    "prerelease": "standard-version --prerelease next && git push --follow-tags origin development && yarn build && yarn deploy:UAT",
-    "release:ist": "standard-version --prerelease beta && git push --follow-tags origin development && yarn build && yarn deploy:IST"
+    "lint": "eslint ."
   },
   "jest": {
     "collectCoverageFrom": [

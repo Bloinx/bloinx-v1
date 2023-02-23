@@ -1,5 +1,6 @@
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
+import { getTokenDecimals } from "./utils/getTokenData";
 
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetGroupSize from "./methods/getGroupSize";
@@ -40,6 +41,7 @@ export const configByPosition = async (
   const turn = await MethodGetTurn(sg.methods);
   const cashIn = await MethodGetCashIn(sg.methods);
   const saveAmount = await MethodGetSaveAmount(sg.methods);
+  const tokenDecimals = await getTokenDecimals(round?.tokenId);
 
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
@@ -112,13 +114,10 @@ export const configByPosition = async (
     realTurn,
     withdraw: Number(realTurn) > data?.position,
     fromInvitation: false,
-    saveAmount: (Number(cashIn) * 10 ** -18).toFixed(2),
+    saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
   };
 
-
-    return roundData;
-
-
+  return roundData;
 };
 
 export const getAll = async (userId, round) => {

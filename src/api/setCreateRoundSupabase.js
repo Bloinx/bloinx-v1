@@ -3,12 +3,15 @@ import supabase from "../supabase";
 
 import config, {
   walletConnect,
-  MAIN_FACTORY_CELO_MAINNET,
+  selectContractAddress,
 } from "./config.main.web3";
-import { CUSD_TOKEN_CELO_MAINNET } from "./config.erc";
+import { selectTokenAddress } from "./config.erc";
+import { getTokenId } from "./utils/getTokenData";
+import getGasFee from "./utils/getGasFee";
 
 const adminFee = 2;
 const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX
+const userData = localStorage.getItem("user_address");
 
 const setCreateRound = async ({
   warranty,
@@ -16,63 +19,122 @@ const setCreateRound = async ({
   groupSize,
   payTime,
   isPublic,
-  walletAddress,
-  provider,
+  currentAddress,
+  wallet,
 }) =>
   (async function getFactoryMethods() {
+    const { chainId } = userData ? JSON.parse(userData) : null;
+    const gasFee = await getGasFee(chainId);
+
     try {
       const factory = await new Promise((resolve, reject) => {
-        if (provider !== "WalletConnect") {
+        if (wallet !== "WalletConnect") {
           resolve(config());
         } else {
           resolve(walletConnect());
         }
       });
 
-      await new Promise((resolve, reject) => {
-        factory.contract.methods
-          .createRound(
-            warranty,
-            saving,
-            groupSize,
-            adminFee,
-            payTime,
-            CUSD_TOKEN_CELO_MAINNET,
-            BLX_TOKEN_CELO_MAINNET
-          )
-          .send({
-            from: walletAddress,
-            to: MAIN_FACTORY_CELO_MAINNET,
-          })
-          .once("receipt", async (receipt) => {
-            const contract =
-              receipt?.events?.RoundCreated?.returnValues?.childRound;
-            const admin = receipt.from;
-            const folio = receipt.transactionHash;
-            const session = supabase.auth.session();
-            const idUser = session.user.id;
-            await supabase
-              .from("rounds")
-              .insert([
-                {
-                  userAdmin: idUser,
-                  wallet: admin,
-                  contract,
-                  folio,
-                  isPublic,
-                },
-              ])
-              .then((data) => {
-                resolve(data);
-              })
-              .catch((error) => {
-                reject(error);
-              });
-          })
-          .on("error", async (error) => {
-            reject(error);
-          });
-      });
+      if (chainId === 42220 || chainId === 44787) {
+        const token = selectTokenAddress(chainId);
+        await new Promise((resolve, reject) => {
+          factory.contract.methods
+            .createRound(
+              warranty,
+              saving,
+              groupSize,
+              adminFee,
+              payTime,
+              token,
+              BLX_TOKEN_CELO_MAINNET
+            )
+            .send({
+              from: currentAddress,
+              to: selectContractAddress(chainId),
+              maxFeePerGas: gasFee.maxFeePerGas,
+              maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
+            })
+            .once("receipt", async (receipt) => {
+              const contract =
+                receipt?.events?.RoundCreated?.returnValues?.childRound;
+              const admin = receipt.from;
+              const folio = receipt.transactionHash;
+              const session = supabase.auth.session();
+              const idUser = session.user.id;
+              const tokenIds = await getTokenId(chainId);
+              await supabase
+                .from("rounds")
+                .insert([
+                  {
+                    userAdmin: idUser,
+                    wallet: admin,
+                    contract,
+                    folio,
+                    isPublic,
+                    tokenId: tokenIds,
+                  },
+                ])
+                .then((data) => {
+                  resolve(data);
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            })
+            .on("error", async (error) => {
+              reject(error);
+            });
+        });
+      } else {
+        await new Promise((resolve, reject) => {
+          factory.contract.methods
+            .createRound(
+              warranty,
+              saving,
+              groupSize,
+              adminFee,
+              payTime,
+              selectTokenAddress(chainId),
+              "0x0000000000000000000000000000000000000000"
+            )
+            .send({
+              from: currentAddress,
+              to: selectContractAddress(chainId),
+              maxFeePerGas: gasFee.maxFeePerGas,
+              maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
+            })
+            .once("receipt", async (receipt) => {
+              const contract =
+                receipt?.events?.RoundCreated?.returnValues?.childRound;
+              const admin = receipt.from;
+              const folio = receipt.transactionHash;
+              const session = supabase.auth.session();
+              const idUser = session.user.id;
+              const tokenIds = await getTokenId(chainId);
+              await supabase
+                .from("rounds")
+                .insert([
+                  {
+                    userAdmin: idUser,
+                    wallet: admin,
+                    contract,
+                    folio,
+                    isPublic,
+                    tokenId: tokenIds,
+                  },
+                ])
+                .then((data) => {
+                  resolve(data);
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            })
+            .on("error", async (error) => {
+              reject(error);
+            });
+        });
+      }
     } catch (error) {
       console.log(error);
     }

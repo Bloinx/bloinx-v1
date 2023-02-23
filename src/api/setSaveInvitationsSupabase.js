@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
-import Web3 from "web3";
 
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
@@ -8,6 +7,7 @@ import config, { walletConnect } from "./config.sg.web3";
 import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodGetPayTime from "./methods/getPayTime";
 import MethodSaveAmount from "./methods/saveAmount";
+import { getTokenDecimals, getTokenSymbolByRound } from "./utils/getTokenData";
 
 const dayInSeconds = 86400;
 
@@ -37,18 +37,20 @@ const setEmailInvite = (mailList, roundId) => {
   });
 };
 
-const setSaveInvitations = async (mailList, round, provider, positionData) => {
+const setSaveInvitations = async (mailList, round, wallet, positionData) => {
   const sg =
-    (await provider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
 
   const groupSize = await MethodGetGroupSize(sg.methods);
   const payTime = await MethodGetPayTime(sg.methods);
   const saveAmount = await MethodSaveAmount(sg.methods);
+  const tokenSymbol = await getTokenSymbolByRound(round.tokenId);
+  const decimals = await getTokenDecimals(round.tokenId);
   const longevity = (payTime / dayInSeconds) * groupSize;
-  const totalAmount =
-    Number(Web3.utils.fromWei(saveAmount)) * Number(groupSize);
+
+  const totalAmount = Number(saveAmount * 10 ** -decimals) * Number(groupSize);
   try {
     await mailList.forEach((mail) => {
       axios
@@ -71,7 +73,7 @@ const setSaveInvitations = async (mailList, round, provider, positionData) => {
                   // type: "Public/Private",
                   longevity: `${longevity} días`,
                   participant: `${groupSize - 1}`,
-                  amount: `${totalAmount} cUSD`,
+                  amount: `${totalAmount} ${tokenSymbol}`,
                 },
                 subject: "Inviación a la Ronda",
               },
@@ -100,13 +102,13 @@ export const getRoundData = async (roundId) => {
   return data[0];
 };
 
-export const setAllInvites = (mailList, roundId, provider) => {
+export const setAllInvites = (mailList, roundId, wallet) => {
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
       setEmailInvite(mailList, round?.id);
       getPositionUserAdmin(round?.id, round?.userAdmin).then(
         (positionAdminData) => {
-          setSaveInvitations(mailList, round, provider, positionAdminData)
+          setSaveInvitations(mailList, round, wallet, positionAdminData)
             .then((status) => {
               resolve(status);
               // return status;

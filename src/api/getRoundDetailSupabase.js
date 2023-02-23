@@ -78,11 +78,11 @@ const getParticipantsData = (
 const getRoundDetailData = async (
   round,
   positionAdminData,
-  currentProvider,
+  wallet,
   invitations
 ) => {
   const sg =
-    (await currentProvider) !== "WalletConnect"
+    (await wallet) !== "WalletConnect"
       ? await config(round?.contract)
       : await walletConnect(round?.contract);
 
@@ -132,7 +132,7 @@ const getRoundInvitations = async (roundId) => {
   return data;
 };
 
-const getRoundDetailSupabase = async (roundId, currentProvider) => {
+const getRoundDetailSupabase = async (roundId, wallet) => {
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
       getPositionAdmin(roundId, round.userAdmin).then((positionAdminData) => {
@@ -140,7 +140,7 @@ const getRoundDetailSupabase = async (roundId, currentProvider) => {
           getRoundDetailData(
             round,
             positionAdminData,
-            currentProvider,
+            wallet,
             invitations
           ).then((rs) => {
             resolve(rs);

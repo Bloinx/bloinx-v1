@@ -16,14 +16,10 @@ import { formatAddress } from "../../utils/format";
 import styles from "./Details.module.scss";
 import getFuturePayments from "../../api/getFuturePaymentsSupabase";
 
-function Details({ roundData, roundId, currentAddress, currentProvider }) {
+function Details({ roundData, roundId, currentAddress, wallet }) {
   const [futurePayment, setFuturePayment] = useState("");
   const totalRemain = async () => {
-    const response = await getFuturePayments(
-      roundId,
-      currentAddress,
-      currentProvider
-    );
+    const response = await getFuturePayments(roundId, currentAddress, wallet);
     if (response) {
       setFuturePayment(response);
     }
