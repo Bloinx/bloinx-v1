@@ -30,10 +30,11 @@ const getGasFee = async (chainId) => {
         const { standard } = result?.data;
         console.log(standard);
         const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
-        maxPriorityFeePerGas = Web3.utils.toWei(
+        const maxPriorityFeePerGasTemp = Web3.utils.toWei(
           formattedMaxPriorityFee,
           "gwei"
         );
+        maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
         console.log(maxPriorityFeePerGas);
         const { estimatedBaseFee } = result?.data;
         console.log(estimatedBaseFee);
@@ -46,7 +47,7 @@ const getGasFee = async (chainId) => {
           "gwei"
         );
         console.log(maxFeePerGasTemp);
-        maxFeePerGas = Number(maxFeePerGasTemp) + Number(maxPriorityFeePerGas);
+        maxFeePerGas = Number(maxFeePerGasTemp) + maxPriorityFeePerGas;
         console.log(maxFeePerGas);
       } catch (error) {
         console.log("[ERROR] !! ", error);
@@ -56,8 +57,26 @@ const getGasFee = async (chainId) => {
       try {
         const result = await axios.get(ALFAJORES_GAS_STATION);
         const { result: standard } = result?.data;
-        const formattedFee = parseInt(standard, 16);
-        maxPriorityFeePerGas = Web3.utils.toWei(formattedFee.toString(), "wei");
+        const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
+        const maxPriorityFeePerGasTemp = Web3.utils.toWei(
+          formattedMaxPriorityFee,
+          "gwei"
+        );
+        maxPriorityFeePerGas = Number(maxPriorityFeePerGasTemp);
+        console.log(maxPriorityFeePerGas);
+        const { estimatedBaseFee } = result?.data;
+        console.log(estimatedBaseFee);
+        const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
+        const formattedestimatedBaseFee =
+          formattedestimatedBaseFeeTemp.toFixed(9);
+        console.log(formattedestimatedBaseFee);
+        const maxFeePerGasTemp = Web3.utils.toWei(
+          formattedestimatedBaseFee,
+          "gwei"
+        );
+        console.log(maxFeePerGasTemp);
+        maxFeePerGas = Number(maxFeePerGasTemp) + maxPriorityFeePerGas;
+        console.log(maxFeePerGas);
       } catch (error) {
         console.log("[ERROR] !! ", error);
       }
@@ -81,6 +100,7 @@ const getGasFee = async (chainId) => {
     maxFeePerGas,
     maxPriorityFeePerGas,
   };
+  console.log(transactionProperties);
 
   return transactionProperties;
 };

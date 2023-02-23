@@ -25,6 +25,7 @@ const setCreateRound = async ({
   (async function getFactoryMethods() {
     const { chainId } = userData ? JSON.parse(userData) : null;
     const gasFee = await getGasFee(chainId);
+    console.log(gasFee);
 
     try {
       const factory = await new Promise((resolve, reject) => {
@@ -100,7 +101,8 @@ const setCreateRound = async ({
             .send({
               from: currentAddress,
               to: selectContractAddress(chainId),
-              getGasFee,
+              maxFeePerGas: gasFee.maxFeePerGas,
+              maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
             })
             .once("receipt", async (receipt) => {
               const contract =
