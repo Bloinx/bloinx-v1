@@ -1,9 +1,14 @@
 /* eslint-disable no-unused-vars */
 import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
+import getGasFee from "./utils/getGasFee";
+
+const userData = localStorage.getItem("user_address");
 
 const api = async (roundId, wallet) => {
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
+  const { chainId } = userData ? JSON.parse(userData) : null;
+  const gasFee = await getGasFee(chainId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
@@ -24,6 +29,7 @@ const api = async (roundId, wallet) => {
       .send({
         from: data[0].wallet,
         to: data[0].contract,
+        gasPrice: gasFee,
       })
       .once("receipt", async (receipt) => {
         // await updateDoc(docRef, {
