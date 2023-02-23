@@ -27,11 +27,12 @@ const getGasFee = async (chainId) => {
     case 80001:
       try {
         const result = await axios.get(MUMBAI_GAS_STATION);
-        const { standard, estimatedBaseFee } = result?.data;
-        console.log(standard, estimatedBaseFee);
-        const formatted = estimatedBaseFee.toFixed(9);
+        console.log(result);
+        const { standard } = result?.data;
+        console.log(standard.maxPriorityFee);
+        const formatted = standard.maxPriorityFee.toFixed(9);
         console.log({ formatted });
-        baseFee = Web3.utils.toWei(formatted.toString(), "gwei");
+        baseFee = Web3.utils.toWei(formatted, "gwei");
         console.log("-->> ", baseFee);
       } catch (error) {
         console.log("[ERROR] !! ", error);
