@@ -35,7 +35,12 @@ const setRegisterUser = async (props) => {
   return new Promise((resolve, reject) => {
     cUSD.methods
       .approve(data[0].contract, amountToApprove[data[0].tokenId])
-      .send({ from: walletAddress, to: token, gasPrice: gasFee })
+      .send({
+        from: walletAddress,
+        to: token,
+        gasFeemaxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
+      })
       .once("receipt", async (receipt) => {
         resolve(receipt);
       })
