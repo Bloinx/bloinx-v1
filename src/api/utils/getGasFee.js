@@ -28,8 +28,7 @@ const getGasFee = async (chainId) => {
         const { estimatedBaseFee } = result?.data;
         console.log(estimatedBaseFee);
         // const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
-        const formattedestimatedBaseFee =
-          estimatedBaseFee.toFixed(9);
+        const formattedestimatedBaseFee = estimatedBaseFee.toFixed(9);
         console.log(formattedestimatedBaseFee);
         const maxFeePerGasTemp = Web3.utils.toWei(
           formattedestimatedBaseFee,
