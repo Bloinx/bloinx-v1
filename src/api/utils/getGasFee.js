@@ -37,13 +37,16 @@ const getGasFee = async (chainId) => {
         console.log(maxPriorityFeePerGas);
         const { estimatedBaseFee } = result?.data;
         console.log(estimatedBaseFee);
-        const formattedestimatedBaseFee = estimatedBaseFee.toFixed(9);
+        const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
+        const formattedestimatedBaseFee =
+          formattedestimatedBaseFeeTemp.toFixed(9);
+        console.log(formattedestimatedBaseFee);
         const maxFeePerGasTemp = Web3.utils.toWei(
           formattedestimatedBaseFee,
           "gwei"
         );
         console.log(maxFeePerGasTemp);
-        maxFeePerGas = maxFeePerGasTemp;
+        maxFeePerGas = Number(maxFeePerGasTemp) + Number(maxPriorityFeePerGas);
         console.log(maxFeePerGas);
       } catch (error) {
         console.log("[ERROR] !! ", error);
