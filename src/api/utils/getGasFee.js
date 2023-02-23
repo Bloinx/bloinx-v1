@@ -27,7 +27,7 @@ const getGasFee = async (chainId) => {
         console.log(maxPriorityFeePerGas);
         const { estimatedBaseFee } = result?.data;
         console.log(estimatedBaseFee);
-        //const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
+        // const formattedestimatedBaseFeeTemp = estimatedBaseFee * 10 ** 8;
         const formattedestimatedBaseFee =
           estimatedBaseFee.toFixed(9);
         console.log(formattedestimatedBaseFee);
