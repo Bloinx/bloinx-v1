@@ -1,10 +1,12 @@
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 import MethodGetFuturePayments from "./methods/getFuturePayments";
+import { getTokenDecimals } from "./utils/getTokenData";
 
 const getFuturePayments = async (roundId, currentAddress, wallet) => {
   try {
     const { data } = await supabase.from("rounds").select().eq("id", roundId);
+
     const sg = await new Promise((resolve, reject) => {
       try {
         if (wallet !== "WalletConnect") {
@@ -16,13 +18,13 @@ const getFuturePayments = async (roundId, currentAddress, wallet) => {
         reject(error);
       }
     });
-    // const sg = await config(data.contract);
+    const tokenDecimals = await getTokenDecimals(data[0]?.tokenId);
 
     const futurePayments = await MethodGetFuturePayments(
       sg.methods,
       currentAddress
     );
-    const result = (Number(futurePayments) * 10 ** -18).toFixed(2);
+    const result = (Number(futurePayments) * 10 ** -tokenDecimals).toFixed(2);
 
     return result;
   } catch (err) {

@@ -190,21 +190,23 @@ function Wallets() {
             )}
             {loading && <Spin size="large" tip="Loading..." />}
           </div>
-          <div className={styles.Loading}>
-            <Title level={5}>Elige tu Wallet dentro de Valora</Title>
-            {!loading && !error && (
-              <Button
-                type="primary"
-                icon={<WalletOutlined />}
-                size="large"
-                shape="round"
-                onClick={connectWalletConnect}
-              >
-                VALORA
-              </Button>
-            )}
-            {loading && <Spin size="large" tip="Loading..." />}
-          </div>
+          {(networkSelected === "44787" || networkSelected === "42220") && (
+            <div className={styles.Loading}>
+              <Title level={5}>Elige tu Wallet dentro de Valora</Title>
+              {!loading && !error && (
+                <Button
+                  type="primary"
+                  icon={<WalletOutlined />}
+                  size="large"
+                  shape="round"
+                  onClick={connectWalletConnect}
+                >
+                  VALORA
+                </Button>
+              )}
+              {loading && <Spin size="large" tip="Loading..." />}
+            </div>
+          )}
 
           {!loading && error && (
             <Result

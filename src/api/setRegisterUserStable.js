@@ -1,4 +1,5 @@
 import { selectTokenAddress, configCUSD, walletConnect } from "./config.erc";
+import getGasFee from "./utils/getGasFee";
 
 import supabase from "../supabase";
 
@@ -12,12 +13,13 @@ const amountToApprove = {
 };
 
 const setRegisterUser = async (props) => {
-  console.log({ props });
   const { walletAddress, roundId, wallet } = props;
   const { chainId } = userData ? JSON.parse(userData) : null;
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
   const token = selectTokenAddress(chainId);
+  const gasFee = await getGasFee(chainId);
+  console.log({ gasFee });
   const cUSD = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
@@ -33,7 +35,12 @@ const setRegisterUser = async (props) => {
   return new Promise((resolve, reject) => {
     cUSD.methods
       .approve(data[0].contract, amountToApprove[data[0].tokenId])
-      .send({ from: walletAddress, to: token })
+      .send({
+        from: walletAddress,
+        to: token,
+        gasFeemaxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
+      })
       .once("receipt", async (receipt) => {
         resolve(receipt);
       })

@@ -4,9 +4,14 @@ import config, { walletConnect } from "./config.sg.web3";
 import MethodGetRealTurn from "./methods/getRealTurn";
 import MethodGetGroupSize from "./methods/getGroupSize";
 import MethodSetEndRound from "./methods/setEndRound";
+import getGasFee from "./utils/getGasFee";
+
+const userData = localStorage.getItem("user_address");
 
 const setWithdrawTurn = async (roundId, walletAddress, wallet) => {
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
+  const { chainId } = userData ? JSON.parse(userData) : null;
+  const gasFee = await getGasFee(chainId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
@@ -30,6 +35,8 @@ const setWithdrawTurn = async (roundId, walletAddress, wallet) => {
       .send({
         from: walletAddress,
         to: data[0].contract,
+        maxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })
       .once("receipt", async (receipt) => {
         if (Number(realTurn) > Number(groupSize)) {
