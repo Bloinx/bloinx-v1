@@ -27,13 +27,12 @@ function ForgotPass() {
   const [passwordError, setPasswordError] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
-  const { ResetPass, sendRecoveryPass } = useAuth();
+  const { ResetPass } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
   };
 
   const handleForgotPass = () => {
-    debugger;
     setLoading(true);
     ResetPass({
       emailReset: email,

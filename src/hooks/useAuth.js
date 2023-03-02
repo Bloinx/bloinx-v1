@@ -7,7 +7,6 @@ import signUp from "../api/setSignUpSupabase";
 import Logout from "../api/setLogoutSupabase";
 import ResetPass from "../api/setResetPass";
 import updatePassword from "../api/setUpdatePass";
-import sendRecoveryPass from "../api/utils/sendRecoveryPass";
 
 const authContext = createContext();
 
@@ -54,7 +53,6 @@ const useProvideAuth = () => {
     signUp,
     Logout,
     ResetPass,
-    sendRecoveryPass,
     updatePassword,
   };
 };

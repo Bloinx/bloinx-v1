@@ -1,17 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useHistory, Link } from "react-router-dom";
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-  notification,
-  Space,
-} from "antd";
-import apiUserData from "../../api/setUserData";
+import { Button, Form, Input, notification } from "antd";
 
 import logo from "../../assets/bloinxLogo.png";
 import styles from "./index.module.scss";
