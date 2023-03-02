@@ -43,3 +43,21 @@ export const getTokenDecimals = async (tokenId) => {
 
   return data[0].decimals;
 };
+
+export const getTokenAddress = async (tokenSelected) => {
+  const { data } = await supabase
+    .from("tokens")
+    .select("address")
+    .eq("symbol", tokenSelected);
+  console.log(data[0].address);
+  return data[0].address;
+};
+
+export const getTokenIdP = async (tokenSelected) => {
+  const { data } = await supabase
+    .from("tokens")
+    .select("id")
+    .eq("symbol", tokenSelected);
+  console.log(data);
+  return data[0].id;
+};
