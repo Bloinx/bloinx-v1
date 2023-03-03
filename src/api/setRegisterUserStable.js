@@ -20,14 +20,13 @@ const setRegisterUser = async (props) => {
   const { chainId } = userData ? JSON.parse(userData) : null;
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
   const gasFee = await getGasFee(chainId);
-  console.log({ gasFee });
+
   const token = await getTokenAddressById(data[0].tokenId);
-  console.log(token);
+
   const cUSD = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(configCUSD());
-        configCUSD.contractAddress = token;
+        resolve(configCUSD(token));
       } else {
         resolve(walletConnect());
       }
