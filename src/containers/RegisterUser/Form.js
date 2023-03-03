@@ -34,6 +34,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
 
   const getTokenSymbol = async () => {
     const data = await getTokenSymbolByRound(roundData.tokenId);
+    console.log(data);
     return data;
   };
 
@@ -42,6 +43,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
       setTokenSymbol(data);
     });
   }, [roundData]);
+  console.log(roundData);
 
   const handlerOnSubmit = (values) => {
     if (!walletAddress) {

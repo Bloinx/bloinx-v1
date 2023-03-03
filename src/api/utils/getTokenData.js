@@ -49,7 +49,6 @@ export const getTokenAddress = async (tokenSelected) => {
     .from("tokens")
     .select("address")
     .eq("symbol", tokenSelected);
-  console.log(data[0].address);
   return data[0].address;
 };
 
@@ -58,6 +57,13 @@ export const getTokenIdP = async (tokenSelected) => {
     .from("tokens")
     .select("id")
     .eq("symbol", tokenSelected);
-  console.log(data);
   return data[0].id;
+};
+
+export const getTokenAddressById = async (tokenId) => {
+  const { data } = await supabase
+    .from("tokens")
+    .select("address")
+    .eq("id", tokenId);
+  return data[0].address;
 };
