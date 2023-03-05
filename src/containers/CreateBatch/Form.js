@@ -36,7 +36,7 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
   };
   let sliderInfo = { Min: 5, Max: 30, Step: 1 };
   if (tokenSelected === "jMXN") {
-    sliderInfo = { Min: 100, Max: 500, Step: 50 };
+    sliderInfo = { Min: 100, Max: 1000, Step: 50 };
   }
 
   return (
