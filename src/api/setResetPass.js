@@ -2,13 +2,18 @@
 import supabase from "../supabase";
 
 const ResetPass = async ({ emailReset, onSuccess, onFailure }) => {
+  const currentDomain = window.location.hostname;
+  const redirectToEmail =
+    currentDomain === "localhost"
+      ? "http://localhost:3000/update-password"
+      : `https://${currentDomain}/update-password`;
+
   const { data, error } = await supabase.auth.api.resetPasswordForEmail(
     emailReset,
     {
-      redirectTo: "http://localhost:3000/update-password",
+      redirectTo: redirectToEmail,
     }
   );
-  // console.log("Email sent successfully!");
   onSuccess(data);
   console.log(error.message);
   onFailure(error);
