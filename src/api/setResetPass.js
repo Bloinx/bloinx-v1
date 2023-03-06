@@ -1,12 +1,11 @@
-// import { useHistory } from "react-router-dom";
 import supabase from "../supabase";
 
 const ResetPass = async ({ emailReset, onSuccess, onFailure }) => {
-  const currentDomain = window.location.hostname;
-  const redirectToEmail =
-    currentDomain === "localhost"
-      ? "http://localhost:3000/update-password"
-      : `https://${currentDomain}/update-password`;
+  const currentDomain = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : `http://${window.location.hostname}:3000`;
+
+  const redirectToEmail = `${currentDomain}/update-password`;
 
   const { data, error } = await supabase.auth.api.resetPasswordForEmail(
     emailReset,
