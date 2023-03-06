@@ -34,6 +34,10 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
       return { value: token, label: token };
     });
   };
+  let sliderInfo = { Min: 5, Max: 30, Step: 1 };
+  if (tokenSelected === "jMXN") {
+    sliderInfo = { Min: 100, Max: 1000, Step: 50 };
+  }
 
   return (
     <>
@@ -41,7 +45,7 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
       <Formik
         initialValues={{
           participants: form.participants,
-          amount: form.amount,
+          amount: sliderInfo.Min,
           periodicity: form.periodicity,
           token: form.token,
         }}
@@ -80,9 +84,9 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
                 name="amount"
                 value={values.amount}
                 onChange={handleChange}
-                min={5}
-                max={30}
-                step={1}
+                min={sliderInfo.Min}
+                max={sliderInfo.Max}
+                step={sliderInfo.Step}
                 error={errors.amount}
               />
 

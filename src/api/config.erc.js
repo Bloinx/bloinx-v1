@@ -26,7 +26,7 @@ export const selectTokenAddress = (network) => {
   return USDC_MUMBAI;
 };
 
-export async function configCUSD() {
+export async function configCUSD(token) {
   try {
     const userData = localStorage.getItem("user_address");
 
@@ -42,7 +42,7 @@ export async function configCUSD() {
     );
 
     const ABI = chainId === 42220 ? cUSD : usdc;
-    const contractAddress = selectTokenAddress(chainId);
+    const contractAddress = token; // selectTokenAddress(chainId);
     const contract = new web3Provider.eth.Contract(ABI, contractAddress);
 
     return contract;

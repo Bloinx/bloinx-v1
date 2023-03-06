@@ -21,6 +21,7 @@ import {
   paymentTime,
 } from "./constants";
 import { MainContext } from "../../providers/provider";
+import { getTokenAddress } from "../../api/utils/getTokenData";
 
 const Receipt = ({ form, setForm, tokenSelected }) => {
   const history = useHistory();
@@ -52,6 +53,7 @@ const Receipt = ({ form, setForm, tokenSelected }) => {
         saving: form.amount,
         groupSize: form.participants,
         payTime: paymentTime[form.periodicity],
+        tokenSelected,
         isPublic: false,
         currentAddress,
         wallet,
