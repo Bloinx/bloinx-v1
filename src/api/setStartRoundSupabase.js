@@ -29,7 +29,8 @@ const api = async (roundId, wallet) => {
       .send({
         from: data[0].wallet,
         to: data[0].contract,
-        gasPrice: gasFee,
+        maxFeePerGas: gasFee.maxFeePerGas,
+        maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })
       .once("receipt", async (receipt) => {
         // await updateDoc(docRef, {
