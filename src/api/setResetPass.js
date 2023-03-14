@@ -8,7 +8,6 @@ const ResetPass = async ({ emailReset, onSuccess, onFailure }) => {
       : `http://${window.location.hostname}:3000`;
 
   const redirectToEmail = `${currentDomain}/update-password`;
-  console.log(`https://${process.env.VERCEL_URL} vercel-url`);
   console.log("Redirect to:", redirectToEmail);
   const { data, error } = await supabase.auth.api.resetPasswordForEmail(
     emailReset,
