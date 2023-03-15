@@ -6,7 +6,7 @@ import config, {
   selectContractAddress,
 } from "./config.main.web3";
 import { selectTokenAddress } from "./config.erc";
-import { getTokenId } from "./utils/getTokenData";
+import { getTokenId, getTokenIdP, getTokenAddress } from "./utils/getTokenData";
 import getGasFee from "./utils/getGasFee";
 
 const adminFee = 2;
@@ -18,6 +18,7 @@ const setCreateRound = async ({
   saving,
   groupSize,
   payTime,
+  tokenSelected,
   isPublic,
   currentAddress,
   wallet,
@@ -25,6 +26,9 @@ const setCreateRound = async ({
   (async function getFactoryMethods() {
     const { chainId } = userData ? JSON.parse(userData) : null;
     const gasFee = await getGasFee(chainId);
+    console.log(tokenSelected);
+    const tokenAddress = await getTokenAddress(tokenSelected);
+    console.log(tokenAddress);
 
     try {
       const factory = await new Promise((resolve, reject) => {
@@ -94,7 +98,7 @@ const setCreateRound = async ({
               groupSize,
               adminFee,
               payTime,
-              selectTokenAddress(chainId),
+              tokenAddress,
               "0x0000000000000000000000000000000000000000"
             )
             .send({
@@ -110,7 +114,7 @@ const setCreateRound = async ({
               const folio = receipt.transactionHash;
               const session = supabase.auth.session();
               const idUser = session.user.id;
-              const tokenIds = await getTokenId(chainId);
+              const tokenIds = await getTokenIdP(tokenSelected);
               await supabase
                 .from("rounds")
                 .insert([

@@ -1,5 +1,6 @@
-import { selectTokenAddress, configCUSD, walletConnect } from "./config.erc";
+import { configCUSD, walletConnect } from "./config.erc";
 import getGasFee from "./utils/getGasFee";
+import { getTokenAddressById } from "./utils/getTokenData";
 
 import supabase from "../supabase";
 
@@ -10,20 +11,22 @@ const amountToApprove = {
   3: "300000000",
   1: "300000000000000000000",
   2: "300000000000000000000",
+  5: "300000000",
+  7: "300000000000000000000",
 };
 
 const setRegisterUser = async (props) => {
   const { walletAddress, roundId, wallet } = props;
   const { chainId } = userData ? JSON.parse(userData) : null;
-
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-  const token = selectTokenAddress(chainId);
   const gasFee = await getGasFee(chainId);
-  console.log({ gasFee });
+
+  const token = await getTokenAddressById(data[0].tokenId);
+
   const cUSD = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(configCUSD());
+        resolve(configCUSD(token));
       } else {
         resolve(walletConnect());
       }
