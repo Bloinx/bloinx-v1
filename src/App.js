@@ -17,6 +17,8 @@ import Invitations from "./containers/Invitations";
 import { RoundsContext } from "./contexts/RoundsContext";
 import "./App.scss";
 import { ProvideAuth } from "./hooks/useAuth";
+import ForgotPass from "./containers/ForgotPass";
+import UpdatePass from "./containers/UpdatePass";
 
 function App() {
   const [roundList, setRoundList] = useState([]);
@@ -27,6 +29,8 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/logout" component={Logout} />
         <Route exact path="/signup" component={SignUp} />
+        <Route exact path="/forgotpass" component={ForgotPass} />
+        <Route exact path="/update-password" component={UpdatePass} />
 
         <Markup>
           <RoundsContext.Provider value={{ roundList, setRoundList }}>
