@@ -22,6 +22,75 @@
     },
     "modal": {
       "title": "Select Network"
+    },
+    "functions": {
+      "handleStartRound": {
+        "success": {
+          "title": "Round started successfully",
+          "content": "Please check."
+        },
+        "error": {
+          "title": "Error when activating start the round",
+          "content": "Please verify that your wallet is active and try again."
+        }
+      },
+      "handlePayRound": {
+        "APIGetFuturePayments": {
+          "success": {
+            "content": "Congratulations! You have completed all your payments"
+          },
+          "error": {
+            "title": "Error",
+            "content": "Error obtaining your payment information."
+          }
+        },
+        "APISetAddPayment": {
+          "success": {
+            "title": "Correct payment"
+          },
+          "error": {
+            "title": "Failed to make payment"
+          }
+        }
+      },
+      "handleWithdrawRound": {
+        "success": {
+          "title": "Correct charge",
+          "content": "The collection for the round has been successfully completed."
+        },
+        "error": {
+          "title": "Error occurred while collecting payment.",
+          "content": "We were unable to collect payment for your round. Please try again later or try again."
+        }
+      },
+      "handleButton": {
+        "ON_REGISTER_STAGE_ADMIN": {
+          "text": "Start",
+          "withdrawText": "Collect"
+        },
+        "ON_REGISTER_STAGE": {
+          "text": "Pending",
+          "withdrawText": "Collect"
+        },
+        "ON_ROUND_ACTIVE": {
+          "withdrawText": "Finish y Collect",
+          "twithdrawTextElse": "Collect"
+        },
+        "ON_ROUND_FINISHED": {
+          "text": "Completed",
+          "withdrawText": "Completed"
+        },
+        "ON_EMERGENCY_STAGE": {
+          "text": "Completed",
+          "withdrawText": "Completed"
+        }
+      }
+    },
+    "paymentStatusText": {
+      "payments_on_time": "Make an early payment",
+      "payments_advanced": "Advance another payment",
+      "payments_late": "Pay",
+      "payments_done": "Completed"
     }
   },
   "historyPage": {
@@ -43,6 +112,7 @@
     "titleReceipt": "Pay security deposit",
     "labels": {
       "payPerRound": "Amount to pay per round",
+      "tokens": "Type of token",
       "rewards": "You will receive",
       "amount": "Each participant will pay",
       "receiptAmount": "You will receive",
@@ -131,11 +201,16 @@
   "copyright": "Bloinx 2023 (c) All rights reserved.",
   "login": {
     "title": "Login",
-    "subtitle": "Dont have an account?",
+    "subtitle": "Don't have an account?",
     "form": {
       "label": {
-        "email": "Username",
+        "email": "Email",
         "password": "Password"
+      },
+      "validation": {
+        "email": "Email is not valid",
+        "minlength": "Password must be at least 6 characters long",
+        "onFail": "Email or password is not valid"
       }
     },
     "actions": {
@@ -144,12 +219,78 @@
       "forgotPassword": "Forgot password?"
     }
   },
+  "signup": {
+    "title": "Sign up",
+    "subtitle": "You have an account?",
+    "form": {
+      "input": {
+        "email": {
+          "label": "Email",
+          "placeholder": "Your email",
+          "error": {
+            "required": "Email is required",
+            "type": "Email is not valid"
+          }
+        },
+        "username": {
+          "label": "Username",
+          "placeholder": "Your username",
+          "error": {
+            "required": "Username is required",
+            "whitespace": "Username is not valid"
+          }
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Your password",
+          "error": {
+            "required": "Password is required",
+            "minlength": "Password must be at least 6 characters long"
+          }
+        },
+        "confirmPassword": {
+          "label": "Confirm password",
+          "placeholder": "Confirm your password",
+          "error": {
+            "required": "Confirm password is required",
+            "notEqual": "Passwords do not match"
+          }
+        },
+        "age": {
+          "label": "Age",
+          "placeholder": "Your age",
+          "error": {
+            "required": "Age is required",
+            "type": "Your age has to be a number.",
+            "min": "You have to be at least 18 years old.",
+            "max": "You have to be at most 130 years old."
+          }
+        },
+        "gender": {
+          "label": "Gender",
+          "options": {
+            "option1": "Male",
+            "option2": "Female",
+            "option3": "Other"
+          },
+          "required": "optional"
+        }
+      }
+    },
+    "actions": {
+      "submit": "Sign up",
+      "login": "Login"
+    }
+  },
   "ForgotPass": {
     "title": "Reset your password",
     "subtitle": "Enter your email and we'll send you a link to reset your password",
     "form": {
       "label": {
         "email": "Email"
+      },
+      "validation": {
+        "onFail": "Oops, something went wrong."
       }
     },
     "actions": {
