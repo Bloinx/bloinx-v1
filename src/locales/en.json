@@ -173,6 +173,21 @@
     "form": {
       "label": {
         "emails": "Add the emails"
+      },
+      "placeholder": {
+        "emails": "Email"
+      }
+    },
+    "functions": {
+      "handleSendEmails": {
+        "success": {
+          "title": "Invitations sent successfully",
+          "content": "Please check."
+        },
+        "error": {
+          "title": "Error when sending invitations",
+          "content": "Please verify that your wallet is active and try again."
+        }
       }
     }
   },
@@ -297,6 +312,77 @@
       "reset": "Reset",
       "register": "Register",
       "login": "Login"
+    }
+  },
+  "logout": {
+    "text": "Logout..."
+  },
+  "registerUser": {
+    "functions": {
+      "handlerOnSubmit": {
+        "warning": {
+          "title": "No wallet found",
+          "content": "Please connect your wallet to continue"
+        },
+        "error": {
+          "title": "Error when registering user",
+          "content": "Please verify that your wallet is active and try again."
+        }
+      }
+    }
+  },
+  "roundDetails": {
+    "contractID": "Contract ID",
+    "status": "Status",
+    "total": "Total",
+    "participants": "Participants",
+    "payment": "Payment",
+    "header": "Invitations",
+    "invitationTitle": "Invitations sent"
+  },
+  "updatePass": {
+    "title": "Reset your password",
+    "notification": "Session expired",
+    "buttonText": "Reset password",
+    "form": {
+      "label": {
+        "password": "Password",
+        "confirmPassword": "Confirm password"
+      },
+      "placeholder": {
+        "password": "Your password",
+        "confirmPassword": "Confirm your password"
+      },
+      "validation": {
+        "required": "Password is required",
+        "requiredConfirm": "Confirm password is required",
+        "minlength": "Password must be at least 6 characters long",
+        "notEqual": "Passwords do not match"
+      }
+    },
+    "functions": {
+      "updatePassword": {
+        "onFailure": {
+          "title": "Ups!",
+          "text": "Something went wrong"
+        },
+        "onSuccess": {
+          "title": "Success!",
+          "text": "Password updated successfully"
+        }
+      }
+    },
+    "actions": {
+      "subtitle": "You have an account?",
+      "login": "Login"
+    }
+  },
+  "wallets": {
+    "title": "My Wallet",
+    "subtitle": "Choose your Wallet within Metamask",
+    "subtitleValora": "Choose your Wallet within Valora",
+    "actions": {
+      "connect": "Connect Wallet"
     }
   }
 }

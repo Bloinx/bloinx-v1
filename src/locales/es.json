@@ -173,6 +173,21 @@
     "form": {
       "label": {
         "emails": "Ingresa los emails"
+      },
+      "placeholder": {
+        "emails": "Correo electrónico"
+      }
+    },
+    "functions": {
+      "handleSendEmails": {
+        "success": {
+          "title": "Invitaciones enviadas correctamente",
+          "content": "Por favor verifica."
+        },
+        "error": {
+          "title": "Error al enviar las invitaciones",
+          "content": "No pudimos enviar las invitaciones. Por favor verifica mas tarde o intenta nuevamente."
+        }
       }
     }
   },
@@ -297,6 +312,77 @@
       "reset": "Cambiar",
       "register": "Regístrate",
       "login": "Iniciar sesión"
+    }
+  },
+  "logout": {
+    "text": "Saliendo..."
+  },
+  "registerUser": {
+    "functions": {
+      "handlerOnSubmit": {
+        "warning": {
+          "title": "Wallet no encontrada",
+          "content": "Por favor conecta tu wallet antes de continuar."
+        },
+        "error": {
+          "title": "Error al registrar",
+          "content": "No pudimos registrar tu cuenta. Por favor verifica mas tarde o intenta nuevamente."
+        }
+      }
+    }
+  },
+  "roundDetails": {
+    "contractID": "ContratoID ",
+    "status": "Estatus de la ronda",
+    "total": "Total restante",
+    "participants": "Participantes",
+    "payment": "Cobro",
+    "header": "Invitaciones",
+    "invitationTitle": "Invitaciones enviadas"
+  },
+  "updatePass": {
+    "title": "Restablecer contraseña",
+    "notification": "Sesión expirada",
+    "buttonText": "Restablecer contraseña",
+    "form": {
+      "label": {
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña"
+      },
+      "placeholder": {
+        "password": "Tu contraseña",
+        "confirmPassword": "Confirma tu contraseña"
+      },
+      "validation": {
+        "required": "Contraseña es requerida",
+        "requiredConfirm": "Confirmar contraseña es requerida",
+        "minlength": "Contraseña debe tener al menos 6 caracteres",
+        "notEqual": "Las contraseñas no coinciden"
+      }
+    },
+    "functions": {
+      "updatePassword": {
+        "onFailure": {
+          "title": "Error!",
+          "text": "No pudimos actualizar tu contraseña. Por favor verifica mas tarde o intenta nuevamente."
+        },
+        "onSuccess": {
+          "title": "¡Éxito!",
+          "text": "Tu contraseña ha sido actualizada."
+        }
+      }
+    },
+    "actions": {
+      "subtitle": "¿Tienes una cuenta?",
+      "login": "Iniciar sesión"
+    }
+  },
+  "wallets": {
+    "title": "Mi billetera",
+    "subtitle": "Elige tu Wallet dentro de Metamask",
+    "subtitleValora": "Elige tu Wallet dentro de Valora",
+    "actions": {
+      "connect": "Conecta Tu Wallet"
     }
   }
 }

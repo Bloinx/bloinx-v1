@@ -6,6 +6,7 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useIntl } from "react-intl";
 import { MailOutlined } from "@ant-design/icons";
 
 import PageHeader from "../../components/PageHeader";
@@ -18,6 +19,7 @@ import getFuturePayments from "../../api/getFuturePaymentsSupabase";
 
 function Details({ roundData, roundId, currentAddress, wallet }) {
   const [futurePayment, setFuturePayment] = useState("");
+  const intl = useIntl();
   const totalRemain = async () => {
     const response = await getFuturePayments(roundId, currentAddress, wallet);
     if (response) {
@@ -30,20 +32,36 @@ function Details({ roundData, roundId, currentAddress, wallet }) {
     <>
       <PageHeader title={roundData?.positionAdminData?.alias} />
       <InputLabel
-        label="ContratoID"
+        label={`${intl.formatMessage({
+          id: "roundDetails.contractID",
+        })}`}
         value={formatAddress(roundData.contract)}
       />
-      <InputLabel label="Estatus de la ronda" value={roundData.stage} />
-      <InputLabel label="Total restante" value={futurePayment} />
       <InputLabel
-        label="Participantes"
+        label={`${intl.formatMessage({
+          id: "roundDetails.status",
+        })}`}
+        value={roundData.stage}
+      />
+      <InputLabel
+        label={`${intl.formatMessage({
+          id: "roundDetails.total",
+        })}`}
+        value={futurePayment}
+      />
+      <InputLabel
+        label={`${intl.formatMessage({
+          id: "roundDetails.participants",
+        })}`}
         value={
           <table className={styles.DetailParticipantsItem}>
             <tr>
               <th></th>
               <th></th>
               <th></th>
-              <th>Cobro</th>
+              <th>{`${intl.formatMessage({
+                id: "roundDetails.payment",
+              })}`}</th>
             </tr>
             {roundData.participantsData &&
               roundData.participantsData.map((participant) => (
@@ -61,7 +79,11 @@ function Details({ roundData, roundId, currentAddress, wallet }) {
         roundData?.positionAdminData?.wallet === currentAddress &&
         currentAddress !== null && (
           <>
-            <PageSubHeader title="Invitaciones" />
+            <PageSubHeader
+              title={`${intl.formatMessage({
+                id: "roundDetails.header",
+              })}`}
+            />
             <Link
               to={`/invitations?roundId=${roundId}`}
               className={styles.RoundCardTitle}
@@ -69,7 +91,9 @@ function Details({ roundData, roundId, currentAddress, wallet }) {
               <MailOutlined style={{ color: "white", fontSize: "20px" }} />
             </Link>
             <InputLabel
-              label="Invitaciones enviadas"
+              label={`${intl.formatMessage({
+                id: "roundDetails.invitationTitle",
+              })}`}
               value={
                 <div className={styles.DetailParticipantsItem}>
                   {roundData.invitations &&
