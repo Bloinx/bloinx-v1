@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 import { Typography, Button, Modal } from "antd";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import APISetSaveInvitations from "../../api/setSaveInvitationsSupabase";
 import PageHeader from "../../components/PageHeader";
@@ -16,20 +16,29 @@ const { Paragraph } = Typography;
 function Form({ roundId, wallet }) {
   const history = useHistory();
   const [mailList, setMailList] = useState([]);
+  const intl = useIntl();
 
   const handleSendEmails = () => {
     APISetSaveInvitations(mailList, roundId, wallet)
       .then((status) => {
         Modal.success({
-          title: "Invitaciones enviadas correctamente",
-          content: "Por favor verifica.",
+          title: `${intl.formatMessage({
+            id: "invitations.functions.handleSendEmails.success.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "invitations.functions.handleSendEmails.success.content",
+          })}`,
         });
         history.push(`/round-details?roundId=${roundId}`);
       })
       .catch((err) => {
         Modal.error({
-          title: "Error al enviar las invitaciones",
-          content: "Por favor verifica.",
+          title: `${intl.formatMessage({
+            id: "invitations.functions.handleSendEmails.error.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "invitations.functions.handleSendEmails.error.content",
+          })}`,
         });
       });
   };
@@ -50,7 +59,9 @@ function Form({ roundId, wallet }) {
       <InputEmailTags
         label={<FormattedMessage id="invitations.form.label.emails" />}
         name="email"
-        placeholder="Ingresa el email"
+        placeholder={
+          <FormattedMessage id="invitations.form.placeholder.emails" />
+        }
         value={mailList}
         onChangeValue={handlerOnChangeEmailList}
       />
