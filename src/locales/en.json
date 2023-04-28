@@ -55,26 +55,26 @@
       },
       "handleWithdrawRound": {
         "success": {
-          "title": "Correct charge",
-          "content": "The collection for the round has been successfully completed."
+          "title": "Correct withdrawal",
+          "content": "The round withdrawal has been successfully completed."
         },
         "error": {
-          "title": "Error occurred while collecting payment.",
-          "content": "We were unable to collect payment for your round. Please try again later or try again."
+          "title": "Error occurred in withdrawal.",
+          "content": "We were unable to make the withdrawal. Please try again later."
         }
       },
       "handleButton": {
         "ON_REGISTER_STAGE_ADMIN": {
           "text": "Start",
-          "withdrawText": "Collect"
+          "withdrawText": "Withdraw"
         },
         "ON_REGISTER_STAGE": {
           "text": "Pending",
-          "withdrawText": "Collect"
+          "withdrawText": "Withdraw"
         },
         "ON_ROUND_ACTIVE": {
-          "withdrawText": "Finish y Collect",
-          "twithdrawTextElse": "Collect"
+          "withdrawText": "Withdraw and End Round",
+          "twithdrawTextElse": "Withdraw"
         },
         "ON_ROUND_FINISHED": {
           "text": "Completed",
@@ -87,7 +87,7 @@
       }
     },
     "paymentStatusText": {
-      "payments_on_time": "Make an early payment",
+      "payments_on_time": "Advance payment",
       "payments_advanced": "Advance another payment",
       "payments_late": "Pay",
       "payments_done": "Completed"
@@ -101,7 +101,7 @@
       "name": "Name",
       "address": "Contract Address",
       "startDate": "Start",
-      "participants": "Paritipants",
+      "participants": "Participants",
       "liquidity": "Liquidity",
       "status": "Status"
     }
