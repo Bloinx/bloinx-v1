@@ -18,7 +18,7 @@ export const MAIN_FACTORY_POLYGON =
 
 export async function getContract(provider, abi, contractAddress) {
   const contract = await new provider.eth.Contract(abi, contractAddress);
-  console.log({ contract });
+  // console.log({ contract });
   return contract;
 }
 
@@ -42,14 +42,11 @@ export const selectContractABI = (network) => {
   return MainP;
 };
 
-export default async function config() {
+export default async function config(networkSelected) {
   try {
-    const userData = localStorage.getItem("user_address");
+    const rpcUrl = RPC_URL[networkSelected];
 
-    const { chainId } = JSON.parse(userData);
-    const rpcUrl = RPC_URL[chainId];
-
-    console.log({ rpcUrl });
+    // console.log({ rpcUrl });
     const httpProvider = new Web3.providers.HttpProvider(rpcUrl, {
       timeout: 10000,
     });
@@ -58,8 +55,8 @@ export default async function config() {
       window?.web3?.currentProvider || httpProvider
     );
 
-    const ABI = selectContractABI(chainId);
-    const contractAddress = selectContractAddress(chainId);
+    const ABI = selectContractABI(networkSelected);
+    const contractAddress = selectContractAddress(networkSelected);
     const contract = await getContract(web3Provider, ABI, contractAddress);
 
     return { contract, web3Provider };
@@ -68,11 +65,8 @@ export default async function config() {
   }
 }
 
-export async function walletConnect() {
+export async function walletConnect(networkSelected) {
   try {
-    const userData = localStorage.getItem("user_address");
-
-    const { chainId } = JSON.parse(userData);
     const provider = new WalletConnectProvider({
       rpc: {
         ...RPC_URL,
@@ -81,10 +75,10 @@ export async function walletConnect() {
     await provider.enable();
     const web3Provider = new Web3(provider);
 
-    const ABI = selectContractABI(chainId);
-    const contractAddress = selectContractAddress(chainId);
+    const ABI = selectContractABI(networkSelected);
+    const contractAddress = selectContractAddress(networkSelected);
 
-    if (chainId === 42220 || chainId === 44787) {
+    if (networkSelected === 42220 || networkSelected === 44787) {
       const kit = newKitFromWeb3(web3Provider);
       // eslint-disable-next-line prefer-destructuring
       kit.defaultAccount = provider.accounts[0];

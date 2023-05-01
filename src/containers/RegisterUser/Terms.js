@@ -12,7 +12,7 @@ import MethodGetRegisterStable from "../../api/setRegisterUserStable";
 import { receiptValidation } from "./validations";
 import styles from "./Terms.module.scss";
 
-function Terms({ form, baseUrl, walletAddress, roundData, wallet }) {
+function Terms({ form, baseUrl, walletAddress, roundData, wallet, chainId }) {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const handlerOnSubmit = () => {
@@ -21,6 +21,7 @@ function Terms({ form, baseUrl, walletAddress, roundData, wallet }) {
       walletAddress,
       roundId: roundData.roundId,
       wallet,
+      chainId,
     })
       .then(() => {
         history.push(`${baseUrl}/join?roundId=${roundData.roundId}`);

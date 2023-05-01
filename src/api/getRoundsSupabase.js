@@ -30,12 +30,17 @@ const getRounds = async ({ userId }) => {
   }
 };
 
-export const configByPosition = async (round, data, walletAddress, wallet) => {
+export const configByPosition = async (
+  round,
+  data,
+  walletAddress,
+  walletProvider,
+  currentProvider
+) => {
   const sg =
-    (await wallet) !== "WalletConnect"
-      ? await config(round?.contract)
+    walletProvider !== "WalletConnect"
+      ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
-
   const admin = await MethodGetAdmin(sg.methods);
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
@@ -127,7 +132,6 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
   };
-  console.log(realTurn, data?.position, groupSize);
   return roundData;
 };
 

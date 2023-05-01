@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 
 import Form from "./Form";
@@ -8,34 +8,29 @@ import Status from "./Status";
 
 import { INITIAL_FORM_VALUES } from "./constants";
 import { getTokenId, getTokenData } from "../../api/utils/getTokenData";
+import { MainContext } from "../../providers/provider";
 
 function CreateRound() {
   const history = useHistory();
   const baseUrl = "/create-round";
-  // const chainIdLogin = JSON.parse(
-  //   localStorage.getItem("user_address")
-  // )?.chainId;
-  const [values, _setValues] = React.useState(() =>
-    JSON.parse(localStorage.getItem("user_address"))
-  );
-  console.log("values", values);
+  const { currentProvider } = useContext(MainContext);
+
   const [tokenSelected, setTokenSelected] = React.useState(
-    `${values?.chainId === 137 || values?.chainId === 80001 ? "USDC" : "cUSD"}`
+    `${currentProvider === 137 || currentProvider === 80001 ? "USDC" : "cUSD"}`
   );
 
   useEffect(() => {
-    if (values?.chainId === undefined) {
+    if (currentProvider === undefined) {
       history.push("/dashboard");
     } else {
-      console.log("chainId", values?.chainId);
-      getTokenId(values?.chainId);
+      getTokenId(currentProvider);
       setTokenSelected(
         `${
-          values?.chainId === 137 || values?.chainId === 80001 ? "USDC" : "cUSD"
+          currentProvider === 137 || currentProvider === 80001 ? "USDC" : "cUSD"
         }`
       );
     }
-  }, [values]);
+  }, [currentProvider]);
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
 
@@ -48,7 +43,7 @@ function CreateRound() {
           <Form
             form={form}
             setForm={setForm}
-            chainId={values?.chainId}
+            chainId={currentProvider}
             setTokenSelected={setTokenSelected}
             tokenSelected={tokenSelected}
           />

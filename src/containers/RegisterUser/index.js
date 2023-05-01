@@ -18,12 +18,14 @@ function RegisterUser() {
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
   const [roundData, setRoundData] = useState({});
-  const { currentAddress, wallet } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
 
   useEffect(() => {
-    APIgetRoundRegisterDetail(roundId, wallet).then((dataRound) => {
-      setRoundData(dataRound);
-    });
+    APIgetRoundRegisterDetail(roundId, wallet, currentProvider).then(
+      (dataRound) => {
+        setRoundData(dataRound);
+      }
+    );
   }, []);
 
   return (
@@ -39,6 +41,7 @@ function RegisterUser() {
             walletAddress={currentAddress}
             baseUrl={baseUrl}
             wallet={wallet}
+            chainId={currentProvider}
           />
         )}
       />

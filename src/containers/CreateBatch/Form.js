@@ -20,7 +20,6 @@ import { getTokenId } from "../../api/utils/getTokenData";
 const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
   const history = useHistory();
   const { tokens } = useToken(chainId);
-  console.log("tokens", tokens);
   const handlerOnSubmit = (values) => {
     setForm({
       ...form,

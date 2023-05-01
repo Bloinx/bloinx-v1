@@ -4,8 +4,6 @@ import { getTokenAddressById } from "./utils/getTokenData";
 
 import supabase from "../supabase";
 
-const userData = localStorage.getItem("user_address");
-
 const amountToApprove = {
   4: "300000000",
   3: "300000000",
@@ -16,8 +14,8 @@ const amountToApprove = {
 };
 
 const setRegisterUser = async (props) => {
-  const { walletAddress, roundId, wallet } = props;
-  const { chainId } = userData ? JSON.parse(userData) : null;
+  const { walletAddress, roundId, wallet, chainId } = props;
+  // const { chainId } = userData ? JSON.parse(userData) : null;
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
   const gasFee = await getGasFee(chainId);
 
@@ -26,7 +24,7 @@ const setRegisterUser = async (props) => {
   const cUSD = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(configCUSD(token));
+        resolve(configCUSD(token, chainId));
       } else {
         resolve(walletConnect());
       }

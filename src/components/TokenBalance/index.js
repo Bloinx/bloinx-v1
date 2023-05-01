@@ -9,23 +9,27 @@ const TokenBalance = () => {
   const [currentNetwork, setCurrentNetwork] = useState(null);
 
   useEffect(() => {
-    const getBalance = async () => {
-      const result = await getTokenBLX(currentAddress, wallet);
-      setBLXToken(result);
-    };
-    setBLXToken(0);
-    setCurrentNetwork(currentProvider?.networkVersion);
     if (
-      currentAddress !== null &&
-      (currentNetwork === "42220" || currentNetwork === "44787")
+      (currentAddress && wallet && currentProvider && currentNetwork) !== null
     ) {
-      getBalance().catch((error) => console.error(error));
+      const getBalance = async () => {
+        const result = await getTokenBLX(currentAddress, wallet);
+        setBLXToken(result);
+      };
+      setBLXToken(0);
+      setCurrentNetwork(currentProvider);
+      if (
+        currentAddress !== null &&
+        (currentNetwork === "42220" || currentNetwork === "44787")
+      ) {
+        getBalance().catch((error) => console.error(error));
+      }
     }
   }, [currentAddress, wallet, currentProvider, currentNetwork]);
 
   return (
     <>
-      {(currentNetwork === "42220" || currentNetwork === "44787") && (
+      {(currentProvider === 42220 || currentProvider === 44787) && (
         <div className={styles.BalanceContent}>
           <p>{BLXToken} BLX</p>
         </div>

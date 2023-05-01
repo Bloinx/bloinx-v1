@@ -92,7 +92,7 @@ const getGasFee = async (chainId) => {
     maxFeePerGas,
     maxPriorityFeePerGas,
   };
-  console.log(transactionProperties);
+  // console.log(transactionProperties);
 
   return transactionProperties;
 };

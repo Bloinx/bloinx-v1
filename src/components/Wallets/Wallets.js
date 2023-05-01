@@ -11,7 +11,7 @@ import styles from "./styles.module.scss";
 const { Title } = Typography;
 
 function Wallets() {
-  const { connect, userWallet, account } = useWallet();
+  const { connect } = useWallet();
   const {
     setCurrentProvider,
     setCurrentAddress,
@@ -32,12 +32,12 @@ function Wallets() {
   const connectMMWallet = async () => {
     try {
       setLoading(true);
-      await connect("Metamask", NETWORKS[networkSelected]);
-      setAccountData({
-        publicAddress: userWallet(),
-        originalAdress: await account(),
-      });
-      await config();
+      await connect("Metamask", NETWORKS[networkSelected], setAccountData);
+      // setAccountData({
+      //   publicAddress: userWallet(),
+      //   originalAdress: await account(),
+      // });
+      await config(networkSelected);
       setLoading(false);
       handleToggleDrawer();
     } catch (err) {
@@ -52,11 +52,11 @@ function Wallets() {
     try {
       setLoading(true);
       await connect("walletconnect", NETWORKS[networkSelected]);
-      setAccountData({
-        publicAddress: userWallet(),
-        originalAdress: await account(),
-      });
-      await walletConnect();
+      // setAccountData({
+      //   publicAddress: userWallet(),
+      //   originalAdress: await account(),
+      // });
+      await walletConnect(networkSelected);
       setLoading(false);
       handleToggleDrawer();
     } catch (err) {

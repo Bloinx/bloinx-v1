@@ -44,11 +44,12 @@ export const configByPositionOther = async (
   round,
   positionByRound,
   walletAddress,
-  wallet
+  wallet,
+  currentProvider
 ) => {
   const sg =
     (await wallet) !== "WalletConnect"
-      ? await config(round?.contract)
+      ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
 
   const admin = await MethodGetAdmin(sg.methods);
@@ -111,7 +112,7 @@ export const configByPositionOther = async (
         return "payments_done";
       }
       if (pagos === Number(obligationAtTime) / Number(saveAmount)) {
-        console.log("pagos a tiempo");
+        // console.log("pagos a tiempo");
         return "payments_on_time";
       }
       if (pagos > Number(obligationAtTime) / Number(saveAmount)) {
@@ -148,7 +149,7 @@ export const configByPositionOther = async (
         realTurn > Number(groupSize)),
     fromInvitation: false,
   };
-  console.log(round?.contract, realTurn, positionByRound.position, groupSize);
+  // console.log(round?.contract, realTurn, positionByRound.position, groupSize);
   return roundData;
 };
 

@@ -15,7 +15,7 @@ import {
 } from "@ant-design/icons";
 
 import LogOut from "../../api/setLogoutSupabase";
-import getUserScore from "../../api/getUserScore";
+// import getUserScore from "../../api/getUserScore";
 
 import styles from "./styles.module.scss";
 import logo from "../../assets/bloinxLogo.png";
@@ -26,7 +26,7 @@ const { Sider } = Layout;
 
 function NavAside({ width, toggleDrawer, visible }) {
   const [sliderStatus, setSliderStatus] = useState(false);
-  const [score, setScore] = useState(0);
+  // const [score, setScore] = useState(0);
   const [selected, setSelected] = useState();
   const isTablet = width <= 800;
   const isMobile = width <= 768;
@@ -50,14 +50,13 @@ function NavAside({ width, toggleDrawer, visible }) {
     }
   }, [width]);
 
-  useEffect(async () => {
-    const result = await getUserScore("123");
-    setScore(result);
-  }, []);
+  // useEffect(async () => {
+  //   const result = await getUserScore("123");
+  //   setScore(result);
+  // }, []);
 
   const isVisible = (key) => {
     toggleDrawer();
-    console.log(key);
     setSelected(key);
   };
 
@@ -83,7 +82,7 @@ function NavAside({ width, toggleDrawer, visible }) {
         onClick={toggleDrawer}
         icon={<StarOutlined />}
       >
-        <span>Score: {score}</span>
+        {/* <span>Score: {score}</span> */}
       </Menu.Item>
       <Menu.Item
         className={classnames(

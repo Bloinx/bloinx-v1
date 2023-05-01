@@ -46,7 +46,7 @@ function Dashboard() {
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentAddress, wallet } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -56,10 +56,16 @@ function Dashboard() {
     history.push(`/register-user?roundId=${roundKey}`);
   };
 
-  const getRoundsData = (rounds, userId, walletAddress, provider) => {
+  const getRoundsData = (
+    rounds,
+    userId,
+    walletAddress,
+    provider,
+    currentProv
+  ) => {
     rounds.forEach((round, index) => {
       getAll(userId, round).then((res) => {
-        configByPosition(round, res, walletAddress, provider).then(
+        configByPosition(round, res, walletAddress, provider, currentProv).then(
           (resData) => {
             if (
               resData.stage === "ON_REGISTER_STAGE" ||
@@ -82,16 +88,20 @@ function Dashboard() {
     roundsPosition.forEach((positionRound, index) => {
       getAllOtherRounds(userId, positionRound).then((res) => {
         if (res === undefined) return;
-        configByPositionOther(res, positionRound, walletAddress, provider).then(
-          (resData) => {
-            if (
-              resData.stage === "ON_REGISTER_STAGE" ||
-              resData.stage === "ON_ROUND_ACTIVE"
-            ) {
-              setOtherList((oldArray) => [...oldArray, resData]);
-            }
+        configByPositionOther(
+          res,
+          positionRound,
+          walletAddress,
+          provider,
+          currentProvider
+        ).then((resData) => {
+          if (
+            resData.stage === "ON_REGISTER_STAGE" ||
+            resData.stage === "ON_ROUND_ACTIVE"
+          ) {
+            setOtherList((oldArray) => [...oldArray, resData]);
           }
-        );
+        });
       });
     });
   };
@@ -100,23 +110,22 @@ function Dashboard() {
     invitesData.forEach((invite, index) => {
       getRoundInvite(invite).then((round) => {
         getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
-          configByInvitation(round, provider, roundAdmin).then((roundData) => {
-            if (
-              roundData.stage === "ON_REGISTER_STAGE" ||
-              roundData.stage === "ON_ROUND_ACTIVE"
-            ) {
-              setInvitationsList((oldArray) => [...oldArray, roundData]);
+          configByInvitation(round, provider, roundAdmin, currentProvider).then(
+            (roundData) => {
+              if (
+                roundData.stage === "ON_REGISTER_STAGE" ||
+                roundData.stage === "ON_ROUND_ACTIVE"
+              ) {
+                setInvitationsList((oldArray) => [...oldArray, roundData]);
+              }
             }
-          });
+          );
         });
       });
     });
   };
 
   const handleGetRounds = async () => {
-    // getTokenData(137).then((res) => {
-    //   console.log("res", res);
-    // });
     setRoundList([]);
     setOtherList([]);
     setInvitationsList([]);
@@ -126,7 +135,7 @@ function Dashboard() {
         userId: user.id,
       });
 
-      getRoundsData(rounds, user.id, currentAddress, wallet);
+      getRoundsData(rounds, user.id, currentAddress, wallet, currentProvider);
 
       const invitations = await APIGetRoundsByInvitation({ email: user.email });
       getRoundsByInvitationData(invitations, wallet);
@@ -140,7 +149,7 @@ function Dashboard() {
 
   const handleStartRound = (roundId) => {
     setLoading(true);
-    APISetStartRound(roundId, wallet)
+    APISetStartRound(roundId, wallet, currentProvider)
       .then((receipt) => {
         Modal.success({
           title: "Ronda iniciada correctamente",
@@ -163,7 +172,8 @@ function Dashboard() {
     const remainingAmount = APIGetFuturePayments(
       roundId,
       currentAddress,
-      wallet
+      wallet,
+      currentProvider
     );
     remainingAmount
       .then((amount) => {
@@ -172,6 +182,7 @@ function Dashboard() {
             roundId,
             walletAddress: currentAddress,
             wallet,
+            currentProvider,
           })
             .then((success) => {
               Modal.success({
@@ -207,7 +218,7 @@ function Dashboard() {
 
   const handleWithdrawRound = (roundId) => {
     setLoading(true);
-    APISetWithdrawTurn(roundId, currentAddress, wallet)
+    APISetWithdrawTurn(roundId, currentAddress, wallet, currentProvider)
       .then(() => {
         Modal.success({
           title: "Cobro correcto",
@@ -289,7 +300,11 @@ function Dashboard() {
     return {};
   };
 
-  useEffect(() => handleGetRounds(), [currentAddress]);
+  useEffect(() => {
+    if (currentProvider !== undefined) {
+      handleGetRounds();
+    }
+  }, [currentAddress, currentProvider, wallet]);
 
   if (!currentAddress) {
     return <Placeholder />;

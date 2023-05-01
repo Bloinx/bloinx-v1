@@ -26,11 +26,8 @@ export const selectTokenAddress = (network) => {
   return USDC_MUMBAI;
 };
 
-export async function configCUSD(token) {
+export async function configCUSD(token, chainId) {
   try {
-    const userData = localStorage.getItem("user_address");
-
-    const { chainId } = JSON.parse(userData);
     const rpcUrl = RPC_URL[chainId];
 
     const httpProvider = new Web3.providers.HttpProvider(rpcUrl, {
