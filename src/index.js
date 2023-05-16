@@ -15,7 +15,7 @@ import MainProvider from "./providers/provider";
 
 // eslint-disable-next-line no-undef
 const locale = window.navigator.language.split("-")[0];
-const defaultLocale = "es";
+const defaultLocale = "en";
 
 const languages = { en, es };
 const messages = languages[locale];
@@ -23,9 +23,11 @@ const messages = languages[locale];
 ReactDOM.render(
   <React.StrictMode>
     <IntlProvider
-      messages={flattenMessages(messages)}
-      locale={locale}
-      defaultLocale={defaultLocale}
+      messages={flattenMessages(
+        locale === "en" || locale === "es" ? messages : languages[defaultLocale]
+      )}
+      locale={locale === "en" || locale === "es" ? locale : defaultLocale}
+      // defaultLocale={defaultLocale}
     >
       <BrowserRouter>
         <MainProvider>

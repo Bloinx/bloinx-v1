@@ -27,12 +27,8 @@ const minLength =
 export const minLength5 = minLength(5);
 export const minLength10 = minLength(10);
 
-export const validatePassword = (value, intl) =>
-  value && value.length < 6
-    ? `${intl.formatMessage({
-        id: "login.form.validation.minlength",
-      })}`
-    : null;
+export const validatePassword = (value) =>
+  value && value.length < 6 ? "Contraseña Incorrecta" : null;
 
 export const number = (value) =>
   value && Number(value).isNaN ? "Debe ser un número" : null;
@@ -42,11 +38,9 @@ export const required = (value) => (value ? undefined : "Requerido");
 export const alphanumeric = (value) =>
   /[^a-zA-Z0-9]/.test(value) ? "Debe ser alfanumérico" : null;
 
-export const validateEmail = (value, intl) =>
+export const validateEmail = (value) =>
   value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
-    ? `${intl.formatMessage({
-        id: "login.form.validation.email",
-      })}`
+    ? "Formato de correo invalido"
     : null;
 
 export const decimal = (value) =>
