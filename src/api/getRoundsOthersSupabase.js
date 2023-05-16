@@ -131,6 +131,7 @@ export const configByPositionOther = async (
     contract: round?.contract,
     paymentStatus,
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
+    tokenId: round?.tokenId,
     name: positionByRound.alias,
     roundKey: positionByRound.idRound,
     toRegister: Boolean(!exist),

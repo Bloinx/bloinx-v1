@@ -35,7 +35,6 @@ import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
 
 import { MainContext } from "../../providers/provider";
-import { getTokenData } from "../../api/utils/getTokenData";
 
 function Dashboard() {
   const history = useHistory();
@@ -125,7 +124,6 @@ function Dashboard() {
       const rounds = await APIGetRounds({
         userId: user.id,
       });
-
       getRoundsData(rounds, user.id, currentAddress, wallet);
 
       const invitations = await APIGetRoundsByInvitation({ email: user.email });
@@ -344,6 +342,7 @@ function Dashboard() {
                 onWithdraw={withdrawAction}
                 stage={round.stage}
                 saveAmount={round.saveAmount}
+                tokenId={round.tokenId}
                 byInvitation={false}
               />
             );
@@ -378,6 +377,7 @@ function Dashboard() {
               onWithdraw={withdrawAction}
               stage={round.stage}
               saveAmount={round.saveAmount}
+              tokenId={round.tokenId}
               byInvitation
             />
           );
