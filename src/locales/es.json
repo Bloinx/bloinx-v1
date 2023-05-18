@@ -22,6 +22,75 @@
     },
     "modal": {
       "title": "Selecione la Red"
+    },
+    "functions": {
+      "handleStartRound": {
+        "success": {
+          "title": "Ronda iniciada correctamente",
+          "content": "Por favor verifica."
+        },
+        "error": {
+          "title": "Error al activar iniciar la ronda",
+          "content": "Por favor verifica que tu wallet este activa y reintenta."
+        }
+      },
+      "handlePayRound": {
+        "APIGetFuturePayments": {
+          "success": {
+            "content": "¡Felicidades! Has completado todos tus pagos"
+          },
+          "error": {
+            "title": "Error",
+            "content": "Error al obtener información de tus pagos."
+          }
+        },
+        "APISetAddPayment": {
+          "success": {
+            "title": "Pago correcto"
+          },
+          "error": {
+            "title": "Error al realizar el pago"
+          }
+        }
+      },
+      "handleWithdrawRound": {
+        "success": {
+          "title": "Cobro correcto",
+          "content": "El cobro de la ronda a sido efectuado correctamente"
+        },
+        "error": {
+          "title": "Error al realizar el cobro",
+          "content": "No pudimos realizar el cobro de tu ronda. Por favor verifica mas tarde o intenta nuevamente."
+        }
+      },
+      "handleButton": {
+        "ON_REGISTER_STAGE_ADMIN": {
+          "text": "Iniciar",
+          "withdrawText": "Cobrar"
+        },
+        "ON_REGISTER_STAGE": {
+          "text": "Pendiente",
+          "withdrawText": "Cobrar"
+        },
+        "ON_ROUND_ACTIVE": {
+          "withdrawText": "Terminar y Cobrar",
+          "twithdrawTextElse": "Cobrar"
+        },
+        "ON_ROUND_FINISHED": {
+          "text": "Finalizado",
+          "withdrawText": "Finalizado"
+        },
+        "ON_EMERGENCY_STAGE": {
+          "text": "Finalizado",
+          "withdrawText": "Finalizado"
+        }
+      }
+    },
+    "paymentStatusText": {
+      "payments_on_time": "Adelantar pago",
+      "payments_advanced": "Adelantar otro pago",
+      "payments_late": "Pagar",
+      "payments_done": "Terminaste"
     }
   },
   "historyPage": {
@@ -105,6 +174,21 @@
     "form": {
       "label": {
         "emails": "Ingresa los emails"
+      },
+      "placeholder": {
+        "emails": "Correo electrónico"
+      }
+    },
+    "functions": {
+      "handleSendEmails": {
+        "success": {
+          "title": "Invitaciones enviadas correctamente",
+          "content": "Por favor verifica."
+        },
+        "error": {
+          "title": "Error al enviar las invitaciones",
+          "content": "No pudimos enviar las invitaciones. Por favor verifica mas tarde o intenta nuevamente."
+        }
       }
     }
   },
@@ -136,8 +220,13 @@
     "subtitle": "¿No tienes una cuenta?",
     "form": {
       "label": {
-        "email": "Usuari@",
+        "email": "Correo electrónico",
         "password": "Contraseña"
+      },
+      "validation": {
+        "minlength": "Contraseña debe tener al menos 6 caracteres",
+        "email": "Correo electrónico no válido",
+        "onFail": "Correo electrónico o contraseña incorrectos"
       }
     },
     "actions": {
@@ -146,18 +235,155 @@
       "forgotPassword": "¿Olvidaste tu contraseña?"
     }
   },
+  "signup": {
+    "title": "Registro",
+    "subtitle": "¿Tienes una cuenta?",
+    "form": {
+      "input": {
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "Ingresa tu correo electrónico",
+          "error": {
+            "required": "Correo electrónico es requerido",
+            "type": "Correo electrónico no válido"
+          }
+        },
+        "username": {
+          "label": "Nombre de usuari@",
+          "placeholder": "Ingresa tu nombre de usuari@",
+          "error": {
+            "required": "Nombre de usuari@ es requerido",
+            "whitespace": "Nombre de usuari@ no válido"
+          }
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Ingresa tu contraseña",
+          "error": {
+            "required": "Contraseña es requerida",
+            "minlength": "Contraseña debe tener al menos 6 caracteres"
+          }
+        },
+        "confirmPassword": {
+          "label": "Confirmar contraseña",
+          "placeholder": "Confirma tu contraseña",
+          "error": {
+            "required": "Confirmar contraseña es requerida",
+            "notEqual": "Las contraseñas no coinciden"
+          }
+        },
+        "age": {
+          "label": "Edad",
+          "placeholder": "Ingresa tu edad",
+          "error": {
+            "required": "Edad es requerida",
+            "type": "Tu edad tiene que ser un número",
+            "min": "Tienes que tener al menos 18 años",
+            "max": "Tienes que tener como máximo 130 años"
+          }
+        },
+        "gender": {
+          "label": "Género",
+          "options": {
+            "option1": "Masculino",
+            "option2": "Femenino",
+            "option3": "Otro"
+          },
+          "required": "Optional"
+        }
+      }
+    },
+    "actions": {
+      "submit": "Registrarme",
+      "login": "Iniciar sesión"
+    }
+  },
   "ForgotPass": {
     "title": "Cambiar Contraseña",
     "subtitle": "Ingresa tu correo electrónico para cambiar tu contraseña",
     "form": {
       "label": {
         "email": "Correo electrónico"
+      },
+      "validation": {
+        "onFail": "Ups, algo salió mal"
       }
     },
     "actions": {
       "reset": "Cambiar",
       "register": "Regístrate",
       "login": "Iniciar sesión"
+    }
+  },
+  "logout": {
+    "text": "Saliendo..."
+  },
+  "registerUser": {
+    "functions": {
+      "handlerOnSubmit": {
+        "warning": {
+          "title": "Wallet no encontrada",
+          "content": "Por favor conecta tu wallet antes de continuar."
+        },
+        "error": {
+          "title": "Error al registrar",
+          "content": "No pudimos registrar tu cuenta. Por favor verifica mas tarde o intenta nuevamente."
+        }
+      }
+    }
+  },
+  "roundDetails": {
+    "contractID": "ContratoID ",
+    "status": "Estatus de la ronda",
+    "total": "Total restante",
+    "participants": "Participantes",
+    "payment": "Cobro",
+    "header": "Invitaciones",
+    "invitationTitle": "Invitaciones enviadas"
+  },
+  "updatePass": {
+    "title": "Restablecer contraseña",
+    "notification": "Sesión expirada",
+    "buttonText": "Restablecer contraseña",
+    "form": {
+      "label": {
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña"
+      },
+      "placeholder": {
+        "password": "Tu contraseña",
+        "confirmPassword": "Confirma tu contraseña"
+      },
+      "validation": {
+        "required": "Contraseña es requerida",
+        "requiredConfirm": "Confirmar contraseña es requerida",
+        "minlength": "Contraseña debe tener al menos 6 caracteres",
+        "notEqual": "Las contraseñas no coinciden"
+      }
+    },
+    "functions": {
+      "updatePassword": {
+        "onFailure": {
+          "title": "Error!",
+          "text": "No pudimos actualizar tu contraseña. Por favor verifica mas tarde o intenta nuevamente."
+        },
+        "onSuccess": {
+          "title": "¡Éxito!",
+          "text": "Tu contraseña ha sido actualizada."
+        }
+      }
+    },
+    "actions": {
+      "subtitle": "¿Tienes una cuenta?",
+      "login": "Iniciar sesión"
+    }
+  },
+  "wallets": {
+    "title": "Mi billetera",
+    "subtitle": "Elige tu Wallet dentro de Metamask",
+    "subtitleValora": "Elige tu Wallet dentro de Valora",
+    "actions": {
+      "connect": "Conecta Tu Wallet"
     }
   }
 }

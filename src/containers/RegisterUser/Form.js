@@ -6,7 +6,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { Modal } from "antd";
 
@@ -33,7 +33,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const [loading, setLoading] = useState(false);
   const [tokenSymbol, setTokenSymbol] = useState("");
   const { currentProvider } = useContext(MainContext);
-
+  const intl = useIntl();
   const getTokenSymbol = async () => {
     const data = await getTokenSymbolByRound(roundData.tokenId);
     return data;
@@ -48,8 +48,12 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const handlerOnSubmit = (values) => {
     if (!walletAddress) {
       Modal.warning({
-        title: "Wallet no encontrada",
-        content: "Por favor conecta tu wallet antes de continuar.",
+        title: `${intl.formatMessage({
+          id: "registerUser.functions.handlerOnSubmit.warning.title",
+        })}`,
+        content: `${intl.formatMessage({
+          id: "registerUser.functions.handlerOnSubmit.warning.content",
+        })}`,
       });
     } else {
       setLoading(true);
@@ -69,9 +73,12 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
         .catch((err) => {
           setLoading(false);
           Modal.error({
-            title: "Error al registrar",
-            content:
-              "No se pudo hacer registro en la tanda. Por favor intenta nuevamente.",
+            title: `${intl.formatMessage({
+              id: "registerUser.functions.handlerOnSubmit.error.title",
+            })}`,
+            content: `${intl.formatMessage({
+              id: "registerUser.functions.handlerOnSubmit.error.content",
+            })}`,
           });
         });
     }

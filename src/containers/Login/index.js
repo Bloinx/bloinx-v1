@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { Button } from "antd";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import logo from "../../assets/bloinxLogo.png";
 import { validateEmail, validatePassword } from "./vlidators";
@@ -28,6 +28,7 @@ function Login() {
   const [passwordError, setPasswordError] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
   const [storedValue] = useLocalStorage("supabase.auth.token", null);
+  const intl = useIntl();
 
   const { signIn } = useAuth();
   const handlePasswordToggle = () => {
@@ -47,7 +48,11 @@ function Login() {
       onFailure: (er) => {
         setLoading(false);
         setError(true);
-        setErrorMessage("El usuario o contraseña es incorrecto");
+        setErrorMessage(
+          `${intl.formatMessage({
+            id: "login.form.validation.onFail",
+          })}`
+        );
       },
     });
   };
@@ -56,7 +61,7 @@ function Login() {
     const {
       target: { value },
     } = e;
-    const validationpasswordError = validatePassword(value);
+    const validationpasswordError = validatePassword(value, intl);
     setPasswordError(validationpasswordError !== null);
     setIsDisabled(validationpasswordError !== null);
     if (validationpasswordError) {
@@ -69,7 +74,7 @@ function Login() {
     const {
       target: { value },
     } = e;
-    const validationError = validateEmail(value);
+    const validationError = validateEmail(value, intl);
     setEmailError(validationError !== null);
     setIsDisabled(validationError !== null);
     if (validationError) {

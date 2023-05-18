@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 // import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import supabase from "../../supabase";
 
@@ -43,7 +43,7 @@ function History() {
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
-
+  const intl = useIntl();
   const goToCreate = () => {
     history.push("/create-round");
   };
@@ -146,16 +146,24 @@ function History() {
     APISetStartRound(roundId, wallet, currentProvider)
       .then((receipt) => {
         Modal.success({
-          title: "Ronda iniciada correctamente",
-          content: "Por favor verifica.",
+          title: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleStartRound.success.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleStartRound.success.content",
+          })}`,
         });
         setLoading(false);
         handleGetRounds();
       })
       .catch((err) => {
         Modal.warning({
-          title: "Error al activar iniciar la ronda",
-          content: "Por favor verifica que tu wallet este activa y reintenta.",
+          title: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleStartRound.error.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleStartRound.error.content",
+          })}`,
         });
         setLoading(false);
       });
@@ -179,7 +187,9 @@ function History() {
           })
             .then((success) => {
               Modal.success({
-                title: "Pago correcto",
+                title: `${intl.formatMessage({
+                  id: "dashboardPage.functions.handlePayRound.APISetAddPayment.success.title",
+                })}`,
                 content: "...",
               });
               setLoading(false);
@@ -187,7 +197,9 @@ function History() {
             })
             .catch((err) => {
               Modal.error({
-                title: "Error al realizar el pago",
+                title: `${intl.formatMessage({
+                  id: "dashboardPage.functions.handlePayRound.APISetAddPayment.error.title",
+                })}`,
                 content: "...",
               });
               setLoading(false);
@@ -195,15 +207,21 @@ function History() {
             });
         } else {
           Modal.success({
-            content: "¡Felicidades! Has completado todos tus pagos",
+            content: `${intl.formatMessage({
+              id: "dashboardPage.functions.handlePayRound.APIGetFuturePayments.success.content",
+            })}`,
           });
           setLoading(false);
         }
       })
       .catch((err) => {
         Modal.error({
-          title: "Error",
-          content: "Error al obtener información de tus pagos",
+          title: `${intl.formatMessage({
+            id: "dashboardPage.functions.handlePayRound.APIGetFuturePayments.error.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "dashboardPage.functions.handlePayRound.APIGetFuturePayments.error.content",
+          })}`,
         });
         setLoading(false);
       });
@@ -214,17 +232,24 @@ function History() {
     APISetWithdrawTurn(roundId, currentAddress, wallet)
       .then(() => {
         Modal.success({
-          title: "Cobro correcto",
-          content: "El cobro de la ronda a sido efectuado correctamente",
+          title: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleWithdrawRound.success.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleWithdrawRound.success.content",
+          })}`,
         });
         setLoading(false);
         handleGetRounds();
       })
       .catch(() => {
         Modal.error({
-          title: "Error al realizar el cobro",
-          content:
-            "No pudimos realizar el cobro de tu ronda. Por favor verifica mas tarde o intenta nuevamente.",
+          title: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleWithdrawRound.error.title",
+          })}`,
+          content: `${intl.formatMessage({
+            id: "dashboardPage.functions.handleWithdrawRound.error.content",
+          })}`,
         });
         setLoading(false);
         handleGetRounds();
@@ -232,9 +257,18 @@ function History() {
   };
 
   const paymentStatusText = {
-    payments_on_time: "Adelantar pago",
-    payments_advanced: "Adelantar otro pago",
-    payments_late: "Pagar",
+    payments_on_time: `${intl.formatMessage({
+      id: "dashboardPage.paymentStatusText.payments_on_time",
+    })}`,
+    payments_advanced: `${intl.formatMessage({
+      id: "dashboardPage.paymentStatusText.payments_advanced",
+    })}`,
+    payments_late: `${intl.formatMessage({
+      id: "dashboardPage.paymentStatusText.payments_late",
+    })}`,
+    payments_done: `${intl.formatMessage({
+      id: "dashboardPage.paymentStatusText.payments_done",
+    })}`,
   };
 
   const handleButton = (roundData) => {
@@ -242,50 +276,70 @@ function History() {
     if (stage === "ON_REGISTER_STAGE" && isAdmin) {
       return {
         disable: missingPositions > 0,
-        text: "Iniciar",
+        text: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_REGISTER_STAGE_ADMIN.text",
+        })}`,
         action: () => handleStartRound(roundData.roundKey),
-        withdrawText: "Cobrar",
+        withdrawText: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_REGISTER_STAGE_ADMIN.withdrawText",
+        })}`,
         withdrawAction: null,
       };
     }
     if (stage === "ON_REGISTER_STAGE" && !isAdmin) {
       return {
         disable: true,
-        text: "Pendiente",
+        text: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_REGISTER_STAGE.text",
+        })}`,
         action: () => {},
-        withdrawText: "Cobrar",
+        withdrawText: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_REGISTER_STAGE.withdrawText",
+        })}`,
         withdrawAction: null,
       };
     }
     if (stage === "ON_ROUND_ACTIVE") {
-      const payDisable = roundData.positionToWithdrawPay === Number(turn);
+      const payDisable = roundData.realTurn > roundData.groupSize;
 
       return {
-        disable: false,
+        disable: payDisable,
         text: paymentStatusText[roundData.paymentStatus],
         action: () => handlePayRound(roundData.roundKey),
         withdrawText:
           roundData.realTurn >= roundData.groupSize && payDisable
-            ? "Terminar y Cobrar"
-            : "Cobrar",
+            ? `${intl.formatMessage({
+                id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawText",
+              })}`
+            : `${intl.formatMessage({
+                id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawTextElse",
+              })}`,
         withdrawAction: () => handleWithdrawRound(roundData.roundKey),
       };
     }
     if (stage === "ON_ROUND_FINISHED") {
       return {
         disable: true,
-        text: "Finalizado",
+        text: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_ROUND_FINISHED.text",
+        })}`,
         action: () => {},
-        withdrawText: "Finalizado",
+        withdrawText: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_ROUND_FINISHED.withdrawText",
+        })}`,
         withdrawAction: () => {},
       };
     }
     if (stage === "ON_EMERGENCY_STAGE") {
       return {
         disable: true,
-        text: "Finalizado",
+        text: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_EMERGENCY_STAGE.text",
+        })}`,
         action: () => {},
-        withdrawText: "Finalizado",
+        withdrawText: `${intl.formatMessage({
+          id: "dashboardPage.functions.handleButton.ON_EMERGENCY_STAGE.withdrawText",
+        })}`,
         withdrawAction: () => {},
       };
     }

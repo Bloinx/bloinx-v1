@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useHistory, Link } from "react-router-dom";
+import { useIntl } from "react-intl";
 import { Button, Form, Input, notification } from "antd";
 
 import logo from "../../assets/bloinxLogo.png";
@@ -12,6 +13,7 @@ function UpdatePass() {
   const [loading, setLoading] = useState(false);
   const [hash, setHash] = useState(null);
   const [api, contextHolder] = notification.useNotification();
+  const intl = useIntl();
   const openNotificationWithIcon = (type, title, text) => {
     api[type]({
       message: title,
@@ -44,7 +46,13 @@ function UpdatePass() {
       });
 
       if (type !== "recovery" || !accessToken || accessToken === "object") {
-        openNotificationWithIcon("warning", "Session expired", "");
+        openNotificationWithIcon(
+          "warning",
+          `${intl.formatMessage({
+            id: "updatePass.notification",
+          })}`,
+          ""
+        );
         // history.push("/login");
       }
       setLoading(true);
@@ -56,11 +64,27 @@ function UpdatePass() {
           setLoading(false);
         },
         onFailure: (err) => {
-          openNotificationWithIcon("error", "Ups!", "Something went wrong");
+          openNotificationWithIcon(
+            "error",
+            `${intl.formatMessage({
+              id: "updatePass.functions.updatePassword.onFailure.title",
+            })}`,
+            `${intl.formatMessage({
+              id: "updatePass.functions.updatePassword.onFailure.text",
+            })}`
+          );
           setLoading(false);
         },
       }).then(() => {
-        openNotificationWithIcon("success", "Success!", "Password updated");
+        openNotificationWithIcon(
+          "success",
+          `${intl.formatMessage({
+            id: "updatePass.functions.updatePassword.onSuccess.title",
+          })}`,
+          `${intl.formatMessage({
+            id: "updatePass.functions.updatePassword.onSuccess.text",
+          })}`
+        );
         setTimeout(() => {
           history.push("/login");
         }, 2000);
@@ -75,7 +99,13 @@ function UpdatePass() {
         <div className={styles.UpdatePass_Card_Content}>
           <div className={styles.UpdatePass_Card_Content_Header}>
             <img src={logo} alt="logo" className={styles.UpdatePass_Icon} />
-            <span className={styles.UpdatePass_Title}>Reset Password</span>
+            <span className={styles.UpdatePass_Title}>
+              `$
+              {intl.formatMessage({
+                id: "updatePass.title",
+              })}
+              `
+            </span>
           </div>
           <Form
             layout="vertical"
@@ -85,15 +115,21 @@ function UpdatePass() {
           >
             <Form.Item
               name="password"
-              label="Password"
+              label={`${intl.formatMessage({
+                id: "updatePass.form.label.password",
+              })}`}
               rules={[
                 {
                   required: true,
-                  message: "Password is required",
+                  message: `${intl.formatMessage({
+                    id: "updatePass.form.validation.required",
+                  })}`,
                 },
                 {
                   min: 6,
-                  message: "Minimun 6 characters",
+                  message: `${intl.formatMessage({
+                    id: "updatePass.form.validation.minlength",
+                  })}`,
                 },
               ]}
               hasFeedback
@@ -103,12 +139,16 @@ function UpdatePass() {
 
             <Form.Item
               name="ConfirmPassword"
-              label="Confirm Password"
+              label={`${intl.formatMessage({
+                id: "updatePass.form.label.confirmPassword",
+              })}`}
               dependencies={["password"]}
               rules={[
                 {
                   required: true,
-                  message: "Confirm password is required",
+                  message: `${intl.formatMessage({
+                    id: "updatePass.form.validation.requiredConfirm",
+                  })}`,
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -117,7 +157,9 @@ function UpdatePass() {
                     }
                     return Promise.reject(
                       new Error(
-                        "Confirm password is not matching with your password"
+                        `${intl.formatMessage({
+                          id: "updatePass.form.validation.notEqual",
+                        })}`
                       )
                     );
                   },
@@ -125,20 +167,30 @@ function UpdatePass() {
               ]}
               hasFeedback
             >
-              <Input.Password placeholder="Confirm your password" />
+              <Input.Password
+                placeholder={`${intl.formatMessage({
+                  id: "updatePass.form.placeholder.confirmPassword",
+                })}`}
+              />
             </Form.Item>
 
             <Form.Item>
               <Button block type="primary" htmlType="submit">
-                Reset Password
+                {`${intl.formatMessage({
+                  id: "updatePass.buttonText",
+                })}`}
               </Button>
             </Form.Item>
           </Form>
         </div>
         <div className={styles.UpdatePass_Card_Options}>
-          <div>Tambien puedes</div>
+          <div>{`${intl.formatMessage({
+            id: "updatePass.actions.subtitle",
+          })}`}</div>
           <div>
-            <Link to="/login">Iniciar sesión</Link>
+            <Link to="/login">{`${intl.formatMessage({
+              id: "updatePass.actions.login",
+            })}`}</Link>
           </div>
         </div>
       </div>
