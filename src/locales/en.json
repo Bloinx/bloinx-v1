@@ -57,8 +57,7 @@
         "periodicityOptions": {
           "day": "Daily",
           "weekly": "Weekly",
-          "biweekly": "Biweekly",
-          "monthly": "Monthly"
+          "biweekly": "Biweekly"
         },
         "name": "Name of the Round",
         "motivation": "Personal motivation",
