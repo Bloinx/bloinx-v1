@@ -2,16 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { Button } from "antd";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 
 import logo from "../../assets/bloinxLogo.png";
-import { validateEmail } from "./vlidators";
+import validateEmail from "./vlidators";
 import styles from "./index.module.scss";
 import { useAuth } from "../../hooks/useAuth";
-
-const errors = {
-  "auth/user-not-found": "El usuario no existe.",
-};
 
 function ForgotPass() {
   const history = useHistory();
@@ -26,7 +22,7 @@ function ForgotPass() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
-
+  const intl = useIntl();
   const { ResetPass } = useAuth();
   const handlePasswordToggle = () => {
     setShowPassword(!showPassword);
@@ -45,7 +41,11 @@ function ForgotPass() {
         if (er) {
           setLoading(false);
           setError(true);
-          setErrorMessage("Ups, algo salió mal");
+          setErrorMessage(
+            `${intl.formatMessage({
+              id: "ForgotPass.form.validation.onFail",
+            })}`
+          );
         }
       },
     });
@@ -55,7 +55,7 @@ function ForgotPass() {
     const {
       target: { value },
     } = e;
-    const validationError = validateEmail(value);
+    const validationError = validateEmail(value, intl);
     setEmailError(validationError !== null);
     setIsDisabled(validationError !== null);
     if (validationError) {

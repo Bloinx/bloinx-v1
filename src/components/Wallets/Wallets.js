@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { useIntl } from "react-intl";
 import { WalletOutlined } from "@ant-design/icons";
 import { Button, Drawer, Typography, Spin, Result, Card } from "antd";
 import NETWORKS from "../../constants/networks";
@@ -27,6 +28,7 @@ function Wallets() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
+  const intl = useIntl();
 
   const handleToggleDrawer = () => setOpen(!open);
 
@@ -127,7 +129,9 @@ function Wallets() {
 
       {!accountData.publicAddress && (
         <Button type="primary" shape="round" onClick={handleToggleDrawer}>
-          Conecta Tu Wallet
+          {`${intl.formatMessage({
+            id: "wallets.actions.connect",
+          })}`}
         </Button>
       )}
 
@@ -174,7 +178,9 @@ function Wallets() {
 
       {networkSelected && (
         <Drawer
-          title="My Wallet"
+          title={`${intl.formatMessage({
+            id: "wallets.title",
+          })}`}
           visible={open}
           placement="right"
           closable
@@ -182,7 +188,9 @@ function Wallets() {
           width={400}
         >
           <div className={styles.Loading}>
-            <Title level={5}>Elige tu Wallet dentro de Metamask</Title>
+            <Title level={5}>{`${intl.formatMessage({
+              id: "wallets.subtitle",
+            })}`}</Title>
             {!loading && !error && (
               <Button
                 type="primary"
@@ -198,7 +206,9 @@ function Wallets() {
           </div>
           {(networkSelected === "44787" || networkSelected === "42220") && (
             <div className={styles.Loading}>
-              <Title level={5}>Elige tu Wallet dentro de Valora</Title>
+              <Title level={5}>{`${intl.formatMessage({
+                id: "wallets.subtitleValora",
+              })}`}</Title>
               {!loading && !error && (
                 <Button
                   type="primary"
