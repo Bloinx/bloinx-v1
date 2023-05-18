@@ -131,6 +131,15 @@ export const useWallet = () => {
           )}`.toUpperCase(),
           originalAdress: await account(),
         });
+
+        localStorage.setItem(
+          "user_address",
+          JSON.stringify({
+            name: walletName,
+            chainId: network.chainId,
+            address: provider.selectedAddress,
+          })
+        );
       } else if (walletName === "walletconnect") {
         document.addEventListener("visibilitychange", () => {
           if (document.visibilityState === "hidden" && iOS()) {
@@ -143,14 +152,14 @@ export const useWallet = () => {
         setCurrentProvider(provider);
         setWallet("WalletConnect");
         setCurrentAddress(provider.accounts[0]);
-        // localStorage.setItem(
-        //   "user_address",
-        //   JSON.stringify({
-        //     name: walletName,
-        //     chainId: network.chainId,
-        //     address: provider.accounts[0],
-        //   })
-        // );
+        localStorage.setItem(
+          "user_address",
+          JSON.stringify({
+            name: walletName,
+            chainId: network.chainId,
+            address: provider.accounts[0],
+          })
+        );
         setUserData({
           name: walletName,
           chainId: network.chainId,
@@ -171,5 +180,5 @@ export const useWallet = () => {
     }
   };
 
-  return { connect, userWallet, account };
+  return { connect, userWallet, account, setUserData };
 };

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { WalletOutlined } from "@ant-design/icons";
 import { Button, Drawer, Typography, Spin, Result, Card } from "antd";
 import NETWORKS from "../../constants/networks";
@@ -12,6 +12,7 @@ const { Title } = Typography;
 
 function Wallets() {
   const { connect } = useWallet();
+
   const {
     setCurrentProvider,
     setCurrentAddress,
@@ -29,14 +30,19 @@ function Wallets() {
 
   const handleToggleDrawer = () => setOpen(!open);
 
+  useEffect(() => {
+    const data = localStorage.getItem("user_address");
+    if (data) {
+      const parseData = JSON.parse(localStorage.getItem("user_address"));
+      setNetworkSelected(parseData.chainId);
+      connect(parseData.name, NETWORKS[parseData.chainId], setAccountData);
+    }
+  }, []);
+
   const connectMMWallet = async () => {
     try {
       setLoading(true);
       await connect("Metamask", NETWORKS[networkSelected], setAccountData);
-      // setAccountData({
-      //   publicAddress: userWallet(),
-      //   originalAdress: await account(),
-      // });
       await config(networkSelected);
       setLoading(false);
       handleToggleDrawer();

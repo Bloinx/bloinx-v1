@@ -3,6 +3,17 @@ import { useEffect, useState } from "react";
 export default function useLocalStorage(key, initialValue) {
   // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState(initialValue);
+
+  const removeValue = (keyof) => {
+    try {
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem(keyof);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const setValue = (value) => {
     try {
       const valueToStore =
@@ -41,5 +52,5 @@ export default function useLocalStorage(key, initialValue) {
     };
   }, [key]);
 
-  return [storedValue, setValue];
+  return [storedValue, setValue, removeValue];
 }

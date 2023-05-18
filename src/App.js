@@ -41,7 +41,6 @@ function App() {
           <Route path="/create-round" component={CreateBatch} />
           <Route path="/invitations" component={Invitations} />
           <Route path="/register-user" component={RegisterUser} />
-          {/* <Route exact path="/registerpay" component={RegisterPay} /> */}
           <Route path="/round-details" component={RoundDetails} />
           <Route exact path="/">
             <Redirect to="/login" />

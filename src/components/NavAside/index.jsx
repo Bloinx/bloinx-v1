@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Menu, Layout, Drawer } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import {
   DesktopOutlined,
@@ -32,6 +32,7 @@ function NavAside({ width, toggleDrawer, visible }) {
   const isMobile = width <= 768;
   const location = useLocation();
   const { user } = useAuth();
+  const history = useHistory();
 
   useEffect(() => {
     if (location.pathname === "/history") {
@@ -61,6 +62,12 @@ function NavAside({ width, toggleDrawer, visible }) {
   };
 
   // const selected = 1;
+
+  const logoutSession = () => {
+    LogOut();
+    localStorage.removeItem("user_address");
+    history.push("/login");
+  };
 
   const MenuOptions = () => (
     <Menu
@@ -123,7 +130,7 @@ function NavAside({ width, toggleDrawer, visible }) {
         )}
         key="2"
         icon={<LogoutOutlined />}
-        onClick={() => LogOut}
+        onClick={logoutSession}
       >
         <Link to="/logout">
           <span>

@@ -58,7 +58,8 @@
         "periodicityOptions": {
           "day": "Diario",
           "weekly": "Semanal",
-          "biweekly": "Quincenal"
+          "biweekly": "Quincenal",
+          "monthly": "Mensual"
         },
         "name": "Nombre de la ronda",
         "motivation": "Motivación personal",
