@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -25,12 +25,15 @@ import { confirmValidation } from "./validations";
 import { motivationOptions } from "./constants";
 import { getOptions } from "./utils";
 import { getTokenSymbolByRound } from "../../api/utils/getTokenData";
+import { MainContext } from "../../providers/provider";
 
 function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const user = supabase.auth.user();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [tokenSymbol, setTokenSymbol] = useState("");
+  const { currentProvider } = useContext(MainContext);
+
   const intl = useIntl();
   const getTokenSymbol = async () => {
     const data = await getTokenSymbolByRound(roundData.tokenId);
@@ -63,6 +66,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
         motivation: values.motivation,
         position: values.turnSelected,
         wallet,
+        currentProvider,
       })
         .then((receipt) => {
           history.push("/register-user/success");

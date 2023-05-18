@@ -11,7 +11,6 @@ export default function useToken(networkId) {
 
   useEffect(() => {
     getTokenSymbolData().then((data) => {
-      console.log(data, "symbols");
       data.map((item) => setTokens((token) => [...token, item.symbol]));
     });
   }, [networkId]);

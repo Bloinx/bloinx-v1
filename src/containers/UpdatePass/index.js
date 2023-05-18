@@ -35,7 +35,6 @@ function UpdatePass() {
         .substring(1)
         .split("&")
         .map((item) => item.split("="));
-      console.log(hashArr);
       let type;
       let accessToken;
       hashArr.forEach(([key, value]) => {

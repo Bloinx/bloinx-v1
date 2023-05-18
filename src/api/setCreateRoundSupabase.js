@@ -11,7 +11,6 @@ import getGasFee from "./utils/getGasFee";
 
 const adminFee = 2;
 const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX
-const userData = localStorage.getItem("user_address");
 
 const setCreateRound = async ({
   warranty,
@@ -22,25 +21,23 @@ const setCreateRound = async ({
   isPublic,
   currentAddress,
   wallet,
+  currentProvider,
 }) =>
   (async function getFactoryMethods() {
-    const { chainId } = userData ? JSON.parse(userData) : null;
-    const gasFee = await getGasFee(chainId);
-    console.log(tokenSelected);
+    const gasFee = await getGasFee(currentProvider);
     const tokenAddress = await getTokenAddress(tokenSelected);
-    console.log(tokenAddress);
 
     try {
       const factory = await new Promise((resolve, reject) => {
         if (wallet !== "WalletConnect") {
-          resolve(config());
+          resolve(config(currentProvider));
         } else {
           resolve(walletConnect());
         }
       });
 
-      if (chainId === 42220 || chainId === 44787) {
-        const token = selectTokenAddress(chainId);
+      if (currentProvider === 42220 || currentProvider === 44787) {
+        const token = selectTokenAddress(currentProvider);
         await new Promise((resolve, reject) => {
           factory.contract.methods
             .createRound(
@@ -54,7 +51,7 @@ const setCreateRound = async ({
             )
             .send({
               from: currentAddress,
-              to: selectContractAddress(chainId),
+              to: selectContractAddress(currentProvider),
               maxFeePerGas: gasFee.maxFeePerGas,
               maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
             })
@@ -65,7 +62,7 @@ const setCreateRound = async ({
               const folio = receipt.transactionHash;
               const session = supabase.auth.session();
               const idUser = session.user.id;
-              const tokenIds = await getTokenId(chainId);
+              const tokenIds = await getTokenId(currentProvider);
               await supabase
                 .from("rounds")
                 .insert([
@@ -103,7 +100,7 @@ const setCreateRound = async ({
             )
             .send({
               from: currentAddress,
-              to: selectContractAddress(chainId),
+              to: selectContractAddress(currentProvider),
               maxFeePerGas: gasFee.maxFeePerGas,
               maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
             })

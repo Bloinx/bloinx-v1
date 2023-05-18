@@ -42,7 +42,7 @@ function History() {
   const [invitationsList, setInvitationsList] = useState([]);
   const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentAddress, wallet } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
   const goToCreate = () => {
     history.push("/create-round");
@@ -55,16 +55,20 @@ function History() {
   const getRoundsData = (rounds, userId, walletAddress, provider) => {
     rounds.forEach((round, index) => {
       getAll(userId, round).then((res) => {
-        configByPosition(round, res, walletAddress, provider).then(
-          (resData) => {
-            if (
-              resData.stage === "ON_ROUND_FINISHED" ||
-              resData.stage === "ON_EMERGENCY_STAGE"
-            ) {
-              setRoundList((oldArray) => [...oldArray, resData]);
-            }
+        configByPosition(
+          round,
+          res,
+          walletAddress,
+          provider,
+          currentProvider
+        ).then((resData) => {
+          if (
+            resData.stage === "ON_ROUND_FINISHED" ||
+            resData.stage === "ON_EMERGENCY_STAGE"
+          ) {
+            setRoundList((oldArray) => [...oldArray, resData]);
           }
-        );
+        });
       });
     });
   };
@@ -78,16 +82,20 @@ function History() {
     roundsPosition.forEach((positionRound, index) => {
       getAllOtherRounds(userId, positionRound).then((res) => {
         if (res === undefined) return;
-        configByPositionOther(res, positionRound, walletAddress, provider).then(
-          (resData) => {
-            if (
-              resData.stage === "ON_ROUND_FINISHED" ||
-              resData.stage === "ON_EMERGENCY_STAGE"
-            ) {
-              setOtherList((oldArray) => [...oldArray, resData]);
-            }
+        configByPositionOther(
+          res,
+          positionRound,
+          walletAddress,
+          provider,
+          currentProvider
+        ).then((resData) => {
+          if (
+            resData.stage === "ON_ROUND_FINISHED" ||
+            resData.stage === "ON_EMERGENCY_STAGE"
+          ) {
+            setOtherList((oldArray) => [...oldArray, resData]);
           }
-        );
+        });
       });
     });
   };
@@ -96,14 +104,16 @@ function History() {
     invitesData.forEach((invite, index) => {
       getRoundInvite(invite).then((round) => {
         getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
-          configByInvitation(round, provider, roundAdmin).then((roundData) => {
-            if (
-              roundData.stage === "ON_ROUND_FINISHED" ||
-              roundData.stage === "ON_EMERGENCY_STAGE"
-            ) {
-              setInvitationsList((oldArray) => [...oldArray, roundData]);
+          configByInvitation(round, provider, roundAdmin, currentProvider).then(
+            (roundData) => {
+              if (
+                roundData.stage === "ON_ROUND_FINISHED" ||
+                roundData.stage === "ON_EMERGENCY_STAGE"
+              ) {
+                setInvitationsList((oldArray) => [...oldArray, roundData]);
+              }
             }
-          });
+          );
         });
       });
     });
@@ -133,7 +143,7 @@ function History() {
 
   const handleStartRound = (roundId) => {
     setLoading(true);
-    APISetStartRound(roundId, wallet)
+    APISetStartRound(roundId, wallet, currentProvider)
       .then((receipt) => {
         Modal.success({
           title: `${intl.formatMessage({
@@ -173,6 +183,7 @@ function History() {
             roundId,
             walletAddress: currentAddress,
             wallet,
+            currentProvider,
           })
             .then((success) => {
               Modal.success({

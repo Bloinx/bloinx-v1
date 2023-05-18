@@ -32,7 +32,7 @@ const useProvideAuth = () => {
     // Listen for changes on auth state (logged in, signed out, etc.)
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (session.user) {
+        if (session !== null) {
           setUser(session?.user ?? null);
           setLoading(false);
         } else {

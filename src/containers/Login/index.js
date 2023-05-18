@@ -8,6 +8,7 @@ import logo from "../../assets/bloinxLogo.png";
 import { validateEmail, validatePassword } from "./vlidators";
 import styles from "./index.module.scss";
 import { useAuth } from "../../hooks/useAuth";
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const errors = {
   "auth/user-not-found": "El usuario no existe.",
@@ -26,6 +27,7 @@ function Login() {
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [storedValue] = useLocalStorage("supabase.auth.token", null);
   const intl = useIntl();
 
   const { signIn } = useAuth();
@@ -80,6 +82,12 @@ function Login() {
     }
     setEmail(value);
   };
+
+  useEffect(() => {
+    if (storedValue !== null) {
+      history.push("/dashboard");
+    }
+  }, [storedValue]);
 
   useEffect(() => {
     if (email.length !== 0 && password.length !== 0) {
