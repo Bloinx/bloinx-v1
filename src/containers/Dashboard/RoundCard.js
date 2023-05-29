@@ -78,7 +78,7 @@ export function RoundCard({
         </p>
       )}
       <div className={styles.RoundCardFooter}>
-        <div className={styles.RoundCardTitleFooter}>
+        <div className={styles.RoundCardTitleFooter} style={{ width: "20%" }}>
           {arePending &&
             `${groupSize - missingPositions} de ${groupSize} unidos`}
           {!arePending &&
@@ -94,7 +94,7 @@ export function RoundCard({
               `$ ${saveAmount} cUSD a pagar`}
           </div>
         </div>
-        <div>
+        <div style={{ width: "80%" }}>
           {loading && (
             <div className={styles.RoundCardLoader}>
               <CubeSpinner frontColor="#F58F98" size={20} />
@@ -102,7 +102,7 @@ export function RoundCard({
             </div>
           )}
           {!loading && (
-            <>
+            <div>
               <Button
                 className={styles.RoundCardAction}
                 ghost={buttonText !== "Pagar"}
@@ -122,7 +122,7 @@ export function RoundCard({
                   Cobrar
                 </Button>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
