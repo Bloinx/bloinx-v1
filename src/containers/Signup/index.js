@@ -94,7 +94,7 @@ function SignUp() {
                           })}`,
                         },
                         {
-                          type: "email",
+                          type: "text",
                           message: `${intl.formatMessage({
                             id: "signup.form.input.username.error.whitespace",
                           })}`,
