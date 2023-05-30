@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Modal, Button } from "antd";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import styles from "./RoundCard.module.scss";
 import Stepper from "../../components/Stepper";
 import { formatAddress } from "../../utils/format";
 import logoIcon from "../../assets/icon.png";
+import { getTokenSymbolByRound } from "../../api/utils/getTokenData";
 
 export function RoundCard({
   name,
@@ -28,8 +29,22 @@ export function RoundCard({
   onWithdraw,
   stage,
   saveAmount,
+  tokenId,
   byInvitation,
 }) {
+  const [tokenSymbol, setTokenSymbol] = useState("");
+  console.log({ tokenId });
+  useEffect(() => {
+    const getTokenSymbol = async () => {
+      const data = await getTokenSymbolByRound(tokenId);
+      return data;
+    };
+
+    getTokenSymbol().then((data) => {
+      setTokenSymbol(data);
+    });
+  }, [tokenId]);
+
   const handleGetSteps = () => {
     const numGroup = Number(groupSize);
     const indents = [];
@@ -91,7 +106,7 @@ export function RoundCard({
           <div style={{ display: "block" }}>
             {!arePending &&
               stage === "ON_ROUND_ACTIVE" &&
-              `$ ${saveAmount} cUSD a pagar`}
+              `$ ${saveAmount} ${tokenSymbol} a pagar`}
           </div>
         </div>
         <div>
@@ -143,6 +158,7 @@ RoundCard.defaultProps = {
   onWithdraw: undefined,
   stage: "",
   saveAmount: "",
+  tokenId: null,
   byInvitation: false,
 };
 
@@ -162,6 +178,7 @@ RoundCard.propTypes = {
   onWithdraw: PropTypes.func,
   stage: PropTypes.string,
   saveAmount: PropTypes.string,
+  tokenId: PropTypes.number,
   byInvitation: PropTypes.bool,
 };
 
