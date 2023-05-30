@@ -2,7 +2,6 @@
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-
 const WEEKLY = "weekly";
 const BIWEEKLY = "biweekly";
 const MONTHLY = "monthly";
