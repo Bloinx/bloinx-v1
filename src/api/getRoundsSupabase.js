@@ -131,6 +131,7 @@ export const configByPosition = async (
       (Number(groupSize) === data?.position && realTurn > Number(groupSize)),
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
+    tokenId: round?.tokenId,
   };
   return roundData;
 };
