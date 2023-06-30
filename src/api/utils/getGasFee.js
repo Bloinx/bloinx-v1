@@ -18,8 +18,11 @@ const getGasFee = async (chainId) => {
       try {
         const result = await axios.get(POLYGON_GAS_STATION);
         const { standard, estimatedBaseFee } = result?.data;
-        const formattedMaxPriorityFee = standard.maxPriorityFee.toFixed(9);
-        const formattedEstimatedBaseFee = estimatedBaseFee.toFixed(9);
+        console.log(result?.data);
+        const formattedMaxPriorityFee = Number(standard.maxPriorityFee).toFixed(
+          9
+        );
+        const formattedEstimatedBaseFee = Number(estimatedBaseFee).toFixed(9);
 
         const maxPriorityFeePerGasTemp = Web3.utils.toWei(
           formattedMaxPriorityFee,
