@@ -133,6 +133,7 @@ export const configByPosition = async (
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
     tokenId: round?.tokenId,
   };
+
   return roundData;
 };
 
@@ -149,11 +150,6 @@ export const configByPosition = async (
 //   }
 // };
 export const getAll = async (userId, round) => {
-  // const { data } = await supabase
-  //   .from("positionByRound")
-  //   .select("idUser, idRound")
-  //   .match({ idUser: userId, idRound: round?.id });
-
   const { data } = await supabase
     .from("positionByRound")
     .select()

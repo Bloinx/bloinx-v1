@@ -33,7 +33,7 @@ export function RoundCard({
   byInvitation,
 }) {
   const [tokenSymbol, setTokenSymbol] = useState("");
-  console.log({ tokenId });
+
   useEffect(() => {
     const getTokenSymbol = async () => {
       const data = await getTokenSymbolByRound(tokenId);

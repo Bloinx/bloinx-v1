@@ -26,7 +26,6 @@ const getRounds = async ({ userId }) => {
 export const getAllOtherRounds = async (userId, positionByRound) => {
   const filterByUserId = userId;
   const filterbyRound = positionByRound.idRound;
-
   let query = supabase.from("rounds").select();
 
   if (filterbyRound) {
@@ -51,8 +50,8 @@ export const configByPositionOther = async (
     (await wallet) !== "WalletConnect"
       ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
-
   const admin = await MethodGetAdmin(sg.methods);
+
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
   const stage = await MethodGetStage(sg.methods);
@@ -150,7 +149,7 @@ export const configByPositionOther = async (
         realTurn > Number(groupSize)),
     fromInvitation: false,
   };
-  // console.log(round?.contract, realTurn, positionByRound.position, groupSize);
+
   return roundData;
 };
 

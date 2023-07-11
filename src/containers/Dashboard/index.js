@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 // import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -12,20 +12,6 @@ import RoundCardNew from "./RoundCardNew";
 import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./Dashboard.module.scss";
-
-import APIGetRounds, {
-  getAll,
-  configByPosition,
-} from "../../api/getRoundsSupabase";
-import APIGetOtherRounds, {
-  getAllOtherRounds,
-  configByPositionOther,
-} from "../../api/getRoundsOthersSupabase";
-import APIGetRoundsByInvitation, {
-  getRoundInvite,
-  getUserAdminEmail,
-  configByInvitation,
-} from "../../api/getRoundsByInvitationSupabase";
 import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
 import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
@@ -38,112 +24,24 @@ import { MainContext } from "../../providers/provider";
 
 function Dashboard() {
   const history = useHistory();
-  // const user = getAuth().currentUser;
   const user = supabase.auth.user();
-  // const [roundList, setRoundList] = useState([]);
-  const { roundList, setRoundList } = useRoundContext();
-  const [invitationsList, setInvitationsList] = useState([]);
-  const [otherList, setOtherList] = useState([]);
+  const {
+    roundList,
+    invitationsList,
+    otherList,
+    handleGetRounds,
+    completeRoundList,
+  } = useRoundContext();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
+
   const goToCreate = () => {
     history.push("/create-round");
   };
 
   const goToJoin = (roundKey) => {
     history.push(`/register-user?roundId=${roundKey}`);
-  };
-
-  const getRoundsData = (
-    rounds,
-    userId,
-    walletAddress,
-    provider,
-    currentProv
-  ) => {
-    rounds.forEach((round, index) => {
-      getAll(userId, round).then((res) => {
-        configByPosition(round, res, walletAddress, provider, currentProv).then(
-          (resData) => {
-            if (
-              resData.stage === "ON_REGISTER_STAGE" ||
-              resData.stage === "ON_ROUND_ACTIVE"
-            ) {
-              setRoundList((oldArray) => [...oldArray, resData]);
-            }
-          }
-        );
-      });
-    });
-  };
-
-  const getRoundsOtherData = (
-    roundsPosition,
-    userId,
-    walletAddress,
-    provider
-  ) => {
-    roundsPosition.forEach((positionRound, index) => {
-      getAllOtherRounds(userId, positionRound).then((res) => {
-        if (res === undefined) return;
-        configByPositionOther(
-          res,
-          positionRound,
-          walletAddress,
-          provider,
-          currentProvider
-        ).then((resData) => {
-          if (
-            resData.stage === "ON_REGISTER_STAGE" ||
-            resData.stage === "ON_ROUND_ACTIVE"
-          ) {
-            setOtherList((oldArray) => [...oldArray, resData]);
-          }
-        });
-      });
-    });
-  };
-
-  const getRoundsByInvitationData = (invitesData, provider) => {
-    invitesData.forEach((invite, index) => {
-      getRoundInvite(invite).then((round) => {
-        getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
-          configByInvitation(round, provider, roundAdmin, currentProvider).then(
-            (roundData) => {
-              if (
-                roundData.stage === "ON_REGISTER_STAGE" ||
-                roundData.stage === "ON_ROUND_ACTIVE"
-              ) {
-                setInvitationsList((oldArray) => [...oldArray, roundData]);
-              }
-            }
-          );
-        });
-      });
-    });
-  };
-
-  const handleGetRounds = async () => {
-    setRoundList([]);
-    setOtherList([]);
-    setInvitationsList([]);
-
-    if (user && currentAddress) {
-      const rounds = await APIGetRounds({
-        userId: user.id,
-      });
-
-      getRoundsData(rounds, user.id, currentAddress, wallet, currentProvider);
-
-      const invitations = await APIGetRoundsByInvitation({ email: user.email });
-      getRoundsByInvitationData(invitations, wallet);
-      const otherRoundsPosition = await APIGetOtherRounds({
-        userId: user.id,
-      });
-
-      getRoundsOtherData(otherRoundsPosition, user.id, currentAddress, wallet);
-    }
   };
 
   const handleStartRound = (roundId) => {
@@ -159,7 +57,7 @@ function Dashboard() {
           })}`,
         });
         setLoading(false);
-        handleGetRounds();
+        handleGetRounds(currentAddress, currentProvider, wallet);
       })
       .catch((err) => {
         Modal.warning({
@@ -199,7 +97,7 @@ function Dashboard() {
                 content: "...",
               });
               setLoading(false);
-              handleGetRounds();
+              handleGetRounds(currentAddress, currentProvider, wallet);
             })
             .catch((err) => {
               Modal.error({
@@ -209,7 +107,7 @@ function Dashboard() {
                 content: "...",
               });
               setLoading(false);
-              handleGetRounds();
+              handleGetRounds(currentAddress, currentProvider, wallet);
             });
         } else {
           Modal.success({
@@ -246,7 +144,7 @@ function Dashboard() {
           })}`,
         });
         setLoading(false);
-        handleGetRounds();
+        handleGetRounds(currentAddress, currentProvider, wallet);
       })
       .catch(() => {
         Modal.error({
@@ -258,7 +156,7 @@ function Dashboard() {
           })}`,
         });
         setLoading(false);
-        handleGetRounds();
+        handleGetRounds(currentAddress, currentProvider, wallet);
       });
   };
 
@@ -352,17 +250,10 @@ function Dashboard() {
     return {};
   };
 
-  useEffect(() => {
-    if (currentProvider !== undefined) {
-      handleGetRounds();
-    }
-  }, [currentAddress, currentProvider, wallet]);
-
-  if (!currentAddress) {
+  if (wallet === null || currentAddress === null || currentProvider === null) {
     return <Placeholder />;
   }
 
-  const completeRoundList = roundList?.concat(invitationsList);
   return (
     <>
       <PageHeader
@@ -379,8 +270,8 @@ function Dashboard() {
           <NotFoundPlaceholder />
         )}
         {currentAddress &&
-          completeRoundList?.map((round) => {
-            if (round.stage === "ON_REGISTER_STAGE" && round.toRegister) {
+          completeRoundList?.map((round, index) => {
+            if (round?.stage === "ON_REGISTER_STAGE" && round?.toRegister) {
               return (
                 <RoundCardNew
                   key={round.roundKey}

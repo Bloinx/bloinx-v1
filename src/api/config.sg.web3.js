@@ -16,9 +16,11 @@ export default async function config(savingGroupAddress, currentProvider) {
     const web3Provider = new Web3(
       window?.web3?.currentProvider || httpProvider
     );
-    const ABI = currentProvider === 42220 ? SavingGroups : SavingGroupsP;
+    const ABI =
+      currentProvider === 42220 || currentProvider === 44787
+        ? SavingGroups
+        : SavingGroupsP;
     const contract = new web3Provider.eth.Contract(ABI, savingGroupAddress);
-
     return contract;
   } catch (error) {
     return error;

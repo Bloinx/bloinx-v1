@@ -7,29 +7,25 @@ import Receipt from "./Receipt";
 import Status from "./Status";
 
 import { INITIAL_FORM_VALUES } from "./constants";
-import { getTokenId, getTokenData } from "../../api/utils/getTokenData";
 import { MainContext } from "../../providers/provider";
+import useToken from "../../hooks/useToken";
 
 function CreateRound() {
   const history = useHistory();
   const baseUrl = "/create-round";
   const { currentProvider } = useContext(MainContext);
+  const { tokens } = useToken(currentProvider);
 
   const [tokenSelected, setTokenSelected] = React.useState(
     `${currentProvider === 137 || currentProvider === 80001 ? "USDC" : "cUSD"}`
   );
 
   useEffect(() => {
-    if (currentProvider === undefined) {
-      history.push("/dashboard");
-    } else {
-      getTokenId(currentProvider);
-      setTokenSelected(
-        `${
-          currentProvider === 137 || currentProvider === 80001 ? "USDC" : "cUSD"
-        }`
-      );
-    }
+    setTokenSelected(
+      `${
+        currentProvider === 137 || currentProvider === 80001 ? "USDC" : "cUSD"
+      }`
+    );
   }, [currentProvider]);
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
@@ -43,9 +39,9 @@ function CreateRound() {
           <Form
             form={form}
             setForm={setForm}
-            chainId={currentProvider}
             setTokenSelected={setTokenSelected}
             tokenSelected={tokenSelected}
+            tokens={tokens}
           />
         )}
       />

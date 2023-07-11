@@ -7,7 +7,7 @@ import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { Formik } from "formik";
 import { FormattedMessage, useIntl } from "react-intl";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Modal } from "antd";
 
 import PageHeader from "../../components/PageHeader";
@@ -24,8 +24,12 @@ import styles from "./Confirm.module.scss";
 import { confirmValidation } from "./validations";
 import { motivationOptions } from "./constants";
 import { getOptions } from "./utils";
-import { getTokenSymbolByRound } from "../../api/utils/getTokenData";
+import {
+  getTokenSymbolByRound,
+  getTokenIdByRoundId,
+} from "../../api/utils/getTokenData";
 import { MainContext } from "../../providers/provider";
+import { getUrlParams } from "../../utils/browser";
 
 function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const user = supabase.auth.user();
@@ -33,17 +37,26 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
   const [loading, setLoading] = useState(false);
   const [tokenSymbol, setTokenSymbol] = useState("");
   const { currentProvider } = useContext(MainContext);
+  const { roundId } = getUrlParams(history.location.search);
 
   const intl = useIntl();
-  const getTokenSymbol = async () => {
-    const data = await getTokenSymbolByRound(roundData.tokenId);
+  const getTokenSymbol = async (tokenId) => {
+    const data = await getTokenSymbolByRound(tokenId);
     return data;
   };
 
   useEffect(() => {
-    getTokenSymbol().then((data) => {
-      setTokenSymbol(data);
-    });
+    if (Object.entries(roundData).length === 0) {
+      getTokenIdByRoundId(roundId).then((data) => {
+        getTokenSymbol(data).then((dataToken) => {
+          setTokenSymbol(dataToken);
+        });
+      });
+    } else {
+      getTokenSymbol(roundData.tokenId).then((dataToken) => {
+        setTokenSymbol(dataToken);
+      });
+    }
   }, [roundData]);
 
   const handlerOnSubmit = (values) => {
@@ -73,6 +86,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
         })
         .catch((err) => {
           setLoading(false);
+          console.log(err);
           Modal.error({
             title: `${intl.formatMessage({
               id: "registerUser.functions.handlerOnSubmit.error.title",
