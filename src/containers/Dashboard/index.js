@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 // import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -31,10 +31,15 @@ function Dashboard() {
     otherList,
     handleGetRounds,
     completeRoundList,
+    setType,
   } = useRoundContext();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
+
+  useEffect(() => {
+    setType(["ON_REGISTER_STAGE", "ON_ROUND_ACTIVE"]);
+  }, []);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -270,7 +275,7 @@ function Dashboard() {
           <NotFoundPlaceholder />
         )}
         {currentAddress &&
-          completeRoundList?.map((round, index) => {
+          completeRoundList?.map((round) => {
             if (round?.stage === "ON_REGISTER_STAGE" && round?.toRegister) {
               return (
                 <RoundCardNew

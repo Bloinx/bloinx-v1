@@ -23,6 +23,7 @@ export const useRoundContext = () => useContext(RoundsContext);
 
 const useRoundProvider = () => {
   const user = supabase.auth.user();
+  const [type, setType] = useState([]);
   const [roundList, setRoundList] = useState([]);
   const [otherRounds, setOtherList] = useState([]);
   const [invitations, setInvitationsList] = useState([]);
@@ -45,12 +46,11 @@ const useRoundProvider = () => {
           provider,
           currentProvider
         ).then((resData) => {
-          if (
-            resData.stage === "ON_REGISTER_STAGE" ||
-            resData.stage === "ON_ROUND_ACTIVE"
-          ) {
-            setOtherList((oldArray) => [...oldArray, resData]);
-          }
+          type.forEach((item) => {
+            if (resData.stage === item) {
+              setOtherList((oldArray) => [...oldArray, resData]);
+            }
+          });
         });
       });
     });
@@ -62,12 +62,11 @@ const useRoundProvider = () => {
         getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
           configByInvitation(round, provider, roundAdmin, currentProvider).then(
             (roundData) => {
-              if (
-                roundData.stage === "ON_REGISTER_STAGE" ||
-                roundData.stage === "ON_ROUND_ACTIVE"
-              ) {
-                setInvitationsList((oldArray) => [...oldArray, roundData]);
-              }
+              type.forEach((item) => {
+                if (roundData.stage === item) {
+                  setInvitationsList((oldArray) => [...oldArray, roundData]);
+                }
+              });
             }
           );
         });
@@ -86,12 +85,11 @@ const useRoundProvider = () => {
       getAll(userId, round).then((res) => {
         configByPosition(round, res, walletAddress, provider, currentProv).then(
           (resData) => {
-            if (
-              resData.stage === "ON_REGISTER_STAGE" ||
-              resData.stage === "ON_ROUND_ACTIVE"
-            ) {
-              setRoundList((oldArray) => [...oldArray, resData]);
-            }
+            type.forEach((item) => {
+              if (resData.stage === item) {
+                setRoundList((oldArray) => [...oldArray, resData]);
+              }
+            });
           }
         );
       });
@@ -132,10 +130,10 @@ const useRoundProvider = () => {
 
   useEffect(() => {
     setCompleteRoundList([]);
-    if (currentAddress && wallet && currentProvider) {
+    if (currentAddress && wallet && currentProvider && type.length > 0) {
       handleGetRounds(currentAddress, currentProvider, wallet);
     }
-  }, [currentAddress, wallet, currentProvider]);
+  }, [currentAddress, wallet, currentProvider, type]);
 
   return {
     user,
@@ -144,6 +142,7 @@ const useRoundProvider = () => {
     invitations,
     handleGetRounds,
     completeRoundList,
+    setType,
   };
 };
 
