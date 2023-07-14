@@ -7,6 +7,7 @@ import Navbar from "../../components/Navbar";
 import NavAside from "../../components/NavAside";
 // import getSavingGroupsMethods from "../../utils/getSGContract";
 import useWindowDimensions from "../../utils/useWindowDimensions";
+import { useAuth } from "../../hooks/useAuth";
 
 const { Header, Content, Footer } = Layout;
 
@@ -14,6 +15,8 @@ function Markup({ children }) {
   // initialContractInstance
   const { width } = useWindowDimensions();
   const [visible, setVisible] = useState(false);
+  const isLogged = useAuth();
+  const currentRoute = window.location.pathname;
 
   const toggleDrawer = (status) => {
     if (status) {
@@ -32,7 +35,7 @@ function Markup({ children }) {
   //   instanceContractsEnviroment();
   // }, []);
 
-  return (
+  return isLogged && currentRoute !== "/login" ? (
     <Layout className="appLayout">
       <NavAside width={width} toggleDrawer={toggleDrawer} visible={visible} />
       <Layout>
@@ -45,7 +48,7 @@ function Markup({ children }) {
         </Footer>
       </Layout>
     </Layout>
-  );
+  ) : null;
 }
 
 Markup.propTypes = {
