@@ -43,22 +43,26 @@ const setRegisterUser = async (props) => {
   } = props;
 
   const gasFee = await getGasFee(currentProvider);
+  console.log(gasFee);
   const user = supabase.auth.user();
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
+  console.log(data);
   const sg = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(config(data[0].contract));
+        resolve(config(data[0].contract, currentProvider));
       } else {
         resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
+  console.log(sg);
   // const sg = await config(data.contract, provider);
-
+  console.log(position);
   return new Promise((resolve, reject) =>
     sg.methods
       .registerUser(position)
@@ -81,6 +85,7 @@ const setRegisterUser = async (props) => {
         if (res) resolve(recpt);
       })
       .on("error", async (error) => {
+        console.log(error);
         reject(error);
       })
   );

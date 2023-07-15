@@ -71,6 +71,16 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
       });
     } else {
       setLoading(true);
+      console.log({
+        userId: user.id,
+        walletAddress,
+        roundId: roundData.roundId,
+        name: values.name,
+        motivation: values.motivation,
+        position: values.turnSelected,
+        wallet,
+        currentProvider,
+      });
       APISetRegisterUser({
         userId: user.id,
         walletAddress,

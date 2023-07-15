@@ -1,10 +1,11 @@
 /* eslint-disable import/prefer-default-export */
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { walletconnect } from "../constants/web3Providers";
 import { MainContext } from "../providers/provider";
 import { iOS } from "../utils/browser";
+import getFunds from "../api/getFunds";
 
 // const errorMessages = [
 //   {
@@ -46,6 +47,19 @@ export const useWallet = () => {
   const { setCurrentAddress, setCurrentProvider, setWallet } =
     useContext(MainContext);
   const [userData, setUserData] = useState();
+  const [funds, setFunds] = useState();
+
+  const getBalance = async (address, network) => {
+    const balance = await getFunds(address, network);
+    return balance;
+  };
+
+  useEffect(() => {
+    if (userData) {
+      const balance = getBalance(userData.address, userData.chainId);
+      setFunds(balance);
+    }
+  }, [userData]);
 
   const account = () => {
     if (userData) {
@@ -180,5 +194,5 @@ export const useWallet = () => {
     }
   };
 
-  return { connect, userWallet, account, setUserData };
+  return { connect, userWallet, account, setUserData, funds };
 };

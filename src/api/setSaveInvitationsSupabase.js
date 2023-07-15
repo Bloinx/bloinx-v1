@@ -37,10 +37,16 @@ const setEmailInvite = (mailList, roundId) => {
   });
 };
 
-const setSaveInvitations = async (mailList, round, wallet, positionData) => {
+const setSaveInvitations = async (
+  mailList,
+  round,
+  wallet,
+  positionData,
+  currentProvider
+) => {
   const sg =
     (await wallet) !== "WalletConnect"
-      ? await config(round?.contract)
+      ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
 
   const groupSize = await MethodGetGroupSize(sg.methods);
@@ -102,13 +108,19 @@ export const getRoundData = async (roundId) => {
   return data[0];
 };
 
-export const setAllInvites = (mailList, roundId, wallet) => {
+export const setAllInvites = (mailList, roundId, wallet, currentProvider) => {
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
       setEmailInvite(mailList, round?.id);
       getPositionUserAdmin(round?.id, round?.userAdmin).then(
         (positionAdminData) => {
-          setSaveInvitations(mailList, round, wallet, positionAdminData)
+          setSaveInvitations(
+            mailList,
+            round,
+            wallet,
+            positionAdminData,
+            currentProvider
+          )
             .then((status) => {
               resolve(status);
               // return status;

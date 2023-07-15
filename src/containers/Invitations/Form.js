@@ -13,13 +13,13 @@ import InputEmailTags from "../../components/InputEmailTags";
 
 const { Paragraph } = Typography;
 
-function Form({ roundId, wallet }) {
+function Form({ roundId, wallet, currentProvider }) {
   const history = useHistory();
   const [mailList, setMailList] = useState([]);
   const intl = useIntl();
 
   const handleSendEmails = () => {
-    APISetSaveInvitations(mailList, roundId, wallet)
+    APISetSaveInvitations(mailList, roundId, wallet, currentProvider)
       .then((status) => {
         Modal.success({
           title: `${intl.formatMessage({
@@ -77,11 +77,13 @@ function Form({ roundId, wallet }) {
 Form.defaultProps = {
   roundId: undefined,
   wallet: undefined,
+  currentProvider: undefined,
 };
 
 Form.propTypes = {
   roundId: PropTypes.string,
   wallet: PropTypes.string,
+  currentProvider: PropTypes.number,
 };
 
 export default Form;
