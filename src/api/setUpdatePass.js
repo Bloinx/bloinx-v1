@@ -16,7 +16,7 @@ const updatePassword = async ({
       onSuccess();
     }
   } catch (e) {
-    alert(e.message);
+    // alert(e.message);
     onFailure(e.message);
   }
 };
