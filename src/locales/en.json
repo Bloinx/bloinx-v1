@@ -125,9 +125,9 @@
         "amount": "Amount per period",
         "periodicity": "Duration of the round",
         "periodicityOptions": {
-          "day": "Daily",
           "weekly": "Weekly",
-          "biweekly": "Biweekly"
+          "biweekly": "Biweekly",
+          "monthly": "Monthly"
         },
         "name": "Name of the Round",
         "motivation": "Personal motivation",
