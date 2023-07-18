@@ -11,7 +11,7 @@ const signUp = async ({ values, onSuccess, onFailure }) => {
       onSuccess(user);
     }
   } catch (e) {
-    alert(e.message);
+    // alert(e.message);
     onFailure(e.message);
   }
 };

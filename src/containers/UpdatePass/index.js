@@ -100,11 +100,9 @@ function UpdatePass() {
           <div className={styles.UpdatePass_Card_Content_Header}>
             <img src={logo} alt="logo" className={styles.UpdatePass_Icon} />
             <span className={styles.UpdatePass_Title}>
-              `$
               {intl.formatMessage({
                 id: "updatePass.title",
               })}
-              `
             </span>
           </div>
           <Form

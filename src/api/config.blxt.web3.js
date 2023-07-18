@@ -13,8 +13,9 @@ export default async function config(BLXAddress) {
     );
 
     const web3Provider = new Web3(
-      window?.web3?.currentProvider || httpProvider
+      window?.ethereum.HttpProvider || httpProvider
     );
+
     const contract = new web3Provider.eth.Contract(BLXToken, BLXAddress);
 
     return contract;

@@ -14,7 +14,7 @@ const setUserData = async (user, values) => {
 
     if (error) throw error;
   } catch (e) {
-    alert(e.message);
+    console.log(e.message);
   }
 };
 
