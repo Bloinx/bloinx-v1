@@ -32,7 +32,7 @@ const Form = ({ form, setForm, tokenSelected, setTokenSelected, tokens }) => {
     });
   };
   let sliderInfo = { Min: 5, Max: 30, Step: 1 };
-  if (tokenSelected === "jMXN") {
+  if (tokenSelected === "XOC") {
     sliderInfo = { Min: 100, Max: 1000, Step: 50 };
   }
 
@@ -131,7 +131,21 @@ const Form = ({ form, setForm, tokenSelected, setTokenSelected, tokens }) => {
                 options={periodicityOptions}
               />
 
-              <ButtonOnlyOneStep disabled={!isValid} type="submit" />
+              <ButtonOnlyOneStep
+                disabled={
+                  !isValid ||
+                  tokenSelected === "jMXN" ||
+                  tokenSelected === "XOC"
+                }
+                type="submit"
+              />
+              {(tokenSelected === "jMXN" || tokenSelected === "XOC") && (
+                <div className={styles.CreateRoundTitle}>
+                  <FormattedMessage
+                    id={`createRound.labels.warnings.${tokenSelected}`}
+                  />
+                </div>
+              )}
             </form>
           );
         }}
