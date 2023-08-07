@@ -38,7 +38,7 @@ function Dashboard() {
   const intl = useIntl();
 
   useEffect(() => {
-    setType(["ON_ROUND_ACTIVE", "ON_EMERGENCY_STAGE", "ON_REGISTER_STAGE"]);
+    setType(["ON_ROUND_ACTIVE", "ON_REGISTER_STAGE"]);
   }, []);
 
   const goToCreate = () => {
