@@ -14,15 +14,13 @@ import CreateBatch from "./containers/CreateBatch";
 import RegisterUser from "./containers/RegisterUser";
 import RoundDetails from "./containers/RoundDetails";
 import Invitations from "./containers/Invitations";
-import { RoundsContext } from "./contexts/RoundsContext";
+import { ProvideRound } from "./contexts/RoundsContext";
 import "./App.scss";
 import { ProvideAuth } from "./hooks/useAuth";
 import ForgotPass from "./containers/ForgotPass";
 import UpdatePass from "./containers/UpdatePass";
 
 function App() {
-  const [roundList, setRoundList] = useState([]);
-
   return (
     <Switch>
       <ProvideAuth>
@@ -33,16 +31,15 @@ function App() {
         <Route exact path="/update-password" component={UpdatePass} />
 
         <Markup>
-          <RoundsContext.Provider value={{ roundList, setRoundList }}>
+          <ProvideRound>
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/history" component={History} />
-          </RoundsContext.Provider>
+            <Route path="/create-round" component={CreateBatch} />
+            <Route path="/invitations" component={Invitations} />
+            <Route path="/register-user" component={RegisterUser} />
+            <Route path="/round-details" component={RoundDetails} />
+          </ProvideRound>
 
-          <Route path="/create-round" component={CreateBatch} />
-          <Route path="/invitations" component={Invitations} />
-          <Route path="/register-user" component={RegisterUser} />
-          {/* <Route exact path="/registerpay" component={RegisterPay} /> */}
-          <Route path="/round-details" component={RoundDetails} />
           <Route exact path="/">
             <Redirect to="/login" />
           </Route>

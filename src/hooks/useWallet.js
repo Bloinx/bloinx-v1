@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import { useContext } from "react";
-import Web3 from "web3";
+import { useContext, useState } from "react";
+// import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { walletconnect } from "../constants/web3Providers";
 import { MainContext } from "../providers/provider";
@@ -45,7 +45,7 @@ import { iOS } from "../utils/browser";
 export const useWallet = () => {
   const { setCurrentAddress, setCurrentProvider, setWallet } =
     useContext(MainContext);
-  const userData = localStorage.getItem("user_address");
+  const [userData, setUserData] = useState();
 
   const account = () => {
     if (userData) {
@@ -67,7 +67,7 @@ export const useWallet = () => {
     return null;
   };
 
-  const connect = async (walletName, network) => {
+  const connect = async (walletName, network, setAccountData) => {
     try {
       let provider = await detectEthereumProvider();
 
@@ -111,10 +111,27 @@ export const useWallet = () => {
               break;
           }
 
-          setCurrentProvider(Web3.givenProvider);
+          setCurrentProvider(network.chainId);
+          setWallet("Metamask");
           setCurrentAddress(provider.selectedAddress);
         }
-        setWallet("Metamask");
+
+        setUserData({
+          name: walletName,
+          chainId: network.chainId,
+          address: provider.selectedAddress,
+        });
+        setAccountData({
+          publicAddress: `${provider.selectedAddress?.slice(
+            0,
+            4
+          )}...${provider.selectedAddress?.slice(
+            provider.selectedAddress.length - 4,
+            provider.selectedAddress.length
+          )}`.toUpperCase(),
+          originalAdress: await account(),
+        });
+
         localStorage.setItem(
           "user_address",
           JSON.stringify({
@@ -143,15 +160,25 @@ export const useWallet = () => {
             address: provider.accounts[0],
           })
         );
+        setUserData({
+          name: walletName,
+          chainId: network.chainId,
+          address: provider.selectedAddress,
+        });
       }
 
       const chain = network;
       chain.provider = provider;
+
+      // setAccountData({
+      //   publicAddress: userWallet(),
+      //   originalAdress: await account(),
+      // });
     } catch (error) {
       console.error("Error: ", error);
       throw new Error(error);
     }
   };
 
-  return { connect, userWallet, account };
+  return { connect, userWallet, account, setUserData };
 };

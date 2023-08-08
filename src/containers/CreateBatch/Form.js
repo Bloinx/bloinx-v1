@@ -14,13 +14,10 @@ import ButtonOnlyOneStep from "../../components/ButtonOnlyOneStep";
 import styles from "./index.module.scss";
 import { periodicityOptions, participantsOptions } from "./constants";
 import { confirmForm } from "./validations";
-import useToken from "../../hooks/useToken";
-import { getTokenId } from "../../api/utils/getTokenData";
 
-const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
+const Form = ({ form, setForm, tokenSelected, setTokenSelected, tokens }) => {
   const history = useHistory();
-  const { tokens } = useToken(chainId);
-  console.log("tokens", tokens);
+
   const handlerOnSubmit = (values) => {
     setForm({
       ...form,
@@ -35,7 +32,7 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
     });
   };
   let sliderInfo = { Min: 5, Max: 30, Step: 1 };
-  if (tokenSelected === "jMXN") {
+  if (tokenSelected === "XOC") {
     sliderInfo = { Min: 100, Max: 1000, Step: 50 };
   }
 
@@ -134,7 +131,21 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
                 options={periodicityOptions}
               />
 
-              <ButtonOnlyOneStep disabled={!isValid} type="submit" />
+              <ButtonOnlyOneStep
+                disabled={
+                  !isValid ||
+                  tokenSelected === "jMXN" ||
+                  tokenSelected === "XOC"
+                }
+                type="submit"
+              />
+              {(tokenSelected === "jMXN" || tokenSelected === "XOC") && (
+                <div className={styles.CreateRoundTitle}>
+                  <FormattedMessage
+                    id={`createRound.labels.warnings.${tokenSelected}`}
+                  />
+                </div>
+              )}
             </form>
           );
         }}
@@ -146,7 +157,6 @@ const Form = ({ form, setForm, chainId, tokenSelected, setTokenSelected }) => {
 Form.propTypes = {
   form: PropTypes.instanceOf(Object).isRequired,
   setForm: PropTypes.func.isRequired,
-  //  chainId: PropTypes.number,
 };
 
 export default Form;

@@ -9,7 +9,6 @@ const getTokenBLX = async (address, wallet) => {
       : await walletConnect("0x37836007FC99C7cB3D4590cb466692ff7690074c");
 
   const balance = await MethodGetTokenBalance(sg.methods, address);
-
   return web3.utils.fromWei(balance, "ether");
 };
 export default getTokenBLX;

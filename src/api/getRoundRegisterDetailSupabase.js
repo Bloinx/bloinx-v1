@@ -5,14 +5,14 @@ import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
 import { getTokenDecimals } from "./utils/getTokenData";
 
-const getRoundRegisterDetail = async (roundId, wallet) => {
+const getRoundRegisterDetail = async (roundId, wallet, currentProvider) => {
   try {
     const { data } = await supabase.from("rounds").select().eq("id", roundId);
 
     const sg = await new Promise((resolve, reject) => {
       try {
         if (wallet !== "WalletConnect") {
-          resolve(config(data[0].contract));
+          resolve(config(data[0].contract, currentProvider));
         } else {
           resolve(walletConnect(data[0].contract));
         }

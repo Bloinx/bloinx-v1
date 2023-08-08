@@ -3,17 +3,15 @@ import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
 import getGasFee from "./utils/getGasFee";
 
-const userData = localStorage.getItem("user_address");
-
-const api = async (roundId, wallet) => {
+const api = async (roundId, wallet, chainId) => {
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-  const { chainId } = userData ? JSON.parse(userData) : null;
+
   const gasFee = await getGasFee(chainId);
 
   const sg = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(config(data[0].contract));
+        resolve(config(data[0].contract, chainId));
       } else {
         resolve(walletConnect(data[0].contract));
       }

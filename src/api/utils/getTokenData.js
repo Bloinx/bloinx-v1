@@ -1,9 +1,6 @@
 import supabase from "../../supabase";
 
 export const getTokenData = async (chainId) => {
-  //   const userData = localStorage.getItem("user_address");
-  //   const { chainId } = userData ? JSON.parse(userData) : null;
-
   const { data } = await supabase
     .from("tokens")
     .select()
@@ -16,7 +13,7 @@ export const getTokenId = async (chainId) => {
     .from("tokens")
     .select("id")
     .eq("chainId", chainId);
-  return data[0].id;
+  return data[0]?.id;
 };
 
 export const getTokenSymbol = async (chainId) => {
@@ -66,4 +63,9 @@ export const getTokenAddressById = async (tokenId) => {
     .select("address")
     .eq("id", tokenId);
   return data[0].address;
+};
+
+export const getTokenIdByRoundId = async (roundId) => {
+  const { data } = await supabase.from("rounds").select().eq("id", roundId);
+  return data[0].tokenId;
 };

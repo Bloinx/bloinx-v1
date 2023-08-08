@@ -5,12 +5,9 @@ import { RPC_URL } from "../constants/web3Providers";
 import SavingGroups from "../abis/SavingGroups.json";
 import SavingGroupsP from "../abis/SavingGroupsP.json";
 
-export default async function config(savingGroupAddress) {
+export default async function config(savingGroupAddress, currentProvider) {
   try {
-    const userData = localStorage.getItem("user_address");
-
-    const { chainId } = JSON.parse(userData);
-    const rpcUrl = RPC_URL[chainId];
+    const rpcUrl = RPC_URL[currentProvider];
 
     const httpProvider = new Web3.providers.HttpProvider(rpcUrl, {
       timeout: 10000,
@@ -19,9 +16,11 @@ export default async function config(savingGroupAddress) {
     const web3Provider = new Web3(
       window?.web3?.currentProvider || httpProvider
     );
-    const ABI = chainId === 42220 ? SavingGroups : SavingGroupsP;
+    const ABI =
+      currentProvider === 42220 || currentProvider === 44787
+        ? SavingGroups
+        : SavingGroupsP;
     const contract = new web3Provider.eth.Contract(ABI, savingGroupAddress);
-
     return contract;
   } catch (error) {
     return error;

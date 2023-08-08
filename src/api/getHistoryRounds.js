@@ -27,11 +27,12 @@ export const configByPosition = async (
   round,
   data,
   walletAddress,
-  provider
+  provider,
+  currentProvider
 ) => {
   const sg =
     (await provider) !== "WalletConnect"
-      ? await config(round?.contract)
+      ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
 
   const admin = await MethodGetAdmin(sg.methods);

@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import supabase from "../supabase";
 
 const Logout = async () => {
@@ -6,7 +6,7 @@ const Logout = async () => {
   if (error) {
     console.log(error);
   }
-  useHistory("/login");
+  // useHistory("/login");
 };
 
 export default Logout;

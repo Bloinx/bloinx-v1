@@ -2,7 +2,6 @@
 
 const getUserScore = async (user) => {
   try {
-    console.log(user);
     // if (user) {
     //   const { data } = await axios.get("http://localhost:3001/score");
     //   const { score } = data;

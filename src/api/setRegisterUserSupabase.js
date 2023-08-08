@@ -2,8 +2,6 @@ import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 import getGasFee from "./utils/getGasFee";
 
-const userData = localStorage.getItem("user_address");
-
 const updateInvite = async (email, idRound) => {
   await supabase
     .from("invitationsByRound")
@@ -33,14 +31,21 @@ const setRegisterPosition = async (
 };
 
 const setRegisterUser = async (props) => {
-  const { userId, walletAddress, roundId, name, motivation, position, wallet } =
-    props;
-  const { chainId } = userData ? JSON.parse(userData) : null;
-  const gasFee = await getGasFee(chainId);
+  const {
+    userId,
+    walletAddress,
+    roundId,
+    name,
+    motivation,
+    position,
+    wallet,
+    currentProvider,
+  } = props;
+
+  const gasFee = await getGasFee(currentProvider);
   const user = supabase.auth.user();
 
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
-  console.log({ data });
   const sg = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {

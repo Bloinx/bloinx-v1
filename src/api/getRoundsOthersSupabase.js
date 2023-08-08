@@ -26,7 +26,6 @@ const getRounds = async ({ userId }) => {
 export const getAllOtherRounds = async (userId, positionByRound) => {
   const filterByUserId = userId;
   const filterbyRound = positionByRound.idRound;
-
   let query = supabase.from("rounds").select();
 
   if (filterbyRound) {
@@ -44,14 +43,15 @@ export const configByPositionOther = async (
   round,
   positionByRound,
   walletAddress,
-  wallet
+  wallet,
+  currentProvider
 ) => {
   const sg =
     (await wallet) !== "WalletConnect"
-      ? await config(round?.contract)
+      ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
-
   const admin = await MethodGetAdmin(sg.methods);
+
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
   const stage = await MethodGetStage(sg.methods);
@@ -111,7 +111,7 @@ export const configByPositionOther = async (
         return "payments_done";
       }
       if (pagos === Number(obligationAtTime) / Number(saveAmount)) {
-        console.log("pagos a tiempo");
+        // console.log("pagos a tiempo");
         return "payments_on_time";
       }
       if (pagos > Number(obligationAtTime) / Number(saveAmount)) {
@@ -143,13 +143,10 @@ export const configByPositionOther = async (
       walletAddress === round?.wallet && walletAddress === admin.toLowerCase(),
     positionToWithdrawPay: positionByRound.position,
     realTurn,
-    withdraw:
-      (Number(realTurn) > positionByRound.position && Number(savings) > 0) ||
-      (Number(groupSize) === positionByRound.position &&
-        realTurn > Number(groupSize)),
+    withdraw: Number(turn) === positionByRound.position && Number(savings) > 0,
     fromInvitation: false,
   };
-  console.log(round?.contract, realTurn, positionByRound.position, groupSize);
+
   return roundData;
 };
 

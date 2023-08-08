@@ -26,7 +26,7 @@ import { getTokenAddress } from "../../api/utils/getTokenData";
 const Receipt = ({ form, setForm, tokenSelected }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const { currentAddress, wallet } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const handlerOnSubmit = (values) =>
     setForm({
       ...form,
@@ -57,6 +57,7 @@ const Receipt = ({ form, setForm, tokenSelected }) => {
         isPublic: false,
         currentAddress,
         wallet,
+        currentProvider,
       })
         .then(() => {
           setLoading(false);

@@ -12,38 +12,35 @@ import RoundCardNew from "./RoundCardNew";
 import PageHeader from "../../components/PageHeader";
 import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./History.module.scss";
-
-import APIGetRounds, {
-  getAll,
-  configByPosition,
-} from "../../api/getRoundsSupabase";
-import APIGetOtherRounds, {
-  getAllOtherRounds,
-  configByPositionOther,
-} from "../../api/getRoundsOthersSupabase";
-import APIGetRoundsByInvitation, {
-  getRoundInvite,
-  getUserAdminEmail,
-  configByInvitation,
-} from "../../api/getRoundsByInvitationSupabase";
 import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
 import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
 import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
+import { useRoundContext } from "../../contexts/RoundsContext";
 import { MainContext } from "../../providers/provider";
 
 function History() {
   const history = useHistory();
   // const user = getAuth().currentUser;
+  const {
+    roundList,
+    invitationsList,
+    otherList,
+    handleGetRounds,
+    completeRoundList,
+    setType,
+  } = useRoundContext();
   const user = supabase.auth.user();
-  const [roundList, setRoundList] = useState([]);
-  const [invitationsList, setInvitationsList] = useState([]);
-  const [otherList, setOtherList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentAddress, wallet } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
+
+  useEffect(() => {
+    setType(["ON_ROUND_FINISHED", "ON_EMERGENCY_STAGE"]);
+  }, []);
+
   const goToCreate = () => {
     history.push("/create-round");
   };
@@ -52,88 +49,9 @@ function History() {
     history.push(`/register-user?roundId=${roundKey}`);
   };
 
-  const getRoundsData = (rounds, userId, walletAddress, provider) => {
-    rounds.forEach((round, index) => {
-      getAll(userId, round).then((res) => {
-        configByPosition(round, res, walletAddress, provider).then(
-          (resData) => {
-            if (
-              resData.stage === "ON_ROUND_FINISHED" ||
-              resData.stage === "ON_EMERGENCY_STAGE"
-            ) {
-              setRoundList((oldArray) => [...oldArray, resData]);
-            }
-          }
-        );
-      });
-    });
-  };
-
-  const getRoundsOtherData = (
-    roundsPosition,
-    userId,
-    walletAddress,
-    provider
-  ) => {
-    roundsPosition.forEach((positionRound, index) => {
-      getAllOtherRounds(userId, positionRound).then((res) => {
-        if (res === undefined) return;
-        configByPositionOther(res, positionRound, walletAddress, provider).then(
-          (resData) => {
-            if (
-              resData.stage === "ON_ROUND_FINISHED" ||
-              resData.stage === "ON_EMERGENCY_STAGE"
-            ) {
-              setOtherList((oldArray) => [...oldArray, resData]);
-            }
-          }
-        );
-      });
-    });
-  };
-
-  const getRoundsByInvitationData = (invitesData, provider) => {
-    invitesData.forEach((invite, index) => {
-      getRoundInvite(invite).then((round) => {
-        getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
-          configByInvitation(round, provider, roundAdmin).then((roundData) => {
-            if (
-              roundData.stage === "ON_ROUND_FINISHED" ||
-              roundData.stage === "ON_EMERGENCY_STAGE"
-            ) {
-              setInvitationsList((oldArray) => [...oldArray, roundData]);
-            }
-          });
-        });
-      });
-    });
-  };
-
-  const handleGetRounds = async () => {
-    setRoundList([]);
-    setOtherList([]);
-    setInvitationsList([]);
-
-    if (user && currentAddress) {
-      const rounds = await APIGetRounds({
-        userId: user.id,
-      });
-
-      getRoundsData(rounds, user.id, currentAddress, wallet);
-
-      const invitations = await APIGetRoundsByInvitation({ email: user.email });
-      getRoundsByInvitationData(invitations, wallet);
-      const otherRoundsPosition = await APIGetOtherRounds({
-        userId: user.id,
-      });
-
-      getRoundsOtherData(otherRoundsPosition, user.id, currentAddress, wallet);
-    }
-  };
-
   const handleStartRound = (roundId) => {
     setLoading(true);
-    APISetStartRound(roundId, wallet)
+    APISetStartRound(roundId, wallet, currentProvider)
       .then((receipt) => {
         Modal.success({
           title: `${intl.formatMessage({
@@ -144,7 +62,7 @@ function History() {
           })}`,
         });
         setLoading(false);
-        handleGetRounds();
+        handleGetRounds(currentAddress, currentProvider, wallet);
       })
       .catch((err) => {
         Modal.warning({
@@ -173,6 +91,7 @@ function History() {
             roundId,
             walletAddress: currentAddress,
             wallet,
+            currentProvider,
           })
             .then((success) => {
               Modal.success({
@@ -182,7 +101,7 @@ function History() {
                 content: "...",
               });
               setLoading(false);
-              handleGetRounds();
+              handleGetRounds(currentAddress, currentProvider, wallet);
             })
             .catch((err) => {
               Modal.error({
@@ -192,7 +111,7 @@ function History() {
                 content: "...",
               });
               setLoading(false);
-              handleGetRounds();
+              handleGetRounds(currentAddress, currentProvider, wallet);
             });
         } else {
           Modal.success({
@@ -229,7 +148,7 @@ function History() {
           })}`,
         });
         setLoading(false);
-        handleGetRounds();
+        handleGetRounds(currentAddress, currentProvider, wallet);
       })
       .catch(() => {
         Modal.error({
@@ -241,7 +160,7 @@ function History() {
           })}`,
         });
         setLoading(false);
-        handleGetRounds();
+        handleGetRounds(currentAddress, currentProvider, wallet);
       });
   };
 
@@ -335,13 +254,10 @@ function History() {
     return {};
   };
 
-  useEffect(() => handleGetRounds(), [currentAddress]);
-
-  if (!currentAddress) {
+  if (wallet === null || currentAddress === null || currentProvider === null) {
     return <Placeholder />;
   }
 
-  const completeRoundList = roundList?.concat(invitationsList);
   return (
     <>
       <PageHeader

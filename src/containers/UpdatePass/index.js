@@ -35,7 +35,6 @@ function UpdatePass() {
         .substring(1)
         .split("&")
         .map((item) => item.split("="));
-      console.log(hashArr);
       let type;
       let accessToken;
       hashArr.forEach(([key, value]) => {
@@ -101,11 +100,9 @@ function UpdatePass() {
           <div className={styles.UpdatePass_Card_Content_Header}>
             <img src={logo} alt="logo" className={styles.UpdatePass_Icon} />
             <span className={styles.UpdatePass_Title}>
-              `$
               {intl.formatMessage({
                 id: "updatePass.title",
               })}
-              `
             </span>
           </div>
           <Form

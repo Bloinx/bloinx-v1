@@ -30,12 +30,17 @@ const getRounds = async ({ userId }) => {
   }
 };
 
-export const configByPosition = async (round, data, walletAddress, wallet) => {
+export const configByPosition = async (
+  round,
+  data,
+  walletAddress,
+  walletProvider,
+  currentProvider
+) => {
   const sg =
-    (await wallet) !== "WalletConnect"
-      ? await config(round?.contract)
+    walletProvider !== "WalletConnect"
+      ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
-
   const admin = await MethodGetAdmin(sg.methods);
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
@@ -128,7 +133,7 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
     tokenId: round?.tokenId,
   };
-  console.log(realTurn, data?.position, groupSize);
+
   return roundData;
 };
 
@@ -145,11 +150,6 @@ export const configByPosition = async (round, data, walletAddress, wallet) => {
 //   }
 // };
 export const getAll = async (userId, round) => {
-  // const { data } = await supabase
-  //   .from("positionByRound")
-  //   .select("idUser, idRound")
-  //   .match({ idUser: userId, idRound: round?.id });
-
   const { data } = await supabase
     .from("positionByRound")
     .select()
