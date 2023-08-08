@@ -119,8 +119,8 @@
       "roundTime": "Tiempo de duración por ronda",
       "terms": "Entiendo completamente como el depósito de seguridad funciona",
       "warnings": {
-        "jMXNT": "El token se deshabilitara pronto...",
-        "tXOC": "El token estará disponible pronto..."
+        "jMXN": "El token se deshabilitara pronto...",
+        "XOC": "El token estará disponible pronto..."
       }
     },
     "form": {

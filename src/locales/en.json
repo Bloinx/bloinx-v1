@@ -119,8 +119,8 @@
       "roundTime": "Duration time per round",
       "terms": "I fully understand how the security deposit works",
       "warnings": {
-        "jMXNT": "Token will be removed soon",
-        "tXOC": "Token will be available soon"
+        "jMXN": "Token will be removed soon",
+        "XOC": "Token will be available soon"
       }
     },
     "form": {
