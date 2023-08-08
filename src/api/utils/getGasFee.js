@@ -1,8 +1,8 @@
 import axios from "axios";
 import Web3 from "web3";
 
-const MUMBAI_GAS_STATION = "https://gasstation-mumbai.matic.today/v2";
-const POLYGON_GAS_STATION = "https://gasstation-mainnet.matic.network/v2";
+const MUMBAI_GAS_STATION = "https://gasstation-testnet.polygon.technology/v2";
+const POLYGON_GAS_STATION = "https://gasstation.polygon.technology/v2";
 
 const ALFAJORES_GAS_STATION =
   "https://api-alfajores.celoscan.io/api?module=proxy&action=eth_gasPrice&apikey=key";
