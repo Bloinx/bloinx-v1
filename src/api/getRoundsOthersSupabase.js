@@ -143,10 +143,7 @@ export const configByPositionOther = async (
       walletAddress === round?.wallet && walletAddress === admin.toLowerCase(),
     positionToWithdrawPay: positionByRound.position,
     realTurn,
-    withdraw:
-      (Number(realTurn) > positionByRound.position && Number(savings) > 0) ||
-      (Number(groupSize) === positionByRound.position &&
-        realTurn > Number(groupSize)),
+    withdraw: Number(turn) === positionByRound.position && Number(savings) > 0,
     fromInvitation: false,
   };
 

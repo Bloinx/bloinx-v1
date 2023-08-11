@@ -10,6 +10,9 @@
   width: 100%;
   min-width: 300px;
   max-width: 300px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {

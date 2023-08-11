@@ -117,7 +117,11 @@
       "amount": "Cada participante pagará",
       "receiptAmount": "A su vez recibirá",
       "roundTime": "Tiempo de duración por ronda",
-      "terms": "Entiendo completamente como el depósito de seguridad funciona"
+      "terms": "Entiendo completamente como el depósito de seguridad funciona",
+      "warnings": {
+        "jMXNT": "El token se deshabilitara pronto...",
+        "tXOC": "El token estará disponible pronto..."
+      }
     },
     "form": {
       "label": {
@@ -125,9 +129,9 @@
         "amount": "Monto por periodo",
         "periodicity": "Duración de la ronda",
         "periodicityOptions": {
-          "day": "Diario",
           "weekly": "Semanal",
-          "biweekly": "Quincenal"
+          "biweekly": "Quincenal",
+          "monthly": "Mensual"
         },
         "name": "Nombre de la ronda",
         "motivation": "Motivación personal",

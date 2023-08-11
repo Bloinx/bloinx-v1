@@ -1,5 +1,6 @@
 .RoundCards {
   display: flex;
-  flex-direction: row;
-  overflow-x: auto;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
 }
