@@ -10,6 +10,7 @@ import APIgetRoundRegisterDetail from "../../api/getRoundRegisterDetailSupabase"
 
 import { INITIAL_FORM_VALUES } from "./constants";
 import { MainContext } from "../../providers/provider";
+import { useWallet } from "../../hooks/useWallet";
 
 function RegisterUser() {
   const history = useHistory();
@@ -18,7 +19,9 @@ function RegisterUser() {
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
   const [roundData, setRoundData] = useState({});
-  const { currentAddress, wallet, currentProvider } = useContext(MainContext);
+  const { currentAddress, wallet, currentProvider, funds } =
+    useContext(MainContext);
+  // const [tokenBalance, setTokenBalance] = useState();
 
   useEffect(() => {
     APIgetRoundRegisterDetail(roundId, wallet, currentProvider).then(
@@ -36,12 +39,12 @@ function RegisterUser() {
         component={() => (
           <Terms
             form={form}
-            setForm={setForm}
-            roundData={roundData}
-            walletAddress={currentAddress}
             baseUrl={baseUrl}
+            walletAddress={currentAddress}
+            roundData={roundData}
             wallet={wallet}
             chainId={currentProvider}
+            funds={funds}
           />
         )}
       />

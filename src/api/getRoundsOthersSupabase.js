@@ -68,10 +68,20 @@ export const configByPositionOther = async (
     (item) => item.address === "0x0000000000000000000000000000000000000000"
   );
 
+  // const exist =
+  //   walletAddress &&
+  //   orderList.find(
+  //     (item) => item.address.toLowerCase() === walletAddress.toLowerCase()
+  //   );
   const exist =
     walletAddress &&
     orderList.find(
-      (item) => item.address.toLowerCase() === walletAddress.toLowerCase()
+      (item) =>
+        item &&
+        item.address &&
+        typeof item.address === "string" &&
+        typeof walletAddress === "string" &&
+        item.address.toLowerCase() === walletAddress.toLowerCase()
     );
 
   let realTurn = "0";

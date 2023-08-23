@@ -37,9 +37,7 @@ const useRoundProvider = () => {
     provider
   ) => {
     roundsPosition.forEach((positionRound) => {
-      // console.log(positionRound);
       getAllOtherRounds(userId, positionRound).then((res) => {
-        // console.log(res, "res");
         if (res === undefined) return;
         configByPositionOther(
           res,
@@ -48,14 +46,7 @@ const useRoundProvider = () => {
           provider,
           currentProvider
         ).then((resData) => {
-          // console.log(resData, "resData");
           setOtherList((oldArray) => [...oldArray, resData]);
-          // type.forEach((item) => {
-          //   console.log(resData.stage, resData.paymentStatus);
-          //   if (resData.stage === item) {
-          //     setOtherList((oldArray) => [...oldArray, resData]);
-          //   }
-          // });
         });
       });
     });
@@ -68,7 +59,6 @@ const useRoundProvider = () => {
           configByInvitation(round, provider, roundAdmin, currentProvider).then(
             (roundData) => {
               type.forEach((item) => {
-                // console.log(roundData.stage);
                 if (roundData.stage === item) {
                   setInvitationsList((oldArray) => [...oldArray, roundData]);
                 }
@@ -92,7 +82,6 @@ const useRoundProvider = () => {
         configByPosition(round, res, walletAddress, provider, currentProv).then(
           (resData) => {
             type.forEach((item) => {
-              // console.log(resData.stage, resData.paymentStatus);
               if (resData.stage === item) {
                 setRoundList((oldArray) => [...oldArray, resData]);
               }

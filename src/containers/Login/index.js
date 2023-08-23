@@ -106,7 +106,7 @@ function Login() {
               <FormattedMessage id="login.title" />
             </span>
           </div>
-          <div className={styles.Login_Card_Content_Form}>
+          <form className={styles.Login_Card_Content_Form}>
             <span>
               {" "}
               <FormattedMessage id="login.form.label.email" />
@@ -137,7 +137,7 @@ function Login() {
             <span className={styles.error}>
               {passwordError ? passwordErrorMessage : ""}
             </span>
-          </div>
+          </form>
           <span className={styles.Login_Card_Content_forgotPass}>
             <Link to="/forgotpass">
               <FormattedMessage id="login.actions.forgotPassword" />

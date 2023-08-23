@@ -7,3 +7,40 @@ export const getOptions = (positionsAvailable = []) => {
   }));
   return options;
 };
+
+export const getGuaranteeBalance = (funds, tokenId) => {
+  switch (tokenId) {
+    case 1 || 2:
+      return funds?.find((item) => item.name === "Celo Dollar");
+    case 3 || 4:
+      return funds?.find((item) => item.name.includes("USD Coin"));
+    case 5:
+      return funds?.find((item) => item.name === "USDT");
+    case 7:
+      return funds?.find((item) => item.name === "USDC");
+    case 8 || 9:
+      return funds?.find((item) => item.name === "JEUR");
+    default:
+      return { name: "", balance: 0 };
+  }
+};
+
+export const getTokenName = (tokenId) => {
+  switch (tokenId) {
+    case 1:
+    case 2:
+      return "Celo Dollar";
+    case 3:
+    case 4:
+      return "USD Coin";
+    case 5:
+      return "USDT";
+    case 7:
+      return "USDC";
+    case 8:
+    case 9:
+      return "JEUR";
+    default:
+      return "";
+  }
+};

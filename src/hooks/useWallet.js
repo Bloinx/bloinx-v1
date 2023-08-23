@@ -44,22 +44,20 @@ import getFunds from "../api/getFunds";
 // ];
 
 export const useWallet = () => {
-  const { setCurrentAddress, setCurrentProvider, setWallet } =
+  const { setCurrentAddress, setCurrentProvider, setWallet, setFunds } =
     useContext(MainContext);
   const [userData, setUserData] = useState();
-  const [funds, setFunds] = useState();
-
-  const getBalance = async (address, network) => {
-    const balance = await getFunds(address, network);
-    return balance;
-  };
 
   useEffect(() => {
-    if (userData) {
-      const balance = getBalance(userData.address, userData.chainId);
-      setFunds(balance);
+    if (userData && window.ethereum !== undefined) {
+      const fetchBalance = async () => {
+        const balance = await getFunds(userData.address, userData.chainId);
+        setFunds(balance);
+      };
+
+      fetchBalance();
     }
-  }, [userData]);
+  }, [userData, window.ethereum]);
 
   const account = () => {
     if (userData) {
@@ -194,5 +192,5 @@ export const useWallet = () => {
     }
   };
 
-  return { connect, userWallet, account, setUserData, funds };
+  return { connect, userWallet, account, setUserData };
 };

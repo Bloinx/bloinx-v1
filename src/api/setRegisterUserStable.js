@@ -19,7 +19,6 @@ const setRegisterUser = async (props) => {
   // const { chainId } = userData ? JSON.parse(userData) : null;
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
   const gasFee = await getGasFee(chainId);
-
   const token = await getTokenAddressById(data[0].tokenId);
 
   const cUSD = await new Promise((resolve, reject) => {

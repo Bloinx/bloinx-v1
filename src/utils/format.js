@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+
 export function validateEmail(email) {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -22,3 +24,8 @@ export default {
   validateEmail,
   formatAddress,
 };
+
+export function formatBalance(rawBalance, decimals) {
+  const scaleFactor = new Decimal(10).pow(decimals.toNumber());
+  return new Decimal(rawBalance.toString()).dividedBy(scaleFactor).toString();
+}
