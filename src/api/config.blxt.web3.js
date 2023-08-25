@@ -2,15 +2,13 @@ import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { newKitFromWeb3 } from "@celo/contractkit";
 import BLXToken from "../abis/BLXToken.json";
+import { ALFAJORES_RPC_URL, CELO_MAINNET_RPC_URL } from "../utils/constants";
 
 export default async function config(BLXAddress) {
   try {
-    const httpProvider = new Web3.providers.HttpProvider(
-      "https://forno.celo.org",
-      {
-        timeout: 10000,
-      }
-    );
+    const httpProvider = new Web3.providers.HttpProvider(CELO_MAINNET_RPC_URL, {
+      timeout: 10000,
+    });
 
     const web3Provider = new Web3(
       window?.ethereum.HttpProvider || httpProvider
@@ -27,8 +25,8 @@ export default async function config(BLXAddress) {
 export async function walletConnect(BLXAddress) {
   const provider = new WalletConnectProvider({
     rpc: {
-      44787: "https://alfajores-forno.celo-testnet.org",
-      42220: "https://forno.celo.org",
+      44787: ALFAJORES_RPC_URL,
+      42220: CELO_MAINNET_RPC_URL,
     },
   });
   await provider.enable();

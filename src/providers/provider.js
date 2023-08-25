@@ -6,6 +6,7 @@ export const MainContext = createContext({
   currentAddress: null,
   currentProvider: null,
   wallet: null,
+  funds: null,
 });
 
 const MainProvider = ({ children }) => {
@@ -13,6 +14,7 @@ const MainProvider = ({ children }) => {
   const [currentAddress, setCurrentAddress] = useState(null);
   const [currentProvider, setCurrentProvider] = useState(null);
   const [wallet, setWallet] = useState(null);
+  const [funds, setFunds] = useState(null);
 
   return (
     <MainContext.Provider
@@ -25,6 +27,8 @@ const MainProvider = ({ children }) => {
         setCurrentProvider,
         wallet,
         setWallet,
+        funds,
+        setFunds,
       }}
     >
       {children}

@@ -1,13 +1,11 @@
 /* eslint-disable no-unused-vars */
 import supabase from "../supabase";
 
-import config, {
-  walletConnect,
-  selectContractAddress,
-} from "./config.main.web3";
+import config, { walletConnect } from "./config.main.web3";
 import { selectTokenAddress } from "./config.erc";
 import { getTokenId, getTokenIdP, getTokenAddress } from "./utils/getTokenData";
 import getGasFee from "./utils/getGasFee";
+import { selectContractAddress } from "../utils/constants";
 
 const adminFee = 2;
 const BLX_TOKEN_CELO_MAINNET = "0x37836007FC99C7cB3D4590cb466692ff7690074c"; // BLX

@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/prefer-default-export
 import PolygonLogo from "../assets/BlackOnTransparent.svg";
 import CeloLogo from "../assets/Celo_Symbol_Onyx.svg";
+import { ALFAJORES_RPC_URL, CELO_MAINNET_RPC_URL } from "../utils/constants";
 
 let networks = [];
 
@@ -19,7 +20,7 @@ if (process.env.NODE_ENV === "production") {
       chainId: 42220,
       icon: CeloLogo,
       currency: "Celo",
-      rpcUrl: "https://forno.celo.org",
+      rpcUrl: CELO_MAINNET_RPC_URL,
       blockExplorer: "https://explorer.celo.org",
     },
   };
@@ -39,7 +40,7 @@ if (process.env.NODE_ENV === "production") {
       chainId: 44787,
       icon: CeloLogo,
       currency: "Celo",
-      rpcUrl: "https://alfajores-forno.celo-testnet.org",
+      rpcUrl: ALFAJORES_RPC_URL,
       blockExplorer: "https://alfajores-blockscout.celo-testnet.org/",
     },
   };

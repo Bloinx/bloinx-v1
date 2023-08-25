@@ -4,36 +4,12 @@ import { newKitFromWeb3 } from "@celo/contractkit";
 import { RPC_URL } from "../constants/web3Providers";
 import Main from "../abis/Main.json";
 import MainP from "../abis/MainP.json";
-
-export const MAIN_FACTORY_ALFAJORES =
-  "0xd53E64384Aa1aa736e4B2FD8143D901EFB9CBa8B";
-
-export const MAIN_FACTORY_CELO_MAINNET =
-  "0xfF0e77E52bC1B21F4b4CE6d77ac48E3f9abdb5fE";
-
-export const MAIN_FACTORY_MUMBAI = "0xC0Bb95455480C17D8136c1255e7fF06f915d3Dd6";
-
-export const MAIN_FACTORY_POLYGON =
-  "0x7D69E4A1e8da9D19FC63836F0acAD2052146F202";
+import { selectContractAddress } from "../utils/constants";
 
 export async function getContract(provider, abi, contractAddress) {
   const contract = await new provider.eth.Contract(abi, contractAddress);
-  // console.log({ contract });
   return contract;
 }
-
-export const selectContractAddress = (network) => {
-  if (network === 42220) {
-    return MAIN_FACTORY_CELO_MAINNET;
-  }
-  if (network === 44787) {
-    return MAIN_FACTORY_ALFAJORES;
-  }
-  if (network === 137) {
-    return MAIN_FACTORY_POLYGON;
-  }
-  return MAIN_FACTORY_MUMBAI;
-};
 
 export const selectContractABI = (network) => {
   if (network === 44787 || network === 42220) {

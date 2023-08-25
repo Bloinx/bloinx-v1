@@ -11,7 +11,7 @@ function RegisterUser() {
   const history = useHistory();
   const baseUrl = "/invitations";
   const { roundId } = getUrlParams(history.location.search);
-  const { wallet } = useContext(MainContext);
+  const { wallet, currentProvider } = useContext(MainContext);
 
   return (
     <Switch>
@@ -21,6 +21,7 @@ function RegisterUser() {
           <Form
             roundId={roundId}
             wallet={wallet}
+            currentProvider={currentProvider}
             // walletAddress={walletAddress}
           />
         )}

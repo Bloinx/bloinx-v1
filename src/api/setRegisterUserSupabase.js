@@ -49,15 +49,15 @@ const setRegisterUser = async (props) => {
   const sg = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(config(data[0].contract));
+        resolve(config(data[0].contract, currentProvider));
       } else {
         resolve(walletConnect(data[0].contract));
       }
     } catch (error) {
+      console.log(error);
       reject(error);
     }
   });
-  // const sg = await config(data.contract, provider);
 
   return new Promise((resolve, reject) =>
     sg.methods
@@ -81,6 +81,7 @@ const setRegisterUser = async (props) => {
         if (res) resolve(recpt);
       })
       .on("error", async (error) => {
+        console.log(error);
         reject(error);
       })
   );
