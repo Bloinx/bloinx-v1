@@ -16,6 +16,7 @@ import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
 import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
 import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
+import APISetEndRound from "../../api/setEndRound";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
@@ -40,6 +41,10 @@ function Dashboard() {
   useEffect(() => {
     setType(["ON_ROUND_ACTIVE", "ON_REGISTER_STAGE"]);
   }, []);
+
+  useEffect(() => {
+    console.log(completeRoundList);
+  }, [completeRoundList]);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -136,7 +141,7 @@ function Dashboard() {
       });
   };
 
-  const handleWithdrawRound = (roundId) => {
+  const handleWithdrawRound = (roundId, realTurn, groupSize, contract) => {
     setLoading(true);
     APISetWithdrawTurn(roundId, currentAddress, wallet, currentProvider)
       .then(() => {
@@ -148,6 +153,26 @@ function Dashboard() {
             id: "dashboardPage.functions.handleWithdrawRound.success.content",
           })}`,
         });
+      })
+      .finally(() => {
+        console.log("holis finally");
+        if (Number(realTurn) > Number(groupSize)) {
+          console.log("holis termina rondaaaa");
+          Modal.warning({
+            title: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.title",
+            })}`,
+            content: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.content",
+            })}`,
+            buttonText: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.buttonText",
+            })}`,
+            onOk: () => {
+              APISetEndRound(contract, currentAddress, wallet, currentProvider);
+            },
+          });
+        }
         setLoading(false);
         handleGetRounds(currentAddress, currentProvider, wallet);
       })
@@ -223,7 +248,12 @@ function Dashboard() {
             : `${intl.formatMessage({
                 id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawTextElse",
               })}`,
-        withdrawAction: () => handleWithdrawRound(roundData.roundKey),
+        withdrawAction: () =>
+          handleWithdrawRound(
+            roundData.roundKey,
+            roundData.realTurn,
+            roundData.groupSize
+          ),
       };
     }
     if (stage === "ON_ROUND_FINISHED") {

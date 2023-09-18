@@ -36,21 +36,7 @@ const setWithdrawTurn = async (roundId, walletAddress, wallet, chainId) => {
         maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })
       .once("receipt", async (receipt) => {
-        if (Number(realTurn) > Number(groupSize)) {
-          MethodSetEndRound(sg.methods, {
-            walletAddress,
-            contract: data[0].contract,
-          })
-            .then((endReceipt) => {
-              resolve([receipt, endReceipt]);
-            })
-            .catch((endErr) => {
-              const er = [receipt, endErr];
-              reject(er);
-            });
-        } else {
-          resolve(receipt);
-        }
+        resolve(receipt);
       })
       .on("error", async (error) => {
         reject(error);

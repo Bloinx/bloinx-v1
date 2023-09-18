@@ -63,6 +63,13 @@
           "content": "No pudimos realizar el cobro de tu ronda. Por favor verifica mas tarde o intenta nuevamente."
         }
       },
+      "endRound": {
+        "success": {
+          "title": "La ronda esta por finalizar",
+          "content": "Finaliza la ronda y cobra tu dinero",
+          "buttonText": "Terminar ronda"
+        }
+      },
       "handleButton": {
         "ON_REGISTER_STAGE_ADMIN": {
           "text": "Iniciar",
