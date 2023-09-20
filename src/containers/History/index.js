@@ -24,22 +24,11 @@ import { MainContext } from "../../providers/provider";
 function History() {
   const history = useHistory();
   // const user = getAuth().currentUser;
-  const {
-    roundList,
-    invitationsList,
-    otherList,
-    handleGetRounds,
-    completeRoundList,
-    setType,
-  } = useRoundContext();
+  const { otherList, handleGetRounds, completeHistoryList } = useRoundContext();
   const user = supabase.auth.user();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
-
-  useEffect(() => {
-    setType(["ON_ROUND_FINISHED", "ON_EMERGENCY_STAGE"]);
-  }, []);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -270,11 +259,11 @@ function History() {
         }
       />
       <div className={styles.RoundCards}>
-        {currentAddress && completeRoundList?.length === 0 && (
+        {currentAddress && completeHistoryList?.length === 0 && (
           <NotFoundPlaceholder />
         )}
         {currentAddress &&
-          completeRoundList?.map((round) => {
+          completeHistoryList?.map((round) => {
             if (round.stage === "ON_REGISTER_STAGE" && round.toRegister) {
               return (
                 <RoundCardNew

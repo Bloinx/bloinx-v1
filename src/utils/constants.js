@@ -24,3 +24,6 @@ export const selectContractAddress = (network) => {
 
 export const ALFAJORES_RPC_URL = "https://alfajores-forno.celo-testnet.org";
 export const CELO_MAINNET_RPC_URL = "https://forno.celo.org";
+
+export const RoundState = ["ON_ROUND_ACTIVE", "ON_REGISTER_STAGE"];
+export const HistoryState = ["ON_ROUND_FINISHED", "ON_EMERGENCY_STAGE"];

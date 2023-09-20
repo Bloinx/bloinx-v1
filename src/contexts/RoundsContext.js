@@ -16,6 +16,7 @@ import APIGetRoundsByInvitation, {
 } from "../api/getRoundsByInvitationSupabase";
 import { MainContext } from "../providers/provider";
 import supabase from "../supabase";
+import { RoundState, HistoryState } from "../utils/constants";
 
 export const RoundsContext = React.createContext({});
 
@@ -23,11 +24,16 @@ export const useRoundContext = () => useContext(RoundsContext);
 
 const useRoundProvider = () => {
   const user = supabase.auth.user();
-  const [type, setType] = useState([]);
+
   const [roundList, setRoundList] = useState([]);
+  const [historyList, setHistoryList] = useState([]);
+
   const [otherRounds, setOtherList] = useState([]);
   const [invitations, setInvitationsList] = useState([]);
+
   const [completeRoundList, setCompleteRoundList] = useState([]);
+  const [completeHistoryList, setCompleteHistoryList] = useState([]);
+
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
 
   const getRoundsOtherData = async (
@@ -58,11 +64,12 @@ const useRoundProvider = () => {
         getUserAdminEmail(round.userAdmin).then((roundAdmin) => {
           configByInvitation(round, provider, roundAdmin, currentProvider).then(
             (roundData) => {
-              type.forEach((item) => {
-                if (roundData.stage === item) {
-                  setInvitationsList((oldArray) => [...oldArray, roundData]);
-                }
-              });
+              setInvitationsList((oldArray) => [...oldArray, roundData]);
+              // type.forEach((item) => {
+              //   if (roundData.stage === item) {
+              //     setInvitationsList((oldArray) => [...oldArray, roundData]);
+              //   }
+              // });
             }
           );
         });
@@ -81,9 +88,14 @@ const useRoundProvider = () => {
       getAll(userId, round).then((res) => {
         configByPosition(round, res, walletAddress, provider, currentProv).then(
           (resData) => {
-            type.forEach((item) => {
+            RoundState.forEach((item) => {
               if (resData.stage === item) {
                 setRoundList((oldArray) => [...oldArray, resData]);
+              }
+            });
+            HistoryState.forEach((item) => {
+              if (resData.stage === item) {
+                setHistoryList((oldArray) => [...oldArray, resData]);
               }
             });
           }
@@ -97,6 +109,7 @@ const useRoundProvider = () => {
     setOtherList([]);
     setInvitationsList([]);
     setCompleteRoundList([]);
+    setCompleteHistoryList([]);
     if (user && address) {
       const rounds = await APIGetRounds({
         userId: user.id,
@@ -128,20 +141,34 @@ const useRoundProvider = () => {
   }, [roundList, invitations, otherRounds]);
 
   useEffect(() => {
+    setCompleteHistoryList([]);
+    if ((historyList, invitations, otherRounds)) {
+      setCompleteHistoryList((oldArray) => [
+        ...oldArray,
+        ...historyList,
+        ...invitations,
+        ...otherRounds,
+      ]);
+    }
+  }, [historyList, invitations, otherRounds]);
+
+  useEffect(() => {
     setCompleteRoundList([]);
-    if (currentAddress && wallet && currentProvider && type.length > 0) {
+    setCompleteHistoryList([]);
+    if (currentAddress && wallet && currentProvider) {
       handleGetRounds(currentAddress, currentProvider, wallet);
     }
-  }, [currentAddress, wallet, currentProvider, type]);
+  }, [currentAddress, wallet, currentProvider]);
 
   return {
     user,
     roundList,
+    historyList,
     otherRounds,
     invitations,
     handleGetRounds,
     completeRoundList,
-    setType,
+    completeHistoryList,
   };
 };
 
