@@ -32,7 +32,6 @@ const useRoundProvider = () => {
   const [invitations, setInvitationsList] = useState([]);
 
   const [completeRoundList, setCompleteRoundList] = useState([]);
-  const [completeHistoryList, setCompleteHistoryList] = useState([]);
 
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
 
@@ -52,7 +51,11 @@ const useRoundProvider = () => {
           provider,
           currentProvider
         ).then((resData) => {
-          setOtherList((oldArray) => [...oldArray, resData]);
+          RoundState.forEach((item) => {
+            if (resData.stage === item) {
+              setOtherList((oldArray) => [...oldArray, resData]);
+            }
+          });
         });
       });
     });
@@ -65,11 +68,6 @@ const useRoundProvider = () => {
           configByInvitation(round, provider, roundAdmin, currentProvider).then(
             (roundData) => {
               setInvitationsList((oldArray) => [...oldArray, roundData]);
-              // type.forEach((item) => {
-              //   if (roundData.stage === item) {
-              //     setInvitationsList((oldArray) => [...oldArray, roundData]);
-              //   }
-              // });
             }
           );
         });
@@ -109,7 +107,7 @@ const useRoundProvider = () => {
     setOtherList([]);
     setInvitationsList([]);
     setCompleteRoundList([]);
-    setCompleteHistoryList([]);
+    setHistoryList([]);
     if (user && address) {
       const rounds = await APIGetRounds({
         userId: user.id,
@@ -141,20 +139,8 @@ const useRoundProvider = () => {
   }, [roundList, invitations, otherRounds]);
 
   useEffect(() => {
-    setCompleteHistoryList([]);
-    if ((historyList, invitations, otherRounds)) {
-      setCompleteHistoryList((oldArray) => [
-        ...oldArray,
-        ...historyList,
-        ...invitations,
-        ...otherRounds,
-      ]);
-    }
-  }, [historyList, invitations, otherRounds]);
-
-  useEffect(() => {
     setCompleteRoundList([]);
-    setCompleteHistoryList([]);
+    setHistoryList([]);
     if (currentAddress && wallet && currentProvider) {
       handleGetRounds(currentAddress, currentProvider, wallet);
     }
@@ -168,7 +154,6 @@ const useRoundProvider = () => {
     invitations,
     handleGetRounds,
     completeRoundList,
-    completeHistoryList,
   };
 };
 
