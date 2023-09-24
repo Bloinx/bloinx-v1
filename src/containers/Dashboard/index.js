@@ -25,21 +25,10 @@ import { MainContext } from "../../providers/provider";
 function Dashboard() {
   const history = useHistory();
   const user = supabase.auth.user();
-  const {
-    roundList,
-    invitationsList,
-    otherList,
-    handleGetRounds,
-    completeRoundList,
-    setType,
-  } = useRoundContext();
+  const { otherList, handleGetRounds, completeRoundList } = useRoundContext();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
-
-  useEffect(() => {
-    setType(["ON_ROUND_ACTIVE", "ON_REGISTER_STAGE"]);
-  }, []);
 
   const goToCreate = () => {
     history.push("/create-round");
