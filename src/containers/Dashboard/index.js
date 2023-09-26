@@ -26,25 +26,10 @@ import { MainContext } from "../../providers/provider";
 function Dashboard() {
   const history = useHistory();
   const user = supabase.auth.user();
-  const {
-    roundList,
-    invitationsList,
-    otherList,
-    handleGetRounds,
-    completeRoundList,
-    setType,
-  } = useRoundContext();
+  const { otherList, handleGetRounds, completeRoundList } = useRoundContext();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
-
-  useEffect(() => {
-    setType(["ON_ROUND_ACTIVE", "ON_REGISTER_STAGE"]);
-  }, []);
-
-  useEffect(() => {
-    console.log(completeRoundList);
-  }, [completeRoundList]);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -145,19 +130,7 @@ function Dashboard() {
     setLoading(true);
     APISetWithdrawTurn(roundId, currentAddress, wallet, currentProvider)
       .then(() => {
-        Modal.success({
-          title: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.success.title",
-          })}`,
-          content: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.success.content",
-          })}`,
-        });
-      })
-      .finally(() => {
-        console.log("holis finally");
         if (Number(realTurn) > Number(groupSize)) {
-          console.log("holis termina rondaaaa");
           Modal.warning({
             title: `${intl.formatMessage({
               id: "dashboardPage.functions.endRound.success.title",
@@ -165,14 +138,25 @@ function Dashboard() {
             content: `${intl.formatMessage({
               id: "dashboardPage.functions.endRound.success.content",
             })}`,
-            buttonText: `${intl.formatMessage({
-              id: "dashboardPage.functions.endRound.success.buttonText",
-            })}`,
             onOk: () => {
               APISetEndRound(contract, currentAddress, wallet, currentProvider);
             },
+            okText: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.buttonText",
+            })}`,
+          });
+        } else {
+          Modal.success({
+            title: `${intl.formatMessage({
+              id: "dashboardPage.functions.handleWithdrawRound.success.title",
+            })}`,
+            content: `${intl.formatMessage({
+              id: "dashboardPage.functions.handleWithdrawRound.success.content",
+            })}`,
           });
         }
+      })
+      .finally(() => {
         setLoading(false);
         handleGetRounds(currentAddress, currentProvider, wallet);
       })

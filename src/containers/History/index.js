@@ -5,12 +5,10 @@ import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
-import supabase from "../../supabase";
 
 import RoundCard from "./RoundCard";
 import RoundCardNew from "./RoundCardNew";
 import PageHeader from "../../components/PageHeader";
-import PageSubHeader from "../../components/PageSubHeader";
 import styles from "./History.module.scss";
 import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
@@ -23,23 +21,12 @@ import { MainContext } from "../../providers/provider";
 
 function History() {
   const history = useHistory();
-  // const user = getAuth().currentUser;
-  const {
-    roundList,
-    invitationsList,
-    otherList,
-    handleGetRounds,
-    completeRoundList,
-    setType,
-  } = useRoundContext();
-  const user = supabase.auth.user();
+
+  const { handleGetRounds, historyList } = useRoundContext();
+
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
-
-  useEffect(() => {
-    setType(["ON_ROUND_FINISHED", "ON_EMERGENCY_STAGE"]);
-  }, []);
 
   const goToCreate = () => {
     history.push("/create-round");
@@ -270,11 +257,9 @@ function History() {
         }
       />
       <div className={styles.RoundCards}>
-        {currentAddress && completeRoundList?.length === 0 && (
-          <NotFoundPlaceholder />
-        )}
+        {currentAddress && historyList?.length === 0 && <NotFoundPlaceholder />}
         {currentAddress &&
-          completeRoundList?.map((round) => {
+          historyList?.map((round) => {
             if (round.stage === "ON_REGISTER_STAGE" && round.toRegister) {
               return (
                 <RoundCardNew
@@ -311,37 +296,6 @@ function History() {
             );
           })}
       </div>
-      {otherList?.length && (
-        <PageSubHeader title={<FormattedMessage id="historyPage.subtitle" />} />
-      )}
-      {currentAddress &&
-        otherList &&
-        otherList?.map((round) => {
-          const { disable, text, action, withdrawText, withdrawAction } =
-            handleButton(round);
-          return (
-            <RoundCard
-              key={round.roundKey}
-              name={round.name}
-              groupSize={round.groupSize}
-              missingPositions={round.missingPositions}
-              contractKey={round.contract}
-              positionToWithdrawPay={round.positionToWithdrawPay}
-              turn={round.turn}
-              linkTo={`/round-details?roundId=${round.roundKey}`}
-              onClick={action}
-              buttonText={text}
-              withdrawButtonText={withdrawText}
-              buttonDisabled={disable}
-              loading={loading}
-              withdraw={round.withdraw}
-              onWithdraw={withdrawAction}
-              stage={round.stage}
-              saveAmount={round.saveAmount}
-              byInvitation
-            />
-          );
-        })}
     </>
   );
 }
