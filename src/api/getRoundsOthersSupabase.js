@@ -1,4 +1,4 @@
-import config, { walletConnect } from "./config.sg.web3";
+// import config, { walletConnect } from "./config.sg.web3";
 import supabase from "../supabase";
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetGroupSize from "./methods/getGroupSize";
@@ -43,13 +43,13 @@ export const configByPositionOther = async (
   round,
   positionByRound,
   walletAddress,
-  wallet,
-  currentProvider
+  sg
 ) => {
-  const sg =
-    (await wallet) !== "WalletConnect"
-      ? await config(round?.contract, currentProvider)
-      : await walletConnect(round?.contract);
+  // const sg =
+  //   (await wallet) !== "WalletConnect"
+  //     ? await config(round?.contract, currentProvider)
+  //     : await walletConnect(round?.contract);
+  console.log("sg", sg);
   const admin = await MethodGetAdmin(sg.methods);
 
   const orderList = await MethodGetAddressOrderList(sg.methods);

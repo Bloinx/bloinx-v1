@@ -15,6 +15,7 @@ import APIGetRoundsByInvitation, {
   configByInvitation,
 } from "../api/getRoundsByInvitationSupabase";
 import { MainContext } from "../providers/provider";
+import config, { walletConnect } from "../api/config.sg.web3";
 import supabase from "../supabase";
 import { RoundState, HistoryState } from "../utils/constants";
 
@@ -32,24 +33,50 @@ const useRoundProvider = () => {
   const [invitations, setInvitationsList] = useState([]);
 
   const [completeRoundList, setCompleteRoundList] = useState([]);
+  const [sgRounds, setSgRounds] = useState([]);
 
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
 
-  const getRoundsOtherData = async (
-    roundsPosition,
-    userId,
-    walletAddress,
-    provider
-  ) => {
-    roundsPosition.forEach((positionRound) => {
+  const getSgMethodByRoundId = (sgRoundMethod, roundId) => {
+    const sgMethod = sgRoundMethod.find((item) => item.roundId === roundId);
+    return sgMethod;
+  };
+  // const getSgMethods = async (round) => {
+  //   const sgMethods =
+  //     wallet !== "WalletConnect"
+  //       ? await config(round?.contract, currentProvider)
+  //       : await walletConnect(round?.contract);
+  //   setSgRounds((oldArray) => [
+  //     ...oldArray,
+  //     {
+  //       roundId: round.id,
+  //       sg: sgMethods,
+  //     },
+  //   ]);
+  //   return sgMethods;
+  // };
+
+  const getRoundsOtherData = async (roundsPosition, userId, walletAddress) => {
+    roundsPosition.forEach(async (positionRound) => {
+      const sgMethods =
+        wallet !== "WalletConnect"
+          ? await config(positionRound?.contract, currentProvider)
+          : await walletConnect(positionRound?.contract);
+      setSgRounds((oldArray) => [
+        ...oldArray,
+        {
+          roundId: positionRound.id,
+          sg: sgMethods,
+        },
+      ]);
+      console.log("sgMethods othrr data", sgMethods);
       getAllOtherRounds(userId, positionRound).then((res) => {
         if (res === undefined) return;
         configByPositionOther(
           res,
           positionRound,
           walletAddress,
-          provider,
-          currentProvider
+          sgMethods
         ).then((resData) => {
           RoundState.forEach((item) => {
             if (resData.stage === item) {
@@ -75,16 +102,22 @@ const useRoundProvider = () => {
     });
   };
 
-  const getRoundsData = (
-    rounds,
-    userId,
-    walletAddress,
-    provider,
-    currentProv
-  ) => {
-    rounds.forEach((round) => {
+  const getRoundsData = (rounds, userId, walletAddress) => {
+    rounds.forEach(async (round) => {
+      const sgMethods =
+        wallet !== "WalletConnect"
+          ? await config(round?.contract, currentProvider)
+          : await walletConnect(round?.contract);
+      setSgRounds((oldArray) => [
+        ...oldArray,
+        {
+          roundId: round.id,
+          sg: sgMethods,
+        },
+      ]);
+      console.log("sgMethods", sgMethods);
       getAll(userId, round).then((res) => {
-        configByPosition(round, res, walletAddress, provider, currentProv).then(
+        configByPosition(round, res, walletAddress, sgMethods).then(
           (resData) => {
             RoundState.forEach((item) => {
               if (resData.stage === item) {
@@ -102,7 +135,7 @@ const useRoundProvider = () => {
     });
   };
 
-  const handleGetRounds = async (address, provider, wall) => {
+  const handleGetRounds = async (address, wall) => {
     setRoundList([]);
     setOtherList([]);
     setInvitationsList([]);
@@ -112,7 +145,8 @@ const useRoundProvider = () => {
       const rounds = await APIGetRounds({
         userId: user.id,
       });
-      getRoundsData(rounds, user.id, address, wall, provider);
+
+      getRoundsData(rounds, user.id, address);
 
       const invitationsData = await APIGetRoundsByInvitation({
         email: user.email,
@@ -122,7 +156,7 @@ const useRoundProvider = () => {
         userId: user.id,
       });
 
-      getRoundsOtherData(otherRoundsPosition, user.id, address, wall);
+      getRoundsOtherData(otherRoundsPosition, user.id, address);
     }
   };
 
@@ -154,6 +188,8 @@ const useRoundProvider = () => {
     invitations,
     handleGetRounds,
     completeRoundList,
+    getSgMethodByRoundId,
+    sgRounds,
   };
 };
 

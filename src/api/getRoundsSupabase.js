@@ -1,5 +1,5 @@
 import supabase from "../supabase";
-import config, { walletConnect } from "./config.sg.web3";
+// import config, { walletConnect } from "./config.sg.web3";
 
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetGroupSize from "./methods/getGroupSize";
@@ -30,17 +30,11 @@ const getRounds = async ({ userId }) => {
   }
 };
 
-export const configByPosition = async (
-  round,
-  data,
-  walletAddress,
-  walletProvider,
-  currentProvider
-) => {
-  const sg =
-    walletProvider !== "WalletConnect"
-      ? await config(round?.contract, currentProvider)
-      : await walletConnect(round?.contract);
+export const configByPosition = async (round, data, walletAddress, sg) => {
+  // const sg =
+  //   walletProvider !== "WalletConnect"
+  //     ? await config(round?.contract, currentProvider)
+  //     : await walletConnect(round?.contract);
   const admin = await MethodGetAdmin(sg.methods);
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
