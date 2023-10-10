@@ -63,6 +63,13 @@
           "content": "We were unable to make the withdrawal. Please try again later."
         }
       },
+      "endRound": {
+        "success": {
+          "title": "Round is about to finish",
+          "content": "End the round and withdraw your money",
+          "buttonText": "End round"
+        }
+      },
       "handleButton": {
         "ON_REGISTER_STAGE_ADMIN": {
           "text": "Start",

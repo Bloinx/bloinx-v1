@@ -16,6 +16,7 @@ import APISetStartRound from "../../api/setStartRoundSupabase";
 import APISetAddPayment from "../../api/setAddPaymentSupabase";
 import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
 import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
+import APISetEndRound from "../../api/setEndRound";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
@@ -125,18 +126,37 @@ function Dashboard() {
       });
   };
 
-  const handleWithdrawRound = (roundId) => {
+  const handleWithdrawRound = (roundId, realTurn, groupSize, contract) => {
     setLoading(true);
     APISetWithdrawTurn(roundId, currentAddress, wallet, currentProvider)
       .then(() => {
-        Modal.success({
-          title: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.success.title",
-          })}`,
-          content: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.success.content",
-          })}`,
-        });
+        if (Number(realTurn) > Number(groupSize)) {
+          Modal.warning({
+            title: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.title",
+            })}`,
+            content: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.content",
+            })}`,
+            onOk: () => {
+              APISetEndRound(contract, currentAddress, wallet, currentProvider);
+            },
+            okText: `${intl.formatMessage({
+              id: "dashboardPage.functions.endRound.success.buttonText",
+            })}`,
+          });
+        } else {
+          Modal.success({
+            title: `${intl.formatMessage({
+              id: "dashboardPage.functions.handleWithdrawRound.success.title",
+            })}`,
+            content: `${intl.formatMessage({
+              id: "dashboardPage.functions.handleWithdrawRound.success.content",
+            })}`,
+          });
+        }
+      })
+      .finally(() => {
         setLoading(false);
         handleGetRounds(currentAddress, currentProvider, wallet);
       })
@@ -212,7 +232,12 @@ function Dashboard() {
             : `${intl.formatMessage({
                 id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawTextElse",
               })}`,
-        withdrawAction: () => handleWithdrawRound(roundData.roundKey),
+        withdrawAction: () =>
+          handleWithdrawRound(
+            roundData.roundKey,
+            roundData.realTurn,
+            roundData.groupSize
+          ),
       };
     }
     if (stage === "ON_ROUND_FINISHED") {
