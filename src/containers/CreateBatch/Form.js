@@ -132,14 +132,10 @@ const Form = ({ form, setForm, tokenSelected, setTokenSelected, tokens }) => {
               />
 
               <ButtonOnlyOneStep
-                disabled={
-                  !isValid ||
-                  tokenSelected === "jMXN" ||
-                  tokenSelected === "XOC"
-                }
+                disabled={!isValid || tokenSelected === "jMXN"}
                 type="submit"
               />
-              {(tokenSelected === "jMXN" || tokenSelected === "XOC") && (
+              {tokenSelected === "jMXN" && (
                 <div className={styles.CreateRoundTitle}>
                   <FormattedMessage
                     id={`createRound.labels.warnings.${tokenSelected}`}

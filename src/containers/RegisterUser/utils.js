@@ -19,7 +19,7 @@ export const getGuaranteeBalance = (funds, tokenId) => {
     case 7:
       return funds?.find((item) => item.name === "USDC");
     case 8 || 9:
-      return funds?.find((item) => item.name === "JEUR");
+      return funds?.find((item) => item.name.includes("Xocolatl"));
     default:
       return { name: "", balance: 0 };
   }
@@ -39,7 +39,7 @@ export const getTokenName = (tokenId) => {
       return "USDC";
     case 8:
     case 9:
-      return "JEUR";
+      return "XOC";
     default:
       return "";
   }

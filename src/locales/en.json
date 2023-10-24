@@ -81,7 +81,7 @@
         },
         "ON_ROUND_ACTIVE": {
           "withdrawText": "Withdraw and End Round",
-          "twithdrawTextElse": "Withdraw"
+          "withdrawTextElse": "Withdraw"
         },
         "ON_ROUND_FINISHED": {
           "text": "Completed",
