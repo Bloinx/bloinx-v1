@@ -26,7 +26,7 @@ export const selectTokenAddress = (network) => {
   return USDC_MUMBAI;
 };
 
-export async function configCUSD(token, chainId) {
+export async function configercToken(token, chainId) {
   try {
     const rpcUrl = RPC_URL[chainId];
 

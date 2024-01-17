@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 // import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -11,9 +11,6 @@ import RoundCardNew from "./RoundCardNew";
 import PageHeader from "../../components/PageHeader";
 import styles from "./History.module.scss";
 import APISetStartRound from "../../api/setStartRoundSupabase";
-import APISetAddPayment from "../../api/setAddPaymentSupabase";
-import APISetWithdrawTurn from "../../api/setWithdrawTurnSupabase";
-import APIGetFuturePayments from "../../api/getFuturePaymentsSupabase";
 import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
@@ -39,7 +36,7 @@ function History() {
   const handleStartRound = (roundId) => {
     setLoading(true);
     APISetStartRound(roundId, wallet, currentProvider)
-      .then((receipt) => {
+      .then(() => {
         Modal.success({
           title: `${intl.formatMessage({
             id: "dashboardPage.functions.handleStartRound.success.title",
@@ -51,7 +48,7 @@ function History() {
         setLoading(false);
         handleGetRounds(currentAddress, currentProvider, wallet);
       })
-      .catch((err) => {
+      .catch(() => {
         Modal.warning({
           title: `${intl.formatMessage({
             id: "dashboardPage.functions.handleStartRound.error.title",
@@ -64,110 +61,8 @@ function History() {
       });
   };
 
-  const handlePayRound = (roundId) => {
-    setLoading(true);
-    const remainingAmount = APIGetFuturePayments(
-      roundId,
-      currentAddress,
-      wallet
-    );
-    remainingAmount
-      .then((amount) => {
-        if (amount > 0) {
-          APISetAddPayment({
-            roundId,
-            walletAddress: currentAddress,
-            wallet,
-            currentProvider,
-          })
-            .then((success) => {
-              Modal.success({
-                title: `${intl.formatMessage({
-                  id: "dashboardPage.functions.handlePayRound.APISetAddPayment.success.title",
-                })}`,
-                content: "...",
-              });
-              setLoading(false);
-              handleGetRounds(currentAddress, currentProvider, wallet);
-            })
-            .catch((err) => {
-              Modal.error({
-                title: `${intl.formatMessage({
-                  id: "dashboardPage.functions.handlePayRound.APISetAddPayment.error.title",
-                })}`,
-                content: "...",
-              });
-              setLoading(false);
-              handleGetRounds(currentAddress, currentProvider, wallet);
-            });
-        } else {
-          Modal.success({
-            content: `${intl.formatMessage({
-              id: "dashboardPage.functions.handlePayRound.APIGetFuturePayments.success.content",
-            })}`,
-          });
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        Modal.error({
-          title: `${intl.formatMessage({
-            id: "dashboardPage.functions.handlePayRound.APIGetFuturePayments.error.title",
-          })}`,
-          content: `${intl.formatMessage({
-            id: "dashboardPage.functions.handlePayRound.APIGetFuturePayments.error.content",
-          })}`,
-        });
-        setLoading(false);
-      });
-  };
-
-  const handleWithdrawRound = (roundId) => {
-    setLoading(true);
-    APISetWithdrawTurn(roundId, currentAddress, wallet)
-      .then(() => {
-        Modal.success({
-          title: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.success.title",
-          })}`,
-          content: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.success.content",
-          })}`,
-        });
-        setLoading(false);
-        handleGetRounds(currentAddress, currentProvider, wallet);
-      })
-      .catch(() => {
-        Modal.error({
-          title: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.error.title",
-          })}`,
-          content: `${intl.formatMessage({
-            id: "dashboardPage.functions.handleWithdrawRound.error.content",
-          })}`,
-        });
-        setLoading(false);
-        handleGetRounds(currentAddress, currentProvider, wallet);
-      });
-  };
-
-  const paymentStatusText = {
-    payments_on_time: `${intl.formatMessage({
-      id: "dashboardPage.paymentStatusText.payments_on_time",
-    })}`,
-    payments_advanced: `${intl.formatMessage({
-      id: "dashboardPage.paymentStatusText.payments_advanced",
-    })}`,
-    payments_late: `${intl.formatMessage({
-      id: "dashboardPage.paymentStatusText.payments_late",
-    })}`,
-    payments_done: `${intl.formatMessage({
-      id: "dashboardPage.paymentStatusText.payments_done",
-    })}`,
-  };
-
   const handleButton = (roundData) => {
-    const { stage, isAdmin, missingPositions, withdraw, turn } = roundData;
+    const { stage, isAdmin, missingPositions } = roundData;
     if (stage === "ON_REGISTER_STAGE" && isAdmin) {
       return {
         disable: missingPositions > 0,
@@ -192,24 +87,6 @@ function History() {
           id: "dashboardPage.functions.handleButton.ON_REGISTER_STAGE.withdrawText",
         })}`,
         withdrawAction: null,
-      };
-    }
-    if (stage === "ON_ROUND_ACTIVE") {
-      const payDisable = roundData.realTurn > roundData.groupSize;
-
-      return {
-        disable: payDisable,
-        text: paymentStatusText[roundData.paymentStatus],
-        action: () => handlePayRound(roundData.roundKey),
-        withdrawText:
-          roundData.realTurn >= roundData.groupSize && payDisable
-            ? `${intl.formatMessage({
-                id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawText",
-              })}`
-            : `${intl.formatMessage({
-                id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawTextElse",
-              })}`,
-        withdrawAction: () => handleWithdrawRound(roundData.roundKey),
       };
     }
     if (stage === "ON_ROUND_FINISHED") {

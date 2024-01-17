@@ -16,12 +16,18 @@ export const getTokenId = async (chainId) => {
   return data[0]?.id;
 };
 
-export const getTokenSymbol = async (chainId) => {
-  const { data } = await supabase
-    .from("tokens")
-    .select("symbol")
-    .eq("chainId", chainId);
-  return data;
+export const getTokenSymbol = async (id) => {
+  try {
+    const { data } = await supabase
+      .from("tokens")
+      .select("symbol")
+      .eq("id", id);
+
+    return data || null;
+  } catch (error) {
+    console.error("Error in getTokenSymbol:", error);
+    throw error;
+  }
 };
 
 export const getTokenSymbolByRound = async (tokenId) => {

@@ -81,7 +81,7 @@ const Receipt = ({ form, setForm, tokenSelected }) => {
   return (
     <>
       <PageHeader title={<FormattedMessage id="createRound.title" />} />
-      {loading && <Loader />}
+      {loading && <Loader loadingMessage="infoLabels.waiting" />}
       {!loading && (
         <>
           <div className={styles.ReceiptCard}>

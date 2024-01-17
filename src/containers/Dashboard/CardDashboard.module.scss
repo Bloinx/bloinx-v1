@@ -10,6 +10,10 @@
   width: 100%;
   min-width: 300px;
   max-width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {
@@ -21,6 +25,7 @@
 .RoundCardHeader {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 }
 
 .RoundCardHeaderImage {
@@ -41,6 +46,13 @@
 .RoundCardSubject {
   font-size: 12px;
   margin-bottom: 5px;
+  width: 90%;
+  span {
+    color: #b1b1b1;
+  }
+}
+.RoundCardContractAddress {
+  width: 100px;
 }
 
 .RoundCardSeparation {
@@ -62,11 +74,61 @@
   }
 }
 
+.RoundCardAction {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
 .RoundCardLoader {
   margin: 20px 20px;
   display: flex;
   flex-direction: row !important;
   span {
     margin-left: 15px;
+  }
+}
+
+.progress {
+  .ant-progress-status-success {
+    stroke: #f58f98;
+  }
+}
+
+.progressInfoContainer {
+  width: 100%;
+  p {
+    margin: 0;
+  }
+  span {
+    color: #b1b1b1;
+    font-size: 14px;
+    width: 100%;
+    margin-left: -10px;
+  }
+  .progressMainInfo {
+    color: white;
+    font-size: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: center;
+    p:nth-child(1) {
+      font-size: 50px;
+    }
+    p:nth-child(2) {
+      font-size: 14px;
+    }
+  }
+}
+
+.RoundCardStats {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  align-content: center;
+  div h1 {
+    text-align: center;
+    margin: 0;
   }
 }

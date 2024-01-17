@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 // import PropTypes from "prop-types";
-import { Modal } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { Modal, Button } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
-import supabase from "../../supabase";
 
 import RoundCard from "./RoundCard";
 import RoundCardNew from "./RoundCardNew";
@@ -22,11 +20,12 @@ import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
 
 import { MainContext } from "../../providers/provider";
+import { CardDashboard } from "./CardDashboard";
 
 function Dashboard() {
   const history = useHistory();
-  const user = supabase.auth.user();
-  const { otherList, handleGetRounds, completeRoundList } = useRoundContext();
+  const { otherList, handleGetRounds, completeRoundList, activeRounds } =
+    useRoundContext();
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
@@ -272,16 +271,18 @@ function Dashboard() {
   if (wallet === null || currentAddress === null || currentProvider === null) {
     return <Placeholder />;
   }
-
   return (
     <>
       <PageHeader
         title={<FormattedMessage id="dashboardPage.title" />}
         action={
-          <PlusCircleOutlined
+          <Button
+            className={styles.RoundCardAction}
             onClick={goToCreate}
-            style={{ fontSize: "20px", color: "white" }}
-          />
+            type="primary"
+          >
+            Crear Ronda
+          </Button>
         }
       />
       <div className={styles.RoundCards}>
@@ -326,13 +327,26 @@ function Dashboard() {
               />
             );
           })}
+        {currentAddress &&
+          activeRounds?.length > 0 &&
+          activeRounds.map((round) => (
+            <CardDashboard
+              key={round.roundKey}
+              contractKey={round.contract}
+              turn={round.turn}
+              groupSize={round.groupSize}
+              name={round.name}
+              positionToWithdrawPay={round.positionToWithdrawPay}
+              linkTo={`/round-details?roundId=${round.roundKey}`}
+            />
+          ))}
       </div>
       {otherList?.length && (
         <PageSubHeader
           title={<FormattedMessage id="dashboardPage.subtitle" />}
         />
       )}
-      {currentAddress &&
+      {/* {currentAddress &&
         otherList &&
         otherList?.map((round) => {
           const { disable, text, action, withdrawText, withdrawAction } =
@@ -360,7 +374,7 @@ function Dashboard() {
               byInvitation
             />
           );
-        })}
+        })} */}
     </>
   );
 }

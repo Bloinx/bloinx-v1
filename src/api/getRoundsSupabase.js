@@ -1,5 +1,8 @@
+import web3 from "web3";
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
+
+import { configercToken } from "./config.erc";
 
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetGroupSize from "./methods/getGroupSize";
@@ -14,7 +17,9 @@ import MethodGetUserAvailableCashIn from "./methods/getUserAvailableCashIn";
 import MethodGetSaveAmount from "./methods/saveAmount";
 import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
-import { getTokenDecimals } from "./utils/getTokenData";
+import MethodGetFuturePayments from "./methods/getFuturePayments";
+import { getTokenDecimals, getTokenAddressById } from "./utils/getTokenData";
+import getAllowance from "./methods/getAllowance";
 
 const getRounds = async ({ userId }) => {
   try {
@@ -41,6 +46,34 @@ export const configByPosition = async (
     walletProvider !== "WalletConnect"
       ? await config(round?.contract, currentProvider)
       : await walletConnect(round?.contract);
+
+  const token = await getTokenAddressById(round?.tokenId);
+  const ercMethodsToken = await new Promise((resolve, reject) => {
+    try {
+      if (walletProvider !== "WalletConnect") {
+        resolve(configercToken(token, currentProvider));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+  const allowance = await getAllowance(
+    ercMethodsToken.methods,
+    round?.contract,
+    walletAddress
+  );
+  const allowanceBigNumber = web3.utils.toBN(allowance);
+  const allowanceFormatted = web3.utils.fromWei(
+    allowanceBigNumber.toString(),
+    "ether"
+  );
+
+  const futurePayments = await MethodGetFuturePayments(
+    sg.methods,
+    walletAddress
+  );
+
   const admin = await MethodGetAdmin(sg.methods);
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
@@ -54,6 +87,10 @@ export const configByPosition = async (
   );
   const tokenDecimals = await getTokenDecimals(round?.tokenId);
 
+  const resultFuturePayments = (
+    Number(futurePayments) *
+    10 ** -tokenDecimals
+  ).toFixed(2);
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
   );
@@ -132,6 +169,9 @@ export const configByPosition = async (
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
     tokenId: round?.tokenId,
+    allowance: allowanceFormatted,
+    futurePayments: resultFuturePayments,
+    sgMethods: sg.methods,
   };
 
   return roundData;

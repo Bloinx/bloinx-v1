@@ -11,6 +11,7 @@ import styles from "./RoundCard.module.scss";
 import Stepper from "../../components/Stepper";
 import { formatAddress } from "../../utils/format";
 import logoIcon from "../../assets/icon.png";
+import { ButtonAction } from "../../components/styles";
 
 export function RoundCard({
   name,
@@ -103,24 +104,22 @@ export function RoundCard({
           )}
           {!loading && (
             <>
-              <Button
-                className={styles.RoundCardAction}
+              <ButtonAction
                 ghost={buttonText !== "Pagar"}
                 type="primary"
                 disabled={buttonDisabled}
                 onClick={onClick}
               >
                 {buttonText}
-              </Button>
+              </ButtonAction>
               {!arePending && (
-                <Button
-                  className={styles.RoundCardAction}
+                <ButtonAction
                   type="primary"
                   disabled={!withdraw}
                   onClick={onWithdraw}
                 >
                   Cobrar
-                </Button>
+                </ButtonAction>
               )}
             </>
           )}
