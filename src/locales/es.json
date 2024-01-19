@@ -49,6 +49,7 @@
             "title": "Pago correcto"
           },
           "error": {
+            "reject": "Pago cancelado por el usuari@",
             "title": "Error al realizar el pago"
           }
         }
@@ -204,7 +205,8 @@
   },
   "roundCardInfo": {
     "roundAddr": "Ronda ",
-    "turn": "Turno "
+    "turn": "Turno ",
+    "myTurn": "Mi turno"
   },
   "commons": {
     "buttons": {
@@ -216,6 +218,12 @@
       "sendAndEnd": "Enviar y terminar"
     }
   },
+  "infoLoader": {
+    "roundPage": "Cargando información de ronda...",
+    "page": "Cargando información de pago...",
+    "approve": "Transacción en curso...",
+    "payment": "Transacción en curso..."
+  },
   "infoLabels": {
     "withoutWallet": "Sin Wallet encontrada",
     "connectWalletMessage": "Por favor conecta tu wallet para continuar",
@@ -224,7 +232,7 @@
     "guaranteeInfo": "¿Qué es la garantía? \n Es un pago que se regresará al final de la ronda. Si alguno de ustedes no paga a tiempo, será aplicado automáticamente al turno que corresponda y no lo podrá recuperar. \n ¡Ojo! si alguno de ustedes olvida hacer más de un pago, el monto a regresar de la garantía de todos los participantes será afectado.",
     "waiting": "Espere a que se confirme la transacción"
   },
-  "copyright": "Bloinx 2023 (c) Todos los derechos reservados.",
+  "copyright": "Bloinx 2024 (c) Todos los derechos reservados.",
   "login": {
     "title": "Iniciar sesión",
     "subtitle": "¿No tienes una cuenta?",
@@ -343,7 +351,7 @@
     }
   },
   "roundDetails": {
-    "contractID": "ContratoID ",
+    "contractID": "Contrato ID ",
     "status": "Estatus de la ronda",
     "total": "Total restante",
     "participants": "Participantes",

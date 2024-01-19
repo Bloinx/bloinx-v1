@@ -49,6 +49,7 @@
             "title": "Correct payment"
           },
           "error": {
+            "reject": "Payment canceled by user",
             "title": "Failed to make payment"
           }
         }
@@ -204,7 +205,8 @@
   },
   "roundCardInfo": {
     "roundAddr": "Round ",
-    "turn": "Turn "
+    "turn": "Turn ",
+    "myTurn": "My turn"
   },
   "commons": {
     "buttons": {
@@ -216,6 +218,12 @@
       "sendAndEnd": "Send and End"
     }
   },
+  "infoLoader": {
+    "roundPage": "Loading round's info...",
+    "page": "Loading payment's info...",
+    "approve": "Approving transaction...",
+    "payment": "Waiting for transaction..."
+  },
   "infoLabels": {
     "withoutWallet": "No Wallet found",
     "connectWalletMessage": "Please connect your wallet to continue",
@@ -224,7 +232,7 @@
     "guaranteeInfo": "What is a security deposit? This payment will be returned at the end of the round and it will be used in case you miss one of your committed payments. If you miss more than one payment, you can affect the return of the security deposit of other participants in your group.",
     "waiting": "Please wait..."
   },
-  "copyright": "Bloinx 2023 (c) All rights reserved.",
+  "copyright": "Bloinx 2024 (c) All rights reserved.",
   "login": {
     "title": "Login",
     "subtitle": "Don't have an account?",

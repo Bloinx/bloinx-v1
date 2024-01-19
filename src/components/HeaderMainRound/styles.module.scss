@@ -1,0 +1,26 @@
+.progressInfoContainer {
+  p {
+    margin: 0;
+  }
+  span {
+    color: #b1b1b1;
+    font-size: 14px;
+    width: 100%;
+    margin-left: -10px;
+  }
+  .progressMainInfo {
+    color: white;
+    font-size: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: center;
+    p:nth-child(1) {
+      font-size: 50px;
+      height: 65px;
+    }
+    p:nth-child(2) {
+      font-size: 14px;
+    }
+  }
+}

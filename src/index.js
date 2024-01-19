@@ -1,4 +1,5 @@
 import React from "react";
+import { ConfigProvider } from "antd";
 import ReactDOM from "react-dom";
 import { IntlProvider } from "react-intl";
 import { BrowserRouter } from "react-router-dom";
@@ -9,8 +10,8 @@ import es from "./locales/es.json";
 import en from "./locales/en.json";
 import App from "./App";
 
-import "antd/dist/antd.css";
-import "./index.less";
+// import "antd/dist/antd.css";
+// // import "./index.less";
 import MainProvider from "./providers/provider";
 
 // eslint-disable-next-line no-undef
@@ -22,19 +23,30 @@ const messages = languages[locale];
 
 ReactDOM.render(
   <React.StrictMode>
-    <IntlProvider
-      messages={flattenMessages(
-        locale === "en" || locale === "es" ? messages : languages[defaultLocale]
-      )}
-      locale={locale === "en" || locale === "es" ? locale : defaultLocale}
-      // defaultLocale={defaultLocale}
+    <ConfigProvider
+      theme={{
+        token: {
+          // Seed Token
+          colorPrimary: "#f58f98",
+        },
+      }}
     >
-      <BrowserRouter>
-        <MainProvider>
-          <App />
-        </MainProvider>
-      </BrowserRouter>
-    </IntlProvider>
+      <IntlProvider
+        messages={flattenMessages(
+          locale === "en" || locale === "es"
+            ? messages
+            : languages[defaultLocale]
+        )}
+        locale={locale === "en" || locale === "es" ? locale : defaultLocale}
+        // defaultLocale={defaultLocale}
+      >
+        <BrowserRouter>
+          <MainProvider>
+            <App />
+          </MainProvider>
+        </BrowserRouter>
+      </IntlProvider>
+    </ConfigProvider>
   </React.StrictMode>,
   // eslint-disable-next-line no-undef
   document.getElementById("root")

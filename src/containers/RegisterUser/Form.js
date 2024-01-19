@@ -102,7 +102,7 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
   return (
     <>
       <PageHeader title={<FormattedMessage id="createRound.titleConfirm" />} />
-      {loading && <Loader />}
+      {loading && <Loader loadingMessage="infoLabels.waiting" />}
       {!loading && (
         <Formik
           initialValues={{

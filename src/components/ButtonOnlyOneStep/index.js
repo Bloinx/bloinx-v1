@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "antd";
 import { FormattedMessage } from "react-intl";
 
 import styles from "./styles.module.scss";
+import { ButtonAction } from "../styles";
 
 function ButtonOnlyOneStep({ type, onClick, disabled, label, loading }) {
   return (
     <div className={styles.ButtonOnlyOneStep}>
-      <Button
+      <ButtonAction
         loading={loading}
         htmlType={type}
         type="primary"
@@ -17,7 +17,7 @@ function ButtonOnlyOneStep({ type, onClick, disabled, label, loading }) {
         disabled={disabled}
       >
         {label || <FormattedMessage id="commons.buttons.continue" />}
-      </Button>
+      </ButtonAction>
     </div>
   );
 }

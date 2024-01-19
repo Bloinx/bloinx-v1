@@ -6,6 +6,8 @@ import MethodGetAdmin from "./methods/getAdmin";
 import MethodGetStage from "./methods/getStage";
 import MethodGetPayTime from "./methods/getPayTime";
 import MethodGetStartTime from "./methods/getStartTime";
+import MethodGetGroupSize from "./methods/getGroupSize";
+import MethodGetTurn from "./methods/getTurn";
 import config, { walletConnect } from "./config.sg.web3";
 
 const getPositionAdmin = async (idRound, userId) => {
@@ -93,6 +95,8 @@ const getRoundDetailData = async (
   const stage = await MethodGetStage(sg.methods);
   const startTime = await MethodGetStartTime(sg.methods);
   const payTime = await MethodGetPayTime(sg.methods);
+  const groupSize = await MethodGetGroupSize(sg.methods);
+  const turn = await MethodGetTurn(sg.methods);
 
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const positionByRoundData = await getPositionUserByAddress(round?.id);
@@ -114,6 +118,8 @@ const getRoundDetailData = async (
     positionAdminData,
     participantsData,
     invitations,
+    groupSize,
+    turn,
   };
   return a;
 };

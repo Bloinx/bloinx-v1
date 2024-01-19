@@ -140,7 +140,7 @@ function Wallets() {
       {!networkSelected && (
         <Drawer
           title="Select Network"
-          visible={open}
+          open={open}
           placement="right"
           closable
           onClose={handleToggleDrawer}
@@ -181,7 +181,7 @@ function Wallets() {
           title={`${intl.formatMessage({
             id: "wallets.title",
           })}`}
-          visible={open}
+          open={open}
           placement="right"
           closable
           onClose={handleToggleDrawer}

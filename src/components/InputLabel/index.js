@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -22,7 +23,7 @@ export default function InputLabel({ value, label }) {
 }
 
 InputLabel.defaultProps = {
-  value: null,
+  value: "",
   label: "",
 };
 

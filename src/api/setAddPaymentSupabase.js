@@ -5,31 +5,15 @@ import supabase from "../supabase";
 import getGasFee from "./utils/getGasFee";
 
 const setAddPayment = async (props) => {
-  const { walletAddress, roundId, wallet, currentProvider } = props;
-
-  const { data } = await supabase.from("rounds").select().eq("id", roundId);
+  const { walletAddress, currentProvider, contract, sgMethods } = props;
   const gasFee = await getGasFee(currentProvider);
-
-  const sg = await new Promise((resolve, reject) => {
-    try {
-      if (wallet !== "WalletConnect") {
-        resolve(config(data[0].contract, currentProvider));
-      } else {
-        resolve(walletConnect(data[0].contract));
-      }
-    } catch (error) {
-      reject(error);
-    }
-  });
-
-  const saveAmount = await MethodGetSaveAmount(sg.methods);
-
+  const savedAmount = await MethodGetSaveAmount(sgMethods);
   return new Promise((resolve, reject) => {
-    sg.methods
-      .addPayment(saveAmount)
+    sgMethods
+      .addPayment(savedAmount)
       .send({
         from: walletAddress,
-        to: data[0].contract,
+        to: contract,
         maxFeePerGas: gasFee.maxFeePerGas,
         maxPriorityFeePerGas: gasFee.maxPriorityFeePerGas,
       })

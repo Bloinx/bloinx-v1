@@ -16,7 +16,7 @@ import APIGetRoundsByInvitation, {
 } from "../api/getRoundsByInvitationSupabase";
 import { MainContext } from "../providers/provider";
 import supabase from "../supabase";
-import { RoundState, HistoryState } from "../utils/constants";
+import { HistoryState } from "../utils/constants";
 
 export const RoundsContext = React.createContext({});
 
@@ -29,6 +29,7 @@ const useRoundProvider = () => {
   const [historyList, setHistoryList] = useState([]);
 
   const [otherRounds, setOtherList] = useState([]);
+  const [activeRounds, setActiveRounds] = useState([]);
   const [invitations, setInvitationsList] = useState([]);
 
   const [completeRoundList, setCompleteRoundList] = useState([]);
@@ -51,11 +52,12 @@ const useRoundProvider = () => {
           provider,
           currentProvider
         ).then((resData) => {
-          RoundState.forEach((item) => {
-            if (resData.stage === item) {
-              setOtherList((oldArray) => [...oldArray, resData]);
-            }
-          });
+          if (resData.stage === "ON_ROUND_ACTIVE") {
+            setActiveRounds((oldArray) => [...oldArray, resData]);
+          }
+          if (resData.stage === "ON_REGISTER_STAGE") {
+            setOtherList((oldArray) => [...oldArray, resData]);
+          }
         });
       });
     });
@@ -86,11 +88,12 @@ const useRoundProvider = () => {
       getAll(userId, round).then((res) => {
         configByPosition(round, res, walletAddress, provider, currentProv).then(
           (resData) => {
-            RoundState.forEach((item) => {
-              if (resData.stage === item) {
-                setRoundList((oldArray) => [...oldArray, resData]);
-              }
-            });
+            if (resData.stage === "ON_ROUND_ACTIVE") {
+              setActiveRounds((oldArray) => [...oldArray, resData]);
+            }
+            if (resData.stage === "ON_REGISTER_STAGE") {
+              setRoundList((oldArray) => [...oldArray, resData]);
+            }
             HistoryState.forEach((item) => {
               if (resData.stage === item) {
                 setHistoryList((oldArray) => [...oldArray, resData]);
@@ -108,6 +111,7 @@ const useRoundProvider = () => {
     setInvitationsList([]);
     setCompleteRoundList([]);
     setHistoryList([]);
+    setActiveRounds([]);
     if (user && address) {
       const rounds = await APIGetRounds({
         userId: user.id,
@@ -154,6 +158,7 @@ const useRoundProvider = () => {
     invitations,
     handleGetRounds,
     completeRoundList,
+    activeRounds,
   };
 };
 

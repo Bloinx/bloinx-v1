@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Modal, Button } from "antd";
-import { Link } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
 import { CubeSpinner } from "react-spinners-kit";
 import { FormattedMessage } from "react-intl";
@@ -12,6 +10,7 @@ import Stepper from "../../components/Stepper";
 import { formatAddress } from "../../utils/format";
 import logoIcon from "../../assets/icon.png";
 import { getTokenSymbolByRound } from "../../api/utils/getTokenData";
+import { ButtonAction, LinkCardHeader } from "../../components/styles";
 
 export function RoundCard({
   name,
@@ -62,12 +61,12 @@ export function RoundCard({
           <img src={logoIcon} alt="logo" />
         </div>
         <div>
-          <Link to={linkTo} className={styles.RoundCardTitle}>
+          <LinkCardHeader to={linkTo} className={styles.RoundCardTitle}>
             <div className={styles.RoundCardTitleTitle}>{name}</div>
             <div className={styles.RoundCardTitleIcon}>
               <RightOutlined />
             </div>
-          </Link>
+          </LinkCardHeader>
           <div className={styles.RoundCardSubject}>
             <FormattedMessage id="roundCardInfo.roundAddr" />
             {formatAddress(contractKey)}
@@ -118,24 +117,22 @@ export function RoundCard({
           )}
           {!loading && (
             <>
-              <Button
-                className={styles.RoundCardAction}
+              <ButtonAction
                 ghost={buttonText !== "Pagar"}
                 type="primary"
                 disabled={buttonDisabled}
                 onClick={onClick}
               >
                 {buttonText}
-              </Button>
+              </ButtonAction>
               {!arePending && (
-                <Button
-                  className={styles.RoundCardAction}
+                <ButtonAction
                   type="primary"
                   disabled={!withdraw}
                   onClick={onWithdraw}
                 >
                   Cobrar
-                </Button>
+                </ButtonAction>
               )}
             </>
           )}

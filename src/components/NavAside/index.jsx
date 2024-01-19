@@ -208,14 +208,14 @@ function NavAside({ width, toggleDrawer, visible }) {
           placement="left"
           closable
           onClose={toggleDrawer}
-          visible={visible}
-          bodyStyle={{
+          open={visible}
+          body={{
             padding: 0,
           }}
-          drawerStyle={{
+          drawer={{
             backgroundColor: "#2B2D33",
           }}
-          headerStyle={{
+          header={{
             backgroundColor: "#2B2D33",
             borderBottom: "0px",
             color: "white",

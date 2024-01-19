@@ -1,6 +1,13 @@
 const CracoLessPlugin = require("craco-less");
 
 module.exports = {
+  eslint: {
+    configure: {
+      rules: {
+        "react/prop-types": 0,
+      },
+    },
+  },
   plugins: [
     {
       plugin: CracoLessPlugin,

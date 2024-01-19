@@ -1,6 +1,7 @@
-import { configCUSD, walletConnect } from "./config.erc";
+import { configercToken, walletConnect } from "./config.erc";
 import getGasFee from "./utils/getGasFee";
-import { getTokenAddressById } from "./utils/getTokenData";
+import { getTokenAddressById, getTokenDecimals } from "./utils/getTokenData";
+import { getAmountToApproveWithDecimals } from "./utils/getAmountToApprove";
 
 import supabase from "../supabase";
 
@@ -16,16 +17,25 @@ const amountToApprove = {
 };
 
 const setRegisterUser = async (props) => {
-  const { walletAddress, roundId, wallet, chainId } = props;
+  const { walletAddress, roundId, wallet, chainId, dataApprove } = props;
   // const { chainId } = userData ? JSON.parse(userData) : null;
   const { data } = await supabase.from("rounds").select().eq("id", roundId);
   const gasFee = await getGasFee(chainId);
   const token = await getTokenAddressById(data[0].tokenId);
 
+  const amount = dataApprove
+    ? getAmountToApproveWithDecimals(
+        dataApprove.amount,
+        dataApprove.groupSize,
+        dataApprove.turn,
+        await getTokenDecimals(data[0].tokenId)
+      )
+    : amountToApprove[data[0].tokenId];
+
   const cUSD = await new Promise((resolve, reject) => {
     try {
       if (wallet !== "WalletConnect") {
-        resolve(configCUSD(token, chainId));
+        resolve(configercToken(token, chainId));
       } else {
         resolve(walletConnect());
       }
@@ -36,7 +46,7 @@ const setRegisterUser = async (props) => {
 
   return new Promise((resolve, reject) => {
     cUSD.methods
-      .approve(data[0].contract, amountToApprove[data[0].tokenId])
+      .approve(data[0].contract, amount)
       .send({
         from: walletAddress,
         to: token,
@@ -47,6 +57,7 @@ const setRegisterUser = async (props) => {
         resolve(receipt);
       })
       .on("error", async (err) => {
+        console.log("err", err);
         reject(err);
       });
   });
