@@ -10,7 +10,7 @@ export const ButtonAction = styled(Button)`
   }
 `;
 
-export const LinkCardHeader = styled(Link)`
+export const LinkStyled = styled(Link)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;

@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { Button, Form, Input, Select, Row, Col } from "antd";
+import { Form, Input, Select, Row, Col } from "antd";
 import apiUserData from "../../api/setUserData";
 
 import logo from "../../assets/bloinxLogo.png";
 import styles from "./index.module.scss";
+import { ButtonAction, LinkStyled } from "../../components/styles";
 import { useAuth } from "../../hooks/useAuth";
 
 function SignUp() {
@@ -277,11 +278,11 @@ function SignUp() {
               </Col>
             </Row>
             <Form.Item>
-              <Button block type="primary" htmlType="submit">
+              <ButtonAction block type="primary" htmlType="submit">
                 {`${intl.formatMessage({
                   id: "signup.actions.submit",
                 })}`}
-              </Button>
+              </ButtonAction>
             </Form.Item>
           </Form>
         </div>
@@ -293,9 +294,11 @@ function SignUp() {
             })}`}
           </div>
           <div>
-            <Link to="/login">{`${intl.formatMessage({
-              id: "signup.actions.login",
-            })}`}</Link>
+            <LinkStyled to="/login">
+              {`${intl.formatMessage({
+                id: "signup.actions.login",
+              })}`}
+            </LinkStyled>
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { Button } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
+import { ButtonAction, LinkStyled } from "../../components/styles";
 
 import logo from "../../assets/bloinxLogo.png";
 import { validateEmail, validatePassword } from "./vlidators";
@@ -145,14 +145,14 @@ function Login() {
           </span>
           <div className={styles.Login_Card_Content_Actions}>
             <span className={styles.error}>{error ? errorMessage : ""}</span>
-            <Button
+            <ButtonAction
               loading={loading}
-              disabled={isDisabled}
               type="primary"
+              disabled={isDisabled}
               onClick={handleLogin}
             >
               <FormattedMessage id="login.actions.login" />
-            </Button>
+            </ButtonAction>
           </div>
         </div>
         <div className={styles.Login_Card_Options}>
@@ -160,9 +160,9 @@ function Login() {
             <FormattedMessage id="login.subtitle" />
           </div>
           <div>
-            <Link to="/signup">
+            <LinkStyled to="/signup">
               <FormattedMessage id="login.actions.register" />
-            </Link>
+            </LinkStyled>
           </div>
         </div>
       </div>
