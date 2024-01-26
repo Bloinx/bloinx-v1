@@ -6,6 +6,7 @@ import { Button, Form, Input, notification } from "antd";
 
 import logo from "../../assets/bloinxLogo.png";
 import styles from "./index.module.scss";
+import { ButtonAction } from "../../components/styles";
 import { useAuth } from "../../hooks/useAuth";
 
 function UpdatePass() {
@@ -173,11 +174,11 @@ function UpdatePass() {
             </Form.Item>
 
             <Form.Item>
-              <Button block type="primary" htmlType="submit">
+              <ButtonAction block type="primary" htmlType="submit">
                 {`${intl.formatMessage({
                   id: "updatePass.buttonText",
                 })}`}
-              </Button>
+              </ButtonAction>
             </Form.Item>
           </Form>
         </div>

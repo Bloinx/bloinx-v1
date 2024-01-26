@@ -10,7 +10,7 @@ import Stepper from "../../components/Stepper";
 import { formatAddress } from "../../utils/format";
 import logoIcon from "../../assets/icon.png";
 import { getTokenSymbolByRound } from "../../api/utils/getTokenData";
-import { ButtonAction, LinkCardHeader } from "../../components/styles";
+import { ButtonAction, LinkStyled } from "../../components/styles";
 
 export function RoundCard({
   name,
@@ -61,12 +61,12 @@ export function RoundCard({
           <img src={logoIcon} alt="logo" />
         </div>
         <div>
-          <LinkCardHeader to={linkTo} className={styles.RoundCardTitle}>
+          <LinkStyled to={linkTo} className={styles.RoundCardTitle}>
             <div className={styles.RoundCardTitleTitle}>{name}</div>
             <div className={styles.RoundCardTitleIcon}>
               <RightOutlined />
             </div>
-          </LinkCardHeader>
+          </LinkStyled>
           <div className={styles.RoundCardSubject}>
             <FormattedMessage id="roundCardInfo.roundAddr" />
             {formatAddress(contractKey)}

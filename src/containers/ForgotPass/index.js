@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
-import { Button } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import logo from "../../assets/bloinxLogo.png";
 import validateEmail from "./vlidators";
 import styles from "./index.module.scss";
 import { useAuth } from "../../hooks/useAuth";
+import { ButtonAction, LinkStyled } from "../../components/styles";
 
 function ForgotPass() {
   const history = useHistory();
@@ -103,25 +103,25 @@ function ForgotPass() {
           </div>
           <div className={styles.ForgotPass_Card_Content_Actions}>
             <span className={styles.error}>{error ? errorMessage : ""}</span>
-            <Button
+            <ButtonAction
               loading={loading}
-              disabled={isDisabled}
               type="primary"
+              disabled={isDisabled}
               onClick={handleForgotPass}
             >
               <FormattedMessage id="ForgotPass.actions.reset" />
-            </Button>
+            </ButtonAction>
           </div>
         </div>
         <div className={styles.ForgotPass_Card_Options}>
           <div className={styles.ForgotPass_Card_Options_Grid}>
-            <Link to="/signup">
+            <LinkStyled to="/signup">
               <FormattedMessage id="ForgotPass.actions.register" />
-            </Link>
+            </LinkStyled>
             <span className={styles.ForgotPass_Card_Content_Divider}> | </span>
-            <Link to="/login">
+            <LinkStyled to="/login">
               <FormattedMessage id="ForgotPass.actions.login" />
-            </Link>
+            </LinkStyled>
           </div>
         </div>
       </div>
