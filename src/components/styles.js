@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Drawer } from "antd";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
@@ -19,5 +19,19 @@ export const LinkStyled = styled(Link)`
   :hover {
     text-decoration: none;
     color: #f58f98;
+  }
+`;
+
+export const DrawerStyled = styled(Drawer)`
+  .ant-drawer-wrapper-body {
+    background-color: #2b2d33;
+  }
+  .ant-drawer-close {
+    svg {
+      fill: white;
+    }
+  }
+  .ant-drawer-body {
+    padding: 0;
   }
 `;

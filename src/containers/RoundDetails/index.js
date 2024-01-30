@@ -33,7 +33,7 @@ function RoundDetails() {
     });
   }, [roundId, wallet, currentProvider]);
 
-  if (roundDataById === null) {
+  if (roundDataById === null || !roundData) {
     return <Loader loadingMessage="infoLoader.roundPage" />;
   }
   return (

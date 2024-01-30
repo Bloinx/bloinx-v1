@@ -41,3 +41,10 @@
   border: 1px solid red !important;
   background-color: $gray !important;
 }
+
+.drawer-mobile {
+  background-color: "#2B2D33" !important;
+  .ant-drawer-close {
+    color: "#fff" !important;
+  }
+}

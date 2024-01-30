@@ -114,15 +114,15 @@ function Details({
         showDetails
       />
 
-      {roundData.stage === "ON_ROUND_ACTIVE" && (
+      {roundData?.stage === "ON_ROUND_ACTIVE" && (
         <Flex gap={10}>
           <ButtonAction
             onClick={() => {
               history.push(`/payment?roundId=${roundId}`);
             }}
-            disabled={
-              Number(roundDataById?.realTurn) > Number(roundData?.groupSize)
-            }
+            // disabled={
+            //   Number(roundDataById?.realTurn) > Number(roundData?.groupSize)
+            // }
             type="primary"
           >
             {" "}
@@ -136,13 +136,13 @@ function Details({
             onClick={() =>
               handleWithdrawRound(
                 roundDataById.realTurn,
-                roundData.groupSize,
+                roundData?.groupSize,
                 roundDataById.contract
               )
             }
           >
             {" "}
-            {roundDataById.realTurn >= roundData.groupSize &&
+            {roundDataById.realTurn >= roundData?.groupSize &&
             Number(roundDataById?.realTurn) > Number(roundData?.groupSize)
               ? `${intl.formatMessage({
                   id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawText",
@@ -158,13 +158,13 @@ function Details({
         label={`${intl.formatMessage({
           id: "roundDetails.contractID",
         })}`}
-        value={formatAddress(roundData.contract)}
+        value={formatAddress(roundData?.contract)}
       />
       <InputLabel
         label={`${intl.formatMessage({
           id: "roundDetails.status",
         })}`}
-        value={roundData.stage}
+        value={roundData?.stage}
       />
       <InputLabel
         label={`${intl.formatMessage({
@@ -186,8 +186,8 @@ function Details({
                 id: "roundDetails.payment",
               })}`}</th>
             </tr>
-            {roundData.participantsData &&
-              roundData.participantsData.map((participant) => (
+            {roundData?.participantsData &&
+              roundData?.participantsData.map((participant) => (
                 <tr key={participant.address}>
                   <th>{participant.position}</th>
                   <th>{formatAddress(participant.address)}</th>
@@ -198,7 +198,7 @@ function Details({
           </table>
         }
       />
-      {roundData.stage === "ON_REGISTER_STAGE" &&
+      {roundData?.stage === "ON_REGISTER_STAGE" &&
         roundData?.positionAdminData?.wallet === currentAddress &&
         currentAddress !== null && (
           <>
@@ -219,8 +219,8 @@ function Details({
               })}`}
               value={
                 <div className={styles.DetailParticipantsItem}>
-                  {roundData.invitations &&
-                    roundData.invitations?.map((email) => {
+                  {roundData?.invitations &&
+                    roundData?.invitations?.map((email) => {
                       if (email.isRegister === false) {
                         return (
                           <ul key={email.id}>
