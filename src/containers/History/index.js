@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useContext } from "react";
 // import PropTypes from "prop-types";
-import { Modal } from "antd";
+import { Modal, Flex } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
@@ -15,12 +15,12 @@ import Placeholder from "../../components/Placeholder";
 import NotFoundPlaceholder from "../../components/NotFoundPlaceholder";
 import { useRoundContext } from "../../contexts/RoundsContext";
 import { MainContext } from "../../providers/provider";
+import Loader from "../../components/Loader";
 
 function History() {
   const history = useHistory();
 
   const { handleGetRounds, historyList } = useRoundContext();
-
   const [loading, setLoading] = useState(false);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const intl = useIntl();
@@ -134,6 +134,15 @@ function History() {
         }
       />
       <div className={styles.RoundCards}>
+        {!historyList && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{ height: "400px", width: "100%" }}
+          >
+            <Loader loadingMessage="infoLoader.history" />
+          </Flex>
+        )}
         {currentAddress && historyList?.length === 0 && <NotFoundPlaceholder />}
         {currentAddress &&
           historyList?.map((round) => {

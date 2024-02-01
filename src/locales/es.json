@@ -222,7 +222,9 @@
     "roundPage": "Cargando información de ronda...",
     "page": "Cargando información de pago...",
     "approve": "Transacción en curso...",
-    "payment": "Transacción en curso..."
+    "payment": "Transacción en curso...",
+    "dashboard": "Cargando información de rondas...",
+    "history": "Cargando información de historial..."
   },
   "infoLabels": {
     "withoutWallet": "Sin Wallet encontrada",

@@ -222,7 +222,9 @@
     "roundPage": "Loading round's info...",
     "page": "Loading payment's info...",
     "approve": "Approving transaction...",
-    "payment": "Waiting for transaction..."
+    "payment": "Waiting for transaction...",
+    "dashboard": "Loading dashboard...",
+    "history": "Loading history..."
   },
   "infoLabels": {
     "withoutWallet": "No Wallet found",
