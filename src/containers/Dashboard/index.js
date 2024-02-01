@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useContext } from "react";
 // import PropTypes from "prop-types";
-import { Modal, Button } from "antd";
+import { Modal, Button, Flex } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 
@@ -21,6 +21,7 @@ import { useRoundContext } from "../../contexts/RoundsContext";
 
 import { MainContext } from "../../providers/provider";
 import { CardDashboard } from "./CardDashboard";
+import Loader from "../../components/Loader";
 
 function Dashboard() {
   const history = useHistory();
@@ -286,9 +287,15 @@ function Dashboard() {
         }
       />
       <div className={styles.RoundCards}>
-        {currentAddress && completeRoundList?.length === 0 && (
-          <NotFoundPlaceholder />
+        {!activeRounds && !completeRoundList && !otherList && (
+          <Flex align="center" justify="center" style={{ height: "400px" }}>
+            <Loader loadingMessage="infoLoader.dashboard" />
+          </Flex>
         )}
+        {completeRoundList?.length === 0 &&
+          activeRounds?.length === 0 &&
+          otherList?.length === 0 && <NotFoundPlaceholder />}
+
         {currentAddress &&
           completeRoundList?.map((round) => {
             if (round?.stage === "ON_REGISTER_STAGE" && round?.toRegister) {
@@ -327,7 +334,7 @@ function Dashboard() {
               />
             );
           })}
-        {currentAddress &&
+        {currentAddress !== null &&
           activeRounds?.length > 0 &&
           activeRounds.map((round) => (
             <CardDashboard
