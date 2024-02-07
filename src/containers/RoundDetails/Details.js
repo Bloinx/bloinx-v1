@@ -170,7 +170,7 @@ function Details({
         label={`${intl.formatMessage({
           id: "roundDetails.total",
         })}`}
-        value={roundDataById.futurePayments}
+        value={roundDataById?.futurePayments}
       />
       <InputLabel
         label={`${intl.formatMessage({
