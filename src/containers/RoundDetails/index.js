@@ -18,7 +18,6 @@ function RoundDetails() {
   const { activeRounds } = useRoundContext();
 
   useEffect(() => {
-    console.log(activeRounds, roundId);
     if (!roundId || !activeRounds) return;
     activeRounds.forEach((round) => {
       if (round.roundKey === roundId) {
@@ -35,7 +34,6 @@ function RoundDetails() {
   }, [roundId, wallet, currentProvider]);
 
   if (!roundData) {
-    console.log("roundDataById", roundDataById, "roundData", roundData);
     return <Loader loadingMessage="infoLoader.roundPage" />;
   }
   return (

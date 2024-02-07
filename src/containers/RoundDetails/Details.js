@@ -135,14 +135,14 @@ function Details({
             // disabled={userTurn !== roundData?.turn}
             onClick={() =>
               handleWithdrawRound(
-                roundDataById.realTurn,
+                roundDataById?.realTurn,
                 roundData.groupSize,
-                roundDataById.contract
+                roundDataById?.contract
               )
             }
           >
             {" "}
-            {roundDataById.realTurn >= roundData.groupSize &&
+            {roundDataById?.realTurn >= roundData.groupSize &&
             Number(roundDataById?.realTurn) > Number(roundData?.groupSize)
               ? `${intl.formatMessage({
                   id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawText",
