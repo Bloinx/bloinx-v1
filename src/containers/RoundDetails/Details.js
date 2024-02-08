@@ -34,6 +34,7 @@ function Details({
   const [userTurn, setUserTurn] = useState("");
   useEffect(() => {
     if (!roundData || !currentAddress) return;
+    console.log("roundData", roundData);
     const turn = roundData?.participantsData?.find((participant) => {
       if (participant.walletAddress === currentAddress) {
         return participant.position;
@@ -42,6 +43,11 @@ function Details({
     });
     setUserTurn(turn?.position);
   }, [roundData, currentAddress]);
+
+  useEffect(() => {
+    if (!roundDataById) return;
+    console.log("roundDataById", roundDataById);
+  }, [roundDataById]);
 
   const paymentStatusText = {
     payments_on_time: `${intl.formatMessage({
