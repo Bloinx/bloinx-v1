@@ -1,4 +1,5 @@
 import config, { walletConnect } from "./config.sg.web3";
+import { configercToken } from "./config.erc";
 import supabase from "../supabase";
 import MethodGetAddressOrderList from "./methods/getAddressOrderList";
 import MethodGetGroupSize from "./methods/getGroupSize";
@@ -13,7 +14,13 @@ import MethodGetUserAvailableCashIn from "./methods/getUserAvailableCashIn";
 import MethodGetSaveAmount from "./methods/saveAmount";
 import MethodGetCashIn from "./methods/getCashIn";
 import MethodGetAdmin from "./methods/getAdmin";
-import { getTokenDecimals } from "./utils/getTokenData";
+import MethodGetFuturePayments from "./methods/getFuturePayments";
+import { getTokenDecimals, getTokenAddressById } from "./utils/getTokenData";
+import getAllowance from "./methods/getAllowance";
+import {
+  getFormattedAllowance,
+  getFuturePaymentsFormatted,
+} from "../utils/format";
 
 const getRounds = async ({ userId }) => {
   const { data } = await supabase
@@ -137,6 +144,31 @@ export const configByPositionOther = async (
     paymentStatus = ads();
   }
 
+  const token = await getTokenAddressById(round?.tokenId);
+  const ercMethodsToken = await new Promise((resolve, reject) => {
+    try {
+      if (wallet !== "WalletConnect") {
+        resolve(configercToken(token, currentProvider));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+
+  const allowance = await getAllowance(
+    ercMethodsToken.methods,
+    round?.contract,
+    walletAddress
+  );
+
+  const futurePayments = await MethodGetFuturePayments(
+    sg.methods,
+    walletAddress
+  );
+  const resultFuturePayments = getFuturePaymentsFormatted(
+    futurePayments,
+    tokenDecimals
+  );
   const roundData = {
     contract: round?.contract,
     paymentStatus,
@@ -155,6 +187,9 @@ export const configByPositionOther = async (
     realTurn,
     withdraw: Number(turn) === positionByRound.position && Number(savings) > 0,
     fromInvitation: false,
+    allowance: getFormattedAllowance(allowance),
+    futurePayments: resultFuturePayments,
+    sgMethods: sg.methods,
   };
 
   return roundData;

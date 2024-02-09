@@ -10,6 +10,10 @@ export const StepStyle = styled(Steps)`
   .ant-steps-item-title {
     color: white;
   }
+  .ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail {
+    height: 10px;
+    margin-top: 32px;
+  }
 `;
 
 export const FlexPaymentContainer = styled(Flex)`

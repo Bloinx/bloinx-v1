@@ -34,7 +34,6 @@ function Details({
   const [userTurn, setUserTurn] = useState("");
   useEffect(() => {
     if (!roundData || !currentAddress) return;
-    console.log("roundData", roundData);
     const turn = roundData?.participantsData?.find((participant) => {
       if (participant.walletAddress === currentAddress) {
         return participant.position;

@@ -1,4 +1,3 @@
-import web3 from "web3";
 import supabase from "../supabase";
 import config, { walletConnect } from "./config.sg.web3";
 
@@ -20,6 +19,10 @@ import MethodGetAdmin from "./methods/getAdmin";
 import MethodGetFuturePayments from "./methods/getFuturePayments";
 import { getTokenDecimals, getTokenAddressById } from "./utils/getTokenData";
 import getAllowance from "./methods/getAllowance";
+import {
+  getFormattedAllowance,
+  getFuturePaymentsFormatted,
+} from "../utils/format";
 
 const getRounds = async ({ userId }) => {
   try {
@@ -63,11 +66,6 @@ export const configByPosition = async (
     round?.contract,
     walletAddress
   );
-  const allowanceBigNumber = web3.utils.toBN(allowance);
-  const allowanceFormatted = web3.utils.fromWei(
-    allowanceBigNumber.toString(),
-    "ether"
-  );
 
   const futurePayments = await MethodGetFuturePayments(
     sg.methods,
@@ -87,10 +85,11 @@ export const configByPosition = async (
   );
   const tokenDecimals = await getTokenDecimals(round?.tokenId);
 
-  const resultFuturePayments = (
-    Number(futurePayments) *
-    10 ** -tokenDecimals
-  ).toFixed(2);
+  const resultFuturePayments = getFuturePaymentsFormatted(
+    futurePayments,
+    tokenDecimals
+  );
+
   const available = orderList.filter(
     (item) => item.address === "0x0000000000000000000000000000000000000000"
   );
@@ -169,7 +168,7 @@ export const configByPosition = async (
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
     tokenId: round?.tokenId,
-    allowance: allowanceFormatted,
+    allowance: getFormattedAllowance(allowance),
     futurePayments: resultFuturePayments,
     sgMethods: sg.methods,
   };
