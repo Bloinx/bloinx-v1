@@ -27,11 +27,13 @@ function RoundDetails() {
   }, [activeRounds, roundId]);
 
   useEffect(() => {
-    if (!roundId || !wallet || !currentProvider) return;
-    APIGetRoundDetail(roundId, wallet, currentProvider).then((dataRound) => {
-      setRoundData(dataRound);
-    });
-  }, [roundId, wallet, currentProvider]);
+    if (!roundId || !wallet || !currentProvider || !currentAddress) return;
+    APIGetRoundDetail(roundId, wallet, currentProvider, currentAddress).then(
+      (dataRound) => {
+        setRoundData(dataRound);
+      }
+    );
+  }, [roundId, wallet, currentProvider, currentAddress]);
 
   if (!roundData) {
     return <Loader loadingMessage="infoLoader.roundPage" />;

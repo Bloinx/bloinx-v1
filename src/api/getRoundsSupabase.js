@@ -162,15 +162,14 @@ export const configByPosition = async (
       walletAddress === data?.wallet && walletAddress === admin.toLowerCase(),
     positionToWithdrawPay: data?.position,
     realTurn,
-    withdraw:
-      (Number(realTurn) > data?.position && Number(savings) > 0) ||
-      (Number(groupSize) === data?.position && realTurn > Number(groupSize)),
+    withdraw: Number(realTurn) > data?.position && Number(savings) > 0,
     fromInvitation: false,
     saveAmount: (Number(cashIn) * 10 ** -tokenDecimals).toFixed(2),
     tokenId: round?.tokenId,
     allowance: getFormattedAllowance(allowance),
     futurePayments: resultFuturePayments,
     sgMethods: sg.methods,
+    savings: Number(savings),
   };
 
   return roundData;

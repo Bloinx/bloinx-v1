@@ -114,7 +114,7 @@ function Details({
     <>
       <PageHeaderDetails
         title={roundData?.positionAdminData?.alias}
-        turn={Number(roundData?.turn)}
+        turn={Number(roundData?.realTurn)}
         groupSize={Number(roundData?.groupSize)}
         showDetails
       />
@@ -175,7 +175,7 @@ function Details({
         label={`${intl.formatMessage({
           id: "roundDetails.total",
         })}`}
-        value={roundDataById?.futurePayments}
+        value={roundData?.futurePayments}
       />
       <InputLabel
         label={`${intl.formatMessage({

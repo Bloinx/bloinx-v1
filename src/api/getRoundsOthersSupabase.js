@@ -185,11 +185,13 @@ export const configByPositionOther = async (
       walletAddress === round?.wallet && walletAddress === admin.toLowerCase(),
     positionToWithdrawPay: positionByRound.position,
     realTurn,
-    withdraw: Number(turn) === positionByRound.position && Number(savings) > 0,
+    withdraw:
+      Number(realTurn) > positionByRound.position && Number(savings) > 0,
     fromInvitation: false,
     allowance: getFormattedAllowance(allowance),
     futurePayments: resultFuturePayments,
     sgMethods: sg.methods,
+    savings: Number(savings),
   };
 
   return roundData;
