@@ -39,10 +39,6 @@ function Terms({
 
   const handlerOnSubmit = (data) => {
     setLoading(true);
-    console.log(
-      data.cashIn * 1.05,
-      parseFloat(getGuaranteeBalance(funds, data?.tokenId)?.balance)
-    );
     if (
       data.cashIn * 1.05 >
         parseFloat(getGuaranteeBalance(funds, data?.tokenId)?.balance) ||

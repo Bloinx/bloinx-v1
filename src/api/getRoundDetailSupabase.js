@@ -7,7 +7,7 @@ import MethodGetStage from "./methods/getStage";
 import MethodGetPayTime from "./methods/getPayTime";
 import MethodGetStartTime from "./methods/getStartTime";
 import MethodGetGroupSize from "./methods/getGroupSize";
-import MethodGetTurn from "./methods/getTurn";
+import MethodGetRealTurn from "./methods/getRealTurn";
 import MethodGetFuturePayments from "./methods/getFuturePayments";
 import { getTokenDecimals } from "./utils/getTokenData";
 import { getFuturePaymentsFormatted } from "../utils/format";
@@ -100,7 +100,10 @@ const getRoundDetailData = async (
   const startTime = await MethodGetStartTime(sg.methods);
   const payTime = await MethodGetPayTime(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
-  const realTurn = await MethodGetTurn(sg.methods);
+  let realTurn = "0";
+  if (stage === "ON_ROUND_ACTIVE") {
+    realTurn = await MethodGetRealTurn(sg.methods);
+  }
 
   const tokenDecimals = await getTokenDecimals(round?.tokenId);
   const futurePayments = await MethodGetFuturePayments(
