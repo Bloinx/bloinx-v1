@@ -15,7 +15,7 @@ function RoundDetails() {
   const [roundData, setRoundData] = useState();
   const [roundDataById, setRoundDataById] = useState(null);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
-  const { activeRounds } = useRoundContext();
+  const { activeRounds, handleGetRounds } = useRoundContext();
 
   useEffect(() => {
     if (!roundId || !activeRounds) return;
@@ -50,6 +50,7 @@ function RoundDetails() {
             wallet={wallet}
             roundDataById={roundDataById}
             currentProvider={currentProvider}
+            handleGetRounds={handleGetRounds}
           />
         )}
       />

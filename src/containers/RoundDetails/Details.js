@@ -27,6 +27,7 @@ function Details({
   wallet,
   roundDataById,
   currentProvider,
+  handleGetRounds,
 }) {
   const intl = useIntl();
   const history = useHistory();
@@ -92,10 +93,10 @@ function Details({
           });
         }
       })
-      // .finally(() => {
-      //   setLoading(false);
-      //   handleGetRounds(currentAddress, currentProvider, wallet);
-      // })
+      .finally(() => {
+        // setLoading(false);
+        handleGetRounds(currentAddress, currentProvider, wallet);
+      })
       .catch(() => {
         Modal.error({
           title: `${intl.formatMessage({

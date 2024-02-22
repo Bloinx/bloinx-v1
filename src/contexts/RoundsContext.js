@@ -58,6 +58,11 @@ const useRoundProvider = () => {
           if (resData.stage === "ON_REGISTER_STAGE") {
             setOtherList((oldArray) => [...oldArray, resData]);
           }
+          HistoryState.forEach((item) => {
+            if (resData.stage === item) {
+              setHistoryList((oldArray) => [...oldArray, resData]);
+            }
+          });
         });
       });
     });
