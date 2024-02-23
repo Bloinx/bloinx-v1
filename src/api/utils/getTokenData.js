@@ -35,7 +35,7 @@ export const getTokenSymbolByRound = async (tokenId) => {
     .from("tokens")
     .select("symbol")
     .eq("id", tokenId);
-  return data[0].symbol;
+  return data && data[0].symbol;
 };
 
 export const getTokenDecimals = async (tokenId) => {

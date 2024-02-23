@@ -46,7 +46,6 @@ function Details({
 
   useEffect(() => {
     if (!roundDataById) return;
-    console.log("roundDataById", roundDataById);
   }, [roundDataById]);
 
   const paymentStatusText = {
