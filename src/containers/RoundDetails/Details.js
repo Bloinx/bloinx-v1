@@ -44,10 +44,6 @@ function Details({
     setUserTurn(turn?.position);
   }, [roundData, currentAddress]);
 
-  useEffect(() => {
-    if (!roundDataById) return;
-  }, [roundDataById]);
-
   const paymentStatusText = {
     payments_on_time: `${intl.formatMessage({
       id: "dashboardPage.paymentStatusText.payments_on_time",
