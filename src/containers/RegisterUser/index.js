@@ -11,6 +11,7 @@ import APIgetRoundRegisterDetail from "../../api/getRoundRegisterDetailSupabase"
 import { INITIAL_FORM_VALUES } from "./constants";
 import { MainContext } from "../../providers/provider";
 import { useWallet } from "../../hooks/useWallet";
+import { useRoundContext } from "../../contexts/RoundsContext";
 
 function RegisterUser() {
   const history = useHistory();
@@ -22,6 +23,8 @@ function RegisterUser() {
   const { currentAddress, wallet, currentProvider, funds } =
     useContext(MainContext);
   // const [tokenBalance, setTokenBalance] = useState();
+
+  const { handleGetRounds } = useRoundContext();
 
   useEffect(() => {
     APIgetRoundRegisterDetail(roundId, wallet, currentProvider).then(
@@ -60,7 +63,17 @@ function RegisterUser() {
           />
         )}
       />
-      <Route path={`${baseUrl}/success`} component={() => <Receipt />} />
+      <Route
+        path={`${baseUrl}/success`}
+        component={() => (
+          <Receipt
+            walletAddress={currentAddress}
+            wallet={wallet}
+            currentProvider={currentProvider}
+            handleGetRounds={handleGetRounds}
+          />
+        )}
+      />
     </Switch>
   );
 }
