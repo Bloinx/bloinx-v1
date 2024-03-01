@@ -60,10 +60,12 @@ function RegisterUser() {
             roundData={roundData}
             walletAddress={currentAddress}
             wallet={wallet}
+            currentProvider={currentProvider}
+            handleGetRounds={handleGetRounds}
           />
         )}
       />
-      <Route
+      {/* <Route
         path={`${baseUrl}/success`}
         component={() => (
           <Receipt
@@ -73,7 +75,7 @@ function RegisterUser() {
             handleGetRounds={handleGetRounds}
           />
         )}
-      />
+      /> */}
     </Switch>
   );
 }

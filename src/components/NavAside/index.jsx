@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
-import { Menu, Layout, Drawer } from "antd";
+import { Menu, Layout } from "antd";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import {
@@ -21,6 +21,7 @@ import styles from "./styles.module.scss";
 import logo from "../../assets/bloinxLogo.png";
 import icon from "../../assets/icon.png";
 import { useAuth } from "../../hooks/useAuth";
+import { DrawerStyled } from "../styles";
 
 const { Sider } = Layout;
 
@@ -199,7 +200,7 @@ function NavAside({ width, toggleDrawer, visible }) {
         </Sider>
       )}
       {isMobile && (
-        <Drawer
+        <DrawerStyled
           title={
             <div className={styles.logoMobile}>
               <img src={logo} alt="bloinx-logo" />
@@ -223,7 +224,7 @@ function NavAside({ width, toggleDrawer, visible }) {
           }}
         >
           <MenuOptions />
-        </Drawer>
+        </DrawerStyled>
       )}
     </>
   );

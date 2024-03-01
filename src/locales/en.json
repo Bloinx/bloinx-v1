@@ -346,6 +346,10 @@
         "error": {
           "title": "Error when registering user",
           "content": "Please verify that your wallet is active and try again."
+        },
+        "success": {
+          "title": "Register",
+          "content": "Congrats! You have successfully registered for the round."
         }
       }
     }
