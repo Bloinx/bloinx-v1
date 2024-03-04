@@ -12,7 +12,7 @@ function HeaderMainRound({ turn, groupSize }) {
         <FormattedMessage id="roundCardInfo.turn" />
       </span>
       <div className={styles.progressMainInfo}>
-        <p>{Number.isNaN(turn) ? 0 : turn}</p>
+        <p>{turn !== 0 && !Number.isNaN(turn) ? turn : "1"}</p>
         <p>/{Number.isNaN(groupSize) ? 0 : groupSize}</p>
       </div>
     </div>

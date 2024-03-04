@@ -18,9 +18,12 @@ const PageHeaderDetails = ({ title, action, turn, groupSize, showDetails }) => {
           {title}
         </Title>
       </Flex>
-
-      <div className={styles.verticalLine} />
-      {showDetails && <HeaderMainRound turn={turn} groupSize={groupSize} />}
+      {showDetails && (
+        <>
+          <div className={styles.verticalLine} />
+          <HeaderMainRound turn={turn} groupSize={groupSize} />
+        </>
+      )}
       {action}
     </div>
   );

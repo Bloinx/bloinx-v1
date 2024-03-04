@@ -32,6 +32,13 @@ function Details({
   const intl = useIntl();
   const history = useHistory();
   const [userTurn, setUserTurn] = useState("");
+
+  const getTurnHeader = (turn, realTurn, groupSize) => {
+    if (groupSize <= realTurn) {
+      return realTurn;
+    }
+    return turn;
+  };
   useEffect(() => {
     if (!roundData || !currentAddress) return;
 
@@ -110,9 +117,15 @@ function Details({
     <>
       <PageHeaderDetails
         title={roundData?.positionAdminData?.alias}
-        turn={Number(roundData?.realTurn)}
+        turn={Number(
+          getTurnHeader(
+            roundData?.turn,
+            roundData?.realTurn,
+            roundData?.groupSize
+          )
+        )}
         groupSize={Number(roundData?.groupSize)}
-        showDetails
+        showDetails={roundData.stage === "ON_ROUND_ACTIVE"}
       />
 
       {roundData.stage === "ON_ROUND_ACTIVE" && (
