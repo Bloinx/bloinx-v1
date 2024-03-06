@@ -346,6 +346,10 @@
         "error": {
           "title": "Error al registrar",
           "content": "No pudimos registrar tu cuenta. Por favor verifica mas tarde o intenta nuevamente."
+        },
+        "success": {
+          "title": "Registro",
+          "content": "¡Felicidades! Te has registrado a la ronda con éxito"
         }
       }
     }

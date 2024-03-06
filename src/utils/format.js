@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import web3 from "web3";
 
 export function validateEmail(email) {
   const re =
@@ -29,3 +30,20 @@ export function formatBalance(rawBalance, decimals) {
   const scaleFactor = new Decimal(10).pow(decimals.toNumber());
   return new Decimal(rawBalance.toString()).dividedBy(scaleFactor).toString();
 }
+
+export const getFormattedAllowance = (allowance) => {
+  const allowanceBigNumber = web3.utils.toBN(allowance);
+  const allowanceFormatted = web3.utils.fromWei(
+    allowanceBigNumber.toString(),
+    "ether"
+  );
+  return allowanceFormatted;
+};
+
+export const getFuturePaymentsFormatted = (futurePayments, tokenDecimals) => {
+  const resultFuturePayments = (
+    Number(futurePayments) *
+    10 ** -tokenDecimals
+  ).toFixed(2);
+  return resultFuturePayments;
+};

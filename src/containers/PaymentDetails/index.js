@@ -159,9 +159,8 @@ function Payment() {
 
   useEffect(() => {
     if (!roundDataById) return;
-
     if (
-      roundDataById.allowance <
+      parseInt(roundDataById.allowance, 10) <
       getAmountToApprove(
         Number(roundDataById.saveAmount),
         Number(roundDataById.groupSize),

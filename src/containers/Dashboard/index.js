@@ -286,7 +286,7 @@ function Dashboard() {
         }
       />
       <div className={styles.RoundCards}>
-        {currentAddress && completeRoundList?.length === 0 && (
+        {completeRoundList?.length === 0 && activeRounds?.length === 0 && (
           <NotFoundPlaceholder />
         )}
         {currentAddress &&
@@ -333,7 +333,7 @@ function Dashboard() {
             <CardDashboard
               key={round.roundKey}
               contractKey={round.contract}
-              turn={round.turn}
+              turn={round.realTurn}
               groupSize={round.groupSize}
               name={round.name}
               positionToWithdrawPay={round.positionToWithdrawPay}

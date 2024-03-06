@@ -31,7 +31,14 @@ import {
 import { MainContext } from "../../providers/provider";
 import { getUrlParams } from "../../utils/browser";
 
-function Form({ form, setForm, roundData, walletAddress, wallet }) {
+function Form({
+  form,
+  setForm,
+  roundData,
+  walletAddress,
+  wallet,
+  handleGetRounds,
+}) {
   const user = supabase.auth.user();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -82,17 +89,28 @@ function Form({ form, setForm, roundData, walletAddress, wallet }) {
         currentProvider,
       })
         .then((receipt) => {
-          history.push("/register-user/success");
+          Modal.success({
+            title: `${intl.formatMessage({
+              id: "registerUser.functions.handlerOnSubmit.success.title",
+            })}`,
+            content: `${intl.formatMessage({
+              id: "registerUser.functions.handlerOnSubmit.success.content",
+            })}`,
+            onOk: history.push("/dashboard"),
+          });
+        })
+        .finally(() => {
+          handleGetRounds(walletAddress, currentProvider, wallet);
         })
         .catch((err) => {
           setLoading(false);
           console.log(err);
           Modal.error({
             title: `${intl.formatMessage({
-              id: "registerUser.functions.handlerOnSubmit.error.title",
+              id: "registerUser.functions.handlerOnSubmit.success.title",
             })}`,
             content: `${intl.formatMessage({
-              id: "registerUser.functions.handlerOnSubmit.error.content",
+              id: "registerUser.functions.handlerOnSubmit.success.content",
             })}`,
           });
         });

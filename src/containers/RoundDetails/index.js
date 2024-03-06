@@ -15,7 +15,7 @@ function RoundDetails() {
   const [roundData, setRoundData] = useState();
   const [roundDataById, setRoundDataById] = useState(null);
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
-  const { activeRounds } = useRoundContext();
+  const { activeRounds, handleGetRounds } = useRoundContext();
 
   useEffect(() => {
     if (!roundId || !activeRounds) return;
@@ -27,13 +27,15 @@ function RoundDetails() {
   }, [activeRounds, roundId]);
 
   useEffect(() => {
-    if (!roundId || !wallet || !currentProvider) return;
-    APIGetRoundDetail(roundId, wallet, currentProvider).then((dataRound) => {
-      setRoundData(dataRound);
-    });
-  }, [roundId, wallet, currentProvider]);
+    if (!roundId || !wallet || !currentProvider || !currentAddress) return;
+    APIGetRoundDetail(roundId, wallet, currentProvider, currentAddress).then(
+      (dataRound) => {
+        setRoundData(dataRound);
+      }
+    );
+  }, [roundId, wallet, currentProvider, currentAddress]);
 
-  if (roundDataById === null) {
+  if (!roundData) {
     return <Loader loadingMessage="infoLoader.roundPage" />;
   }
   return (
@@ -48,6 +50,7 @@ function RoundDetails() {
             wallet={wallet}
             roundDataById={roundDataById}
             currentProvider={currentProvider}
+            handleGetRounds={handleGetRounds}
           />
         )}
       />

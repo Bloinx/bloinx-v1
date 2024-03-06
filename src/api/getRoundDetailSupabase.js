@@ -7,7 +7,10 @@ import MethodGetStage from "./methods/getStage";
 import MethodGetPayTime from "./methods/getPayTime";
 import MethodGetStartTime from "./methods/getStartTime";
 import MethodGetGroupSize from "./methods/getGroupSize";
-import MethodGetTurn from "./methods/getTurn";
+import MethodGetRealTurn from "./methods/getRealTurn";
+import MethodGetFuturePayments from "./methods/getFuturePayments";
+import { getTokenDecimals } from "./utils/getTokenData";
+import { getFuturePaymentsFormatted } from "../utils/format";
 import config, { walletConnect } from "./config.sg.web3";
 
 const getPositionAdmin = async (idRound, userId) => {
@@ -82,7 +85,8 @@ const getRoundDetailData = async (
   positionAdminData,
   wallet,
   invitations,
-  currentProvider
+  currentProvider,
+  currentAddress
 ) => {
   const sg =
     (await wallet) !== "WalletConnect"
@@ -96,7 +100,20 @@ const getRoundDetailData = async (
   const startTime = await MethodGetStartTime(sg.methods);
   const payTime = await MethodGetPayTime(sg.methods);
   const groupSize = await MethodGetGroupSize(sg.methods);
-  const turn = await MethodGetTurn(sg.methods);
+  let realTurn = "0";
+  if (stage === "ON_ROUND_ACTIVE") {
+    realTurn = await MethodGetRealTurn(sg.methods);
+  }
+
+  const tokenDecimals = await getTokenDecimals(round?.tokenId);
+  const futurePayments = await MethodGetFuturePayments(
+    sg.methods,
+    currentAddress
+  );
+  const resultFuturePayments = getFuturePaymentsFormatted(
+    futurePayments,
+    tokenDecimals
+  );
 
   const orderList = await MethodGetAddressOrderList(sg.methods);
   const positionByRoundData = await getPositionUserByAddress(round?.id);
@@ -119,7 +136,8 @@ const getRoundDetailData = async (
     participantsData,
     invitations,
     groupSize,
-    turn,
+    realTurn,
+    futurePayments: resultFuturePayments,
   };
   return a;
 };
@@ -139,7 +157,12 @@ const getRoundInvitations = async (roundId) => {
   return data;
 };
 
-const getRoundDetailSupabase = async (roundId, wallet, currentProvider) => {
+const getRoundDetailSupabase = async (
+  roundId,
+  wallet,
+  currentProvider,
+  currentAddress
+) => {
   return new Promise((resolve, reject) => {
     getRoundData(roundId).then((round) => {
       getPositionAdmin(roundId, round.userAdmin).then((positionAdminData) => {
@@ -149,7 +172,8 @@ const getRoundDetailSupabase = async (roundId, wallet, currentProvider) => {
             positionAdminData,
             wallet,
             invitations,
-            currentProvider
+            currentProvider,
+            currentAddress
           ).then((rs) => {
             resolve(rs);
           });

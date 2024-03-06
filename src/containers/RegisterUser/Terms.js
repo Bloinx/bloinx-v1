@@ -40,7 +40,7 @@ function Terms({
   const handlerOnSubmit = (data) => {
     setLoading(true);
     if (
-      data.cashIn * 3 >
+      data.cashIn * 1.05 >
         parseFloat(getGuaranteeBalance(funds, data?.tokenId)?.balance) ||
       getGuaranteeBalance(funds, data?.tokenId) === undefined
     ) {
@@ -109,7 +109,7 @@ function Terms({
               ]}
             >
               <p>
-                Necesitas al menos {roundData.cashIn * 3}{" "}
+                Necesitas al menos {roundData.cashIn * 1.05}{" "}
                 {getTokenName(roundData?.tokenId)} para completar esta acción.
               </p>
             </Modal>

@@ -51,13 +51,7 @@ export function CardDashboard({
           className={styles.progress}
           type="circle"
           percent={getPercentage()}
-          success={() => {
-            return {
-              strokeColor: "#f58f98",
-              fontColor: "#f58f98",
-            };
-          }}
-          strokeColor="primary"
+          strokeColor="#f58f98"
           format={() => {
             return (
               <div className={styles.progressInfoContainer}>

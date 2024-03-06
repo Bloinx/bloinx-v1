@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Layout } from "antd";
 import PropTypes from "prop-types";
 import { FormattedMessage } from "react-intl";
@@ -10,13 +11,12 @@ import useWindowDimensions from "../../utils/useWindowDimensions";
 import { useAuth } from "../../hooks/useAuth";
 
 const { Header, Content, Footer } = Layout;
-
 function Markup({ children }) {
-  // initialContractInstance
   const { width } = useWindowDimensions();
   const [visible, setVisible] = useState(false);
-  const isLogged = useAuth();
-  const currentRoute = window.location.pathname;
+  const { user, loading } = useAuth(); // Destructure to get user and loading
+  const location = useLocation();
+  const currentRoute = location.pathname;
 
   const toggleDrawer = (status) => {
     if (status) {
@@ -26,16 +26,11 @@ function Markup({ children }) {
     }
   };
 
-  // const instanceContractsEnviroment = async () => {
-  //   const instance = await getSavingGroupsMethods();
-  //   initialContractInstance(instance);
-  // };
+  if (loading) {
+    return <div>Loading...</div>; // Or any loading indicator you prefer
+  }
 
-  // useEffect(() => {
-  //   instanceContractsEnviroment();
-  // }, []);
-
-  return isLogged && currentRoute !== "/login" ? (
+  return user && currentRoute !== "/login" ? (
     <Layout className="appLayout">
       <NavAside width={width} toggleDrawer={toggleDrawer} visible={visible} />
       <Layout>

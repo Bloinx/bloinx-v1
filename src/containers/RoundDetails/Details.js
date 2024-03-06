@@ -27,13 +27,21 @@ function Details({
   wallet,
   roundDataById,
   currentProvider,
+  handleGetRounds,
 }) {
   const intl = useIntl();
   const history = useHistory();
-
   const [userTurn, setUserTurn] = useState("");
+
+  const getTurnHeader = (turn, realTurn, groupSize) => {
+    if (groupSize <= realTurn) {
+      return realTurn;
+    }
+    return turn;
+  };
   useEffect(() => {
     if (!roundData || !currentAddress) return;
+
     const turn = roundData?.participantsData?.find((participant) => {
       if (participant.walletAddress === currentAddress) {
         return participant.position;
@@ -87,10 +95,10 @@ function Details({
           });
         }
       })
-      // .finally(() => {
-      //   setLoading(false);
-      //   handleGetRounds(currentAddress, currentProvider, wallet);
-      // })
+      .finally(() => {
+        // setLoading(false);
+        handleGetRounds(currentAddress, currentProvider, wallet);
+      })
       .catch(() => {
         Modal.error({
           title: `${intl.formatMessage({
@@ -109,9 +117,15 @@ function Details({
     <>
       <PageHeaderDetails
         title={roundData?.positionAdminData?.alias}
-        turn={Number(roundData?.turn)}
+        turn={Number(
+          getTurnHeader(
+            roundData?.turn,
+            roundData?.realTurn,
+            roundData?.groupSize
+          )
+        )}
         groupSize={Number(roundData?.groupSize)}
-        showDetails
+        showDetails={roundData.stage === "ON_ROUND_ACTIVE"}
       />
 
       {roundData.stage === "ON_ROUND_ACTIVE" && (
@@ -135,14 +149,14 @@ function Details({
             // disabled={userTurn !== roundData?.turn}
             onClick={() =>
               handleWithdrawRound(
-                roundDataById.realTurn,
+                roundDataById?.realTurn,
                 roundData.groupSize,
-                roundDataById.contract
+                roundDataById?.contract
               )
             }
           >
             {" "}
-            {roundDataById.realTurn >= roundData.groupSize &&
+            {roundDataById?.realTurn >= roundData.groupSize &&
             Number(roundDataById?.realTurn) > Number(roundData?.groupSize)
               ? `${intl.formatMessage({
                   id: "dashboardPage.functions.handleButton.ON_ROUND_ACTIVE.withdrawText",
@@ -170,7 +184,7 @@ function Details({
         label={`${intl.formatMessage({
           id: "roundDetails.total",
         })}`}
-        value={roundDataById.futurePayments}
+        value={roundData?.futurePayments}
       />
       <InputLabel
         label={`${intl.formatMessage({
