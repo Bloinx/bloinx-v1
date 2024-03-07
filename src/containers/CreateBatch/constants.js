@@ -15,7 +15,7 @@ export const INITIAL_FORM_VALUES = {
 };
 
 export const paymentTime = {
-  [WEEKLY]: 7,
+  [WEEKLY]: 1, // 7,
   [BIWEEKLY]: 14,
   [MONTHLY]: 30,
 };
