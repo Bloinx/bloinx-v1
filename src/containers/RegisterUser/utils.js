@@ -9,6 +9,8 @@ export const getOptions = (positionsAvailable = []) => {
 };
 
 export const getGuaranteeBalance = (funds, tokenId) => {
+  console.log(funds, tokenId);
+
   switch (tokenId) {
     case 1:
     case 2:
