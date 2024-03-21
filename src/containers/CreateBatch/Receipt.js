@@ -22,10 +22,12 @@ import {
 } from "./constants";
 import { MainContext } from "../../providers/provider";
 import { getTokenAddress } from "../../api/utils/getTokenData";
+import { useRoundContext } from "../../contexts/RoundsContext";
 
 const Receipt = ({ form, setForm, tokenSelected }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const { handleGetRounds } = useRoundContext();
   const { currentAddress, wallet, currentProvider } = useContext(MainContext);
   const handlerOnSubmit = (values) =>
     setForm({
@@ -62,6 +64,7 @@ const Receipt = ({ form, setForm, tokenSelected }) => {
         .then(() => {
           setLoading(false);
           setForm(INITIAL_FORM_VALUES);
+          handleGetRounds(currentAddress, currentProvider, wallet);
           history.push("/create-round/receipt/success");
         })
         .catch((err) => {
