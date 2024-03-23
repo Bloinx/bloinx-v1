@@ -119,7 +119,7 @@ function Wallets() {
             style={{ display: "flex", alignItems: "center" }}
           >
             <img
-              src={NETWORKS[networkSelected].icon}
+              src={NETWORKS[networkSelected]?.icon}
               alt="bloinx-icon"
               width="20"
             />
@@ -156,12 +156,12 @@ function Wallets() {
                     height: 128,
                     cursor: "pointer",
                   }}
-                  key={NETWORKS[network].chainId}
+                  key={NETWORKS[network]?.chainId}
                   onClick={() => selectNetwork(network)}
                 >
                   <img
-                    src={NETWORKS[network].icon}
-                    alt={NETWORKS[network].name}
+                    src={NETWORKS[network]?.icon}
+                    alt={NETWORKS[network]?.name}
                     width="58"
                     height={58}
                     style={{ paddingTop: "10px" }}

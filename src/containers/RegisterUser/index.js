@@ -4,14 +4,13 @@ import { Route, Switch, useHistory } from "react-router-dom";
 
 import Terms from "./Terms";
 import Form from "./Form";
-import Receipt from "./Receipt";
 import { getUrlParams } from "../../utils/browser";
 import APIgetRoundRegisterDetail from "../../api/getRoundRegisterDetailSupabase";
 
 import { INITIAL_FORM_VALUES } from "./constants";
 import { MainContext } from "../../providers/provider";
-import { useWallet } from "../../hooks/useWallet";
 import { useRoundContext } from "../../contexts/RoundsContext";
+import Loader from "../../components/Loader";
 
 function RegisterUser() {
   const history = useHistory();
@@ -19,7 +18,7 @@ function RegisterUser() {
   const { roundId } = getUrlParams(history.location.search);
 
   const [form, setForm] = useState(INITIAL_FORM_VALUES);
-  const [roundData, setRoundData] = useState({});
+  const [roundData, setRoundData] = useState();
   const { currentAddress, wallet, currentProvider, funds } =
     useContext(MainContext);
   // const [tokenBalance, setTokenBalance] = useState();
@@ -32,7 +31,11 @@ function RegisterUser() {
         setRoundData(dataRound);
       }
     );
-  }, []);
+  }, [roundId, wallet, currentProvider]);
+
+  if (roundData === undefined) {
+    return <Loader loadingMessage="infoLoader.roundPage" />;
+  }
 
   return (
     <Switch>

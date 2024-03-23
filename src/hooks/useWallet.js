@@ -93,7 +93,7 @@ export const useWallet = () => {
             method: "eth_requestAccounts",
           });
 
-          switch (network.chainId) {
+          switch (network?.chainId) {
             case 137:
               await window.ethereum.request({
                 method: "wallet_switchEthereumChain",
@@ -119,18 +119,18 @@ export const useWallet = () => {
               });
               break;
             default:
-              console.log(`Not available chain ${network.id}`);
+              console.log(`Not available chain ${network?.id}`);
               break;
           }
 
-          setCurrentProvider(network.chainId);
+          setCurrentProvider(network?.chainId);
           setWallet("Metamask");
           setCurrentAddress(provider.selectedAddress);
         }
 
         setUserData({
           name: walletName,
-          chainId: network.chainId,
+          chainId: network?.chainId,
           address: provider.selectedAddress,
         });
         setAccountData({
@@ -148,7 +148,7 @@ export const useWallet = () => {
           "user_address",
           JSON.stringify({
             name: walletName,
-            chainId: network.chainId,
+            chainId: network?.chainId,
             address: provider.selectedAddress,
           })
         );
@@ -158,7 +158,7 @@ export const useWallet = () => {
             localStorage.removeItem("WALLETCONNECT_DEEPLINK_CHOICE");
           }
         });
-        provider = walletconnect(network.id, true);
+        provider = walletconnect(network?.id, true);
         await provider.enable();
 
         setCurrentProvider(provider);
@@ -168,13 +168,13 @@ export const useWallet = () => {
           "user_address",
           JSON.stringify({
             name: walletName,
-            chainId: network.chainId,
+            chainId: network?.chainId,
             address: provider.accounts[0],
           })
         );
         setUserData({
           name: walletName,
-          chainId: network.chainId,
+          chainId: network?.chainId,
           address: provider.selectedAddress,
         });
       }
