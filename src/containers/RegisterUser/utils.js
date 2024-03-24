@@ -14,17 +14,17 @@ export const getGuaranteeBalance = (funds, tokenId) => {
   switch (tokenId) {
     case 1:
     case 2:
-      return funds?.find((item) => item.name === "Celo Dollar");
+      return funds?.find((item) => item.name === "cUSD");
     case 3:
     case 4:
-      return funds?.find((item) => item.name.includes("USD Coin"));
+      return funds?.find((item) => item.name.includes("USDC"));
     case 5:
       return funds?.find((item) => item.name === "USDT");
     case 7:
       return funds?.find((item) => item.name === "USDC");
     case 8:
     case 9:
-      return funds?.find((item) => item.name.includes("Xocolatl"));
+      return funds?.find((item) => item.name.includes("XOC"));
     default:
       return { name: "", balance: 0 };
   }
