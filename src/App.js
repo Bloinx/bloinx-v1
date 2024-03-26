@@ -20,6 +20,7 @@ import { ProvideAuth } from "./hooks/useAuth";
 import ForgotPass from "./containers/ForgotPass";
 import UpdatePass from "./containers/UpdatePass";
 import Payment from "./containers/PaymentDetails";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -43,13 +44,13 @@ function App() {
 
           <Markup>
             <ProvideRound>
-              <Route exact path="/dashboard" component={Dashboard} />
-              <Route exact path="/history" component={History} />
-              <Route path="/create-round" component={CreateBatch} />
-              <Route path="/invitations" component={Invitations} />
-              <Route path="/register-user" component={RegisterUser} />
-              <Route path="/round-details" component={RoundDetails} />
-              <Route path="/payment" component={Payment} />
+              <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+              <ProtectedRoute exact path="/history" component={History} />
+              <ProtectedRoute path="/create-round" component={CreateBatch} />
+              <ProtectedRoute path="/invitations" component={Invitations} />
+              <ProtectedRoute path="/register-user" component={RegisterUser} />
+              <ProtectedRoute path="/round-details" component={RoundDetails} />
+              <ProtectedRoute path="/payment" component={Payment} />
             </ProvideRound>
 
             <Route exact path="/">

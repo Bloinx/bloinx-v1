@@ -10,32 +10,31 @@ import updatePassword from "../api/setUpdatePass";
 
 const authContext = createContext();
 
-// Hook for child components to get the auth object ...
-// ... and re-render when it changes.
 export const useAuth = () => {
   return useContext(authContext);
 };
-// Provider hook that creates auth object and handles state
+
 const useProvideAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const isAuthenticated = !!user;
+
   const history = useHistory();
 
   useEffect(() => {
-    // Check active sessions and sets the user
     const currentSession = supabase.auth.session();
 
     setUser(currentSession?.user ?? null);
     setLoading(false);
 
-    // Listen for changes on auth state (logged in, signed out, etc.)
     const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (session !== null) {
           setUser(session?.user ?? null);
           setLoading(false);
         } else {
+          setUser(null);
           history.push("/logout");
         }
       }
@@ -44,11 +43,12 @@ const useProvideAuth = () => {
     return () => {
       listener?.unsubscribe();
     };
-  }, []);
-  // Return the user object and auth methods
+  }, [history]);
+
   return {
     user,
     loading,
+    isAuthenticated,
     signIn,
     signUp,
     Logout,
@@ -57,8 +57,6 @@ const useProvideAuth = () => {
   };
 };
 
-// Provider component that wraps your app and makes auth object ...
-// ... available to any child component that calls useAuth().
 export function ProvideAuth({ children }) {
   const auth = useProvideAuth();
   return (
